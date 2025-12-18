@@ -731,6 +731,17 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
                 return false;
             }
         });
+        
+        // Auto-redirect if already logged in
+        (function() {
+            const token = localStorage.getItem('legendShopToken');
+            const user = localStorage.getItem('legendShopUser');
+            
+            if (token && user) {
+                // User is already logged in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        })();
     </script>
 </body>
 </html>

@@ -16,15 +16,20 @@
             -webkit-touch-callout: none;
         }
         
-        /* Advanced Dashboard Styles */
+        /* Advanced Dashboard Styles - 8K Optimized */
         body {
             overflow-x: hidden;
+            font-smooth: always;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
         
         .dashboard-container {
             max-width: 1400px;
             margin: 30px auto;
             padding: 20px;
+            perspective: 2000px;
         }
         
         /* Security Header */
@@ -496,18 +501,39 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn-primary" onclick="refreshSecurity()">
-                <i class="fas fa-sync-alt"></i>
-                Refresh Security Status
-            </button>
-            <button class="btn-danger" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i>
-                Secure Logout
-            </button>
+            
+            <!-- Settings Card -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3 class="card-title">Settings</h3>
+                </div>
+                <div class="card-content">
+                    <div style="color: #b0b0b0; line-height: 2.5;">
+                        <div class="setting-item" onclick="toggleNotifications()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
+                            <i class="fas fa-bell" style="color: #00ff88; margin-right: 10px;"></i>
+                            <span>Notifications</span>
+                            <span style="float: right; color: #00ff88;" id="notifStatus">ON</span>
+                        </div>
+                        <div class="setting-item" onclick="toggle2FA()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
+                            <i class="fas fa-shield-alt" style="color: #00ff88; margin-right: 10px;"></i>
+                            <span>Two-Factor Auth</span>
+                            <span style="float: right; color: #00ff88;" id="2faStatus">ENABLED</span>
+                        </div>
+                        <div class="setting-item" onclick="viewProfile()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
+                            <i class="fas fa-user-circle" style="color: #00ff88; margin-right: 10px;"></i>
+                            <span>Edit Profile</span>
+                            <i class="fas fa-chevron-right" style="float: right; color: #00ff88;"></i>
+                        </div>
+                        <div class="setting-item" style="cursor: pointer; padding: 12px; background: rgba(255, 68, 68, 0.1); border-radius: 10px; margin-top: 15px; border: 1px solid rgba(255, 68, 68, 0.3); transition: all 0.3s;" onclick="logout()" onmouseover="this.style.background='rgba(255,68,68,0.2)'" onmouseout="this.style.background='rgba(255,68,68,0.1)'">
+                            <i class="fas fa-sign-out-alt" style="color: #ff4444; margin-right: 10px;"></i>
+                            <span style="color: #ff4444; font-weight: 700;">Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -632,10 +658,37 @@
             monitorLog.appendChild(newLog);
             
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = 'index.php';
             }, 500);
         }
-
+        
+        // Settings functions
+        function toggleNotifications() {
+            const statusEl = document.getElementById('notifStatus');
+            if (statusEl.textContent === 'ON') {
+                statusEl.textContent = 'OFF';
+                statusEl.style.color = '#ff4444';
+            } else {
+                statusEl.textContent = 'ON';
+                statusEl.style.color = '#00ff88';
+            }
+        }
+        
+        function toggle2FA() {
+            const statusEl = document.getElementById('2faStatus');
+            if (statusEl.textContent === 'ENABLED') {
+                statusEl.textContent = 'DISABLED';
+                statusEl.style.color = '#ff4444';
+            } else {
+                statusEl.textContent = 'ENABLED';
+                statusEl.style.color = '#00ff88';
+            }
+        }
+        
+        function viewProfile() {
+            alert('Profile editing feature coming soon! Your account: ' + user.email);
+        }
+        
         // Prevent context menu (anti-dump)
         document.addEventListener('contextmenu', (e) => {
             e.preventDefault();
