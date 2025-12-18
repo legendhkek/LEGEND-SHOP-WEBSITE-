@@ -46,6 +46,305 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             text-rendering: optimizeLegibility;
         }
 
+        /* ==================== CINEMATIC INTRO VIDEO SEQUENCE ==================== */
+        
+        /* Intro Overlay - Full screen video-like intro */
+        #intro-sequence {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #0f3460, #16213e);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: introFadeOut 1s ease 11s forwards;
+            pointer-events: all;
+        }
+
+        #intro-sequence.hidden {
+            display: none;
+        }
+
+        @keyframes introFadeOut {
+            to {
+                opacity: 0;
+                pointer-events: none;
+            }
+        }
+
+        /* Intro Logo Container */
+        .intro-logo-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin-bottom: 40px;
+            animation: introLogoReveal 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes introLogoReveal {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.3) rotate(20deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .intro-logo {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, 
+                rgba(0, 255, 136, 0.5), rgba(102, 126, 234, 0.5),
+                rgba(240, 147, 251, 0.4), rgba(255, 107, 107, 0.4));
+            border: 6px solid rgba(0, 255, 136, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 0 150px rgba(0, 255, 136, 0.9),
+                0 0 200px rgba(102, 126, 234, 0.7),
+                0 0 250px rgba(240, 147, 251, 0.5),
+                inset 0 0 100px rgba(0, 255, 136, 0.4);
+            animation: introLogoPulse 3s ease infinite 2s;
+        }
+
+        @keyframes introLogoPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 
+                    0 0 150px rgba(0, 255, 136, 0.9),
+                    0 0 200px rgba(102, 126, 234, 0.7),
+                    0 0 250px rgba(240, 147, 251, 0.5),
+                    inset 0 0 100px rgba(0, 255, 136, 0.4);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 
+                    0 0 200px rgba(0, 255, 136, 1),
+                    0 0 280px rgba(102, 126, 234, 0.9),
+                    0 0 350px rgba(240, 147, 251, 0.7),
+                    inset 0 0 150px rgba(0, 255, 136, 0.6);
+            }
+        }
+
+        .intro-logo i {
+            font-size: 140px;
+            background: linear-gradient(135deg, #00ff88, #667eea, #f093fb, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 40px rgba(0, 255, 136, 1));
+            animation: introIconSpin 2s ease-in-out 0.5s forwards;
+        }
+
+        @keyframes introIconSpin {
+            0% {
+                transform: rotateY(0deg) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: rotateY(360deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Intro Title */
+        .intro-title {
+            font-size: 100px;
+            font-weight: 900;
+            background: linear-gradient(135deg, 
+                #00ff88, #667eea, #f093fb, #ff6b6b,
+                #feca57, #48dbfb, #1dd1a1, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 400% 400%;
+            animation: introTitleReveal 1.5s ease 2s forwards, introTitleGradient 4s ease infinite 3.5s;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            opacity: 0;
+            transform: translateY(50px);
+            filter: drop-shadow(0 0 60px rgba(0, 255, 136, 0.8));
+        }
+
+        @keyframes introTitleReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes introTitleGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Intro Subtitle */
+        .intro-subtitle {
+            font-size: 42px;
+            font-weight: 700;
+            color: #00ff88;
+            text-shadow: 0 0 40px rgba(0, 255, 136, 1);
+            animation: introSubtitleReveal 1.5s ease 3s forwards, introSubtitleGlow 2s ease infinite 4.5s;
+            opacity: 0;
+            transform: translateY(30px);
+            margin-bottom: 60px;
+        }
+
+        @keyframes introSubtitleReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes introSubtitleGlow {
+            0%, 100% {
+                text-shadow: 0 0 40px rgba(0, 255, 136, 1);
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 0 0 80px rgba(0, 255, 136, 1), 0 0 120px rgba(102, 126, 234, 0.8);
+                transform: scale(1.05);
+            }
+        }
+
+        /* Intro Tagline */
+        .intro-tagline {
+            font-size: 28px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.6;
+            animation: introTaglineReveal 1.5s ease 4.5s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            margin-bottom: 80px;
+            padding: 0 40px;
+        }
+
+        @keyframes introTaglineReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading Progress Bar */
+        .intro-progress-container {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 600px;
+            animation: introProgressReveal 1s ease 6s forwards;
+            opacity: 0;
+        }
+
+        @keyframes introProgressReveal {
+            to { opacity: 1; }
+        }
+
+        .intro-progress-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .intro-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .intro-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #667eea, #f093fb, #ff6b6b);
+            background-size: 200% 100%;
+            border-radius: 10px;
+            animation: introProgressFill 5s ease forwards 6s, introProgressShine 2s ease infinite 6s;
+            width: 0%;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+        }
+
+        @keyframes introProgressFill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes introProgressShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Intro Particle Burst */
+        #introParticleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Skip Button */
+        .intro-skip-button {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            padding: 15px 35px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid rgba(0, 255, 136, 0.5);
+            border-radius: 50px;
+            color: #00ff88;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            animation: introSkipReveal 1s ease 1s forwards;
+            opacity: 0;
+            z-index: 10;
+        }
+
+        @keyframes introSkipReveal {
+            to { opacity: 1; }
+        }
+
+        .intro-skip-button:hover {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: rgba(0, 255, 136, 0.9);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            transform: translateY(-3px);
+        }
+
+        /* Hide main content during intro */
+        body.intro-playing .main-container {
+            opacity: 0;
+            pointer-events: none;
+        }
+
         /* Ultra HD 8K Background with Auto-Changing Colors */
         .ultra-hd-background {
             position: fixed;
@@ -854,6 +1153,42 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
 
         /* Responsive */
         @media (max-width: 768px) {
+            /* Intro Responsive */
+            .intro-logo-container {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .intro-logo i {
+                font-size: 90px;
+            }
+            
+            .intro-title {
+                font-size: 56px;
+            }
+            
+            .intro-subtitle {
+                font-size: 28px;
+            }
+            
+            .intro-tagline {
+                font-size: 18px;
+                padding: 0 20px;
+            }
+            
+            .intro-skip-button {
+                top: 20px;
+                right: 20px;
+                padding: 12px 25px;
+                font-size: 14px;
+            }
+            
+            .intro-progress-container {
+                width: 80%;
+                bottom: 40px;
+            }
+            
+            /* Main Content Responsive */
             .main-title {
                 font-size: 48px;
             }
@@ -1023,6 +1358,43 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
     </style>
 </head>
 <body>
+    <!-- ==================== CINEMATIC INTRO SEQUENCE ==================== -->
+    <div id="intro-sequence">
+        <!-- Intro Particle Canvas -->
+        <canvas id="introParticleCanvas"></canvas>
+        
+        <!-- Skip Button -->
+        <button class="intro-skip-button" onclick="skipIntro()">
+            <i class="fas fa-forward"></i> Skip Intro
+        </button>
+        
+        <!-- Logo Animation -->
+        <div class="intro-logo-container">
+            <div class="intro-logo">
+                <i class="fas fa-crown"></i>
+            </div>
+        </div>
+        
+        <!-- Title -->
+        <h1 class="intro-title">LEGEND SHOP</h1>
+        
+        <!-- Subtitle -->
+        <p class="intro-subtitle">Where Legends Shop</p>
+        
+        <!-- Tagline -->
+        <p class="intro-tagline">
+            Experience the future of premium shopping with cutting-edge technology and military-grade security
+        </p>
+        
+        <!-- Progress Bar -->
+        <div class="intro-progress-container">
+            <div class="intro-progress-label">Loading Experience...</div>
+            <div class="intro-progress-bar">
+                <div class="intro-progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Ultra HD Background -->
     <div class="ultra-hd-background"></div>
 
@@ -1109,6 +1481,115 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
     </div>
 
     <script>
+        // ==================== CINEMATIC INTRO SEQUENCE CONTROL ====================
+        
+        // Add intro-playing class to body
+        document.body.classList.add('intro-playing');
+        
+        // Intro particle burst effect
+        const introCanvas = document.getElementById('introParticleCanvas');
+        const introCtx = introCanvas.getContext('2d');
+        introCanvas.width = window.innerWidth;
+        introCanvas.height = window.innerHeight;
+        
+        class IntroParticle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = window.innerWidth / 2;
+                this.y = window.innerHeight / 2;
+                this.size = Math.random() * 4 + 2;
+                this.speedX = (Math.random() - 0.5) * 15;
+                this.speedY = (Math.random() - 0.5) * 15;
+                this.life = 1;
+                this.decay = Math.random() * 0.015 + 0.005;
+                this.hue = Math.random() * 360;
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.speedX *= 0.98;
+                this.speedY *= 0.98;
+                this.life -= this.decay;
+                
+                if (this.life <= 0) {
+                    this.reset();
+                }
+            }
+            
+            draw() {
+                introCtx.save();
+                introCtx.globalAlpha = this.life;
+                introCtx.shadowBlur = 20;
+                introCtx.shadowColor = `hsla(${this.hue}, 100%, 50%, ${this.life})`;
+                introCtx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${this.life})`;
+                introCtx.beginPath();
+                introCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                introCtx.fill();
+                introCtx.restore();
+            }
+        }
+        
+        const introParticles = [];
+        const introParticleCount = 150;
+        
+        for (let i = 0; i < introParticleCount; i++) {
+            const particle = new IntroParticle();
+            particle.reset();
+            // Stagger initial positions
+            setTimeout(() => {
+                introParticles.push(particle);
+            }, i * 10);
+        }
+        
+        let introAnimationId;
+        function animateIntroParticles() {
+            introCtx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+            introCtx.fillRect(0, 0, introCanvas.width, introCanvas.height);
+            
+            introParticles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            introAnimationId = requestAnimationFrame(animateIntroParticles);
+        }
+        
+        animateIntroParticles();
+        
+        // Function to skip intro
+        function skipIntro() {
+            endIntroSequence();
+        }
+        
+        // Function to end intro sequence
+        function endIntroSequence() {
+            const introElement = document.getElementById('intro-sequence');
+            introElement.classList.add('hidden');
+            document.body.classList.remove('intro-playing');
+            cancelAnimationFrame(introAnimationId);
+            
+            // Trigger main content fade-in
+            const mainContainer = document.querySelector('.main-container');
+            mainContainer.style.animation = 'fadeInScale 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards';
+            mainContainer.style.opacity = '1';
+            mainContainer.style.pointerEvents = 'all';
+        }
+        
+        // Auto-end intro after 12 seconds
+        setTimeout(() => {
+            endIntroSequence();
+        }, 12000);
+        
+        // Window resize handler for intro canvas
+        window.addEventListener('resize', () => {
+            introCanvas.width = window.innerWidth;
+            introCanvas.height = window.innerHeight;
+        });
+        
         // ==================== EXTREME PROTECTION ====================
         
         // Disable right-click
