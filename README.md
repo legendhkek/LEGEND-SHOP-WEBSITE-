@@ -91,13 +91,27 @@ LEGEND-SHOP-WEBSITE-/
 ## 🔒 Security Features
 
 - Password hashing with bcrypt (12 salt rounds)
-- JWT-based authentication
+- JWT-based authentication with secret validation
 - Input validation on both client and server
 - Age verification (13+ required)
 - CAPTCHA system for signup
 - Human verification checkbox
 - Protected routes
 - CORS enabled for API security
+- **Rate limiting**: 
+  - Authentication endpoints: 10 requests per 15 minutes per IP
+  - General API endpoints: 100 requests per 15 minutes per IP
+- Environment variable validation for MongoDB URI and JWT_SECRET
+- Admin endpoints disabled in production
+
+### Security Considerations
+
+- **Static File Serving**: Currently serves files from the root directory. In production, consider:
+  - Moving HTML/CSS/JS files to a dedicated `public` directory
+  - Using a reverse proxy (nginx) to serve static files
+  - Ensuring sensitive files (.env, server.js, etc.) are not accessible
+- The `/api/users` endpoint is disabled in production mode
+- Always use HTTPS in production to protect credentials in transit
 
 ## 🛠️ API Endpoints
 
