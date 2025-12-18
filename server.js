@@ -17,8 +17,8 @@ app.use(express.static(__dirname));
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('✅ MongoDB Connected Successfully!'))
 .catch(err => {
-    console.error('❌ MongoDB Connection Error:', err);
-    process.exit(1);
+    console.error('❌ MongoDB Connection Error:', err.message);
+    console.log('⚠️  Server will continue without database (UI testing mode)');
 });
 
 // Handle unhandled promise rejections
