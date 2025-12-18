@@ -1731,12 +1731,15 @@
 [DECRYPT] Provide encrypted data to decrypt
 [OK] Ready to decrypt
             `,
-            whoami: () => `
-[INFO] Current User: ${user.firstName} ${user.lastName}
-[INFO] Email: ${user.email}
+            whoami: () => {
+                const userInfo = user || { firstName: 'Guest', lastName: 'User', email: 'unknown@example.com' };
+                return `
+[INFO] Current User: ${userInfo.firstName} ${userInfo.lastName}
+[INFO] Email: ${userInfo.email}
 [INFO] Role: ADMIN
 [INFO] Clearance Level: MAXIMUM
-            `
+                `;
+            }
         };
         
         function addTerminalLine(text) {
@@ -2042,23 +2045,67 @@
         
         function copyPassword() {
             const text = document.getElementById('pwdText').textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('✓ Password copied to clipboard!');
-            });
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('✓ Password copied to clipboard!');
+                }).catch(() => {
+                    // Fallback for clipboard failure
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        alert('✓ Password copied to clipboard!');
+                    } catch (err) {
+                        alert('⚠️ Could not copy to clipboard');
+                    }
+                    document.body.removeChild(textArea);
+                });
+            } else {
+                alert('⚠️ Clipboard not supported in this browser');
+            }
         }
         
         // UUID Generator Function
         function generateUUID() {
-            const uuid = crypto.randomUUID();
+            let uuid;
+            if (crypto.randomUUID) {
+                uuid = crypto.randomUUID();
+            } else {
+                // Fallback for older browsers
+                uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0;
+                    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
             document.getElementById('uuidText').textContent = uuid;
             document.getElementById('uuidResult').style.display = 'block';
         }
         
         function copyUUID() {
             const text = document.getElementById('uuidText').textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('✓ UUID copied to clipboard!');
-            });
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('✓ UUID copied to clipboard!');
+                }).catch(() => {
+                    // Fallback for clipboard failure
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        alert('✓ UUID copied to clipboard!');
+                    } catch (err) {
+                        alert('⚠️ Could not copy to clipboard');
+                    }
+                    document.body.removeChild(textArea);
+                });
+            } else {
+                alert('⚠️ Clipboard not supported in this browser');
+            }
         }
         
         // JSON Functions
