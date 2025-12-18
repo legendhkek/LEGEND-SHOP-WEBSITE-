@@ -16,13 +16,76 @@
             -webkit-touch-callout: none;
         }
         
-        /* Advanced Dashboard Styles - 8K Optimized */
+        /* Advanced Dashboard Styles - 8K Optimized with Hacker Vibe */
         body {
             overflow-x: hidden;
             font-smooth: always;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
+            background: #000000;
+            position: relative;
+        }
+        
+        /* Matrix Rain Background */
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        
+        /* Scan Line Effect */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.8), transparent);
+            z-index: 9999;
+            pointer-events: none;
+            animation: scanLine 3s linear infinite;
+        }
+        
+        @keyframes scanLine {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Glitch Effect for Headers */
+        .glitch {
+            position: relative;
+            animation: glitchText 3s infinite;
+        }
+        
+        @keyframes glitchText {
+            0%, 90%, 100% { text-shadow: 0 0 10px rgba(0, 255, 136, 0.8); }
+            92% { 
+                text-shadow: 
+                    -2px 0 #ff00ff,
+                    2px 0 #00ffff,
+                    0 0 20px rgba(0, 255, 136, 1);
+                transform: translate(-2px, 0);
+            }
+            94% { 
+                text-shadow: 
+                    2px 0 #ff00ff,
+                    -2px 0 #00ffff,
+                    0 0 20px rgba(0, 255, 136, 1);
+                transform: translate(2px, 0);
+            }
+        }
+        
+        /* Terminal Style Text */
+        .terminal-text {
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
         }
         
         .dashboard-container {
@@ -548,6 +611,12 @@
     </style>
 </head>
 <body>
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrixCanvas"></canvas>
+    
+    <!-- Scan Line Effect -->
+    <div class="scan-line"></div>
+    
     <div class="background-animation">
         <div class="shape"></div>
         <div class="shape"></div>
@@ -627,22 +696,22 @@
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <i class="fas fa-shield-alt shield-icon"></i>
                     <div>
-                        <h2 style="color: #fff; margin: 0; font-size: 24px;">🛡️ Legend Shop Security Dashboard</h2>
-                        <p style="color: #b0b0b0; margin: 5px 0 0 0; font-size: 13px;">Advanced Protection System Active</p>
+                        <h2 class="glitch terminal-text" style="color: #00ff88; margin: 0; font-size: 24px;">⚡ LEGEND SHOP SECURITY TERMINAL ⚡</h2>
+                        <p class="terminal-text" style="color: #00ff88; margin: 5px 0 0 0; font-size: 13px;">[SYSTEM STATUS: <span style="color: #0f0;">ONLINE</span>] [THREAT LEVEL: <span style="color: #0f0;">LOW</span>] [UPTIME: <span id="uptime">00:00:00</span>]</p>
                     </div>
                 </div>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span>DDoS Protection: ACTIVE</span>
+                        <span class="terminal-text">FIREWALL: ACTIVE</span>
                     </div>
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span>Anti-Dump: ENABLED</span>
+                        <span class="terminal-text">IDS/IPS: ENABLED</span>
                     </div>
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span>Firewall: SECURED</span>
+                        <span class="terminal-text">SSL: SECURED</span>
                     </div>
                 </div>
             </div>
@@ -905,6 +974,130 @@
                         <div class="setting-item" style="cursor: pointer; padding: 12px; background: rgba(255, 68, 68, 0.1); border-radius: 10px; margin-top: 15px; border: 1px solid rgba(255, 68, 68, 0.3); transition: all 0.3s;" onclick="logout()" onmouseover="this.style.background='rgba(255,68,68,0.2)'" onmouseout="this.style.background='rgba(255,68,68,0.1)'">
                             <i class="fas fa-sign-out-alt" style="color: #ff4444; margin-right: 10px;"></i>
                             <span style="color: #ff4444; font-weight: 700;">Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- ==================== ADVANCED HACKER FEATURES ==================== -->
+        <div style="margin-top: 40px; margin-bottom: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 class="glitch terminal-text" style="font-size: 32px; font-weight: 800; margin: 0;">⚡ TERMINAL & MONITORING ⚡</h2>
+                <p class="terminal-text" style="margin: 10px 0 0 0;">[AUTHORIZED ACCESS ONLY]</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Terminal Command Interface -->
+                <div class="security-card" style="grid-column: span 2;">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #00ff88, #00cc6a);">
+                            <i class="fas fa-terminal"></i>
+                        </div>
+                        <h3 class="card-title terminal-text">SYSTEM TERMINAL</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="terminalOutput" style="background: #000; border: 2px solid #00ff88; border-radius: 8px; padding: 15px; min-height: 250px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; color: #00ff88; font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
+                            <div>[SYSTEM] Legend Shop Security Terminal v2.0</div>
+                            <div>[INFO] System initialized successfully</div>
+                            <div>[OK] All security protocols active</div>
+                            <div>[READY] Type 'help' for available commands</div>
+                            <div style="margin-top: 10px;">root@legendshop:~$ <span id="terminalCursor" style="animation: blink 1s infinite;">_</span></div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="terminalInput" placeholder="Enter command..." style="flex: 1; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 2px solid #00ff88; border-radius: 8px; color: #00ff88; font-size: 14px; font-family: 'Courier New', monospace;" onkeypress="if(event.key==='Enter') executeCommand()">
+                            <button onclick="executeCommand()" style="padding: 12px 24px; background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; border-radius: 8px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-play"></i> EXECUTE
+                            </button>
+                        </div>
+                        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button onclick="quickCommand('status')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">status</button>
+                            <button onclick="quickCommand('scan')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">scan</button>
+                            <button onclick="quickCommand('firewall')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">firewall</button>
+                            <button onclick="quickCommand('trace')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">trace</button>
+                            <button onclick="quickCommand('clear')" style="padding: 8px 16px; background: rgba(255, 68, 68, 0.1); border: 1px solid #ff4444; border-radius: 6px; color: #ff4444; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">clear</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Network Traffic Monitor -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #667eea, #5568d3);">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3 class="card-title terminal-text">NETWORK TRAFFIC</h3>
+                    </div>
+                    <div class="card-content">
+                        <div style="background: #000; border: 2px solid #667eea; border-radius: 8px; padding: 15px; min-height: 250px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; color: #667eea; font-size: 12px; line-height: 1.8;" id="networkLog">
+                            <div>[NETWORK] Monitoring active connections...</div>
+                            <div style="color: #00ff88;">[IN] 192.168.1.100:443 → HTTPS (SECURE)</div>
+                            <div style="color: #00ff88;">[IN] 192.168.1.100:80 → HTTP (REDIRECTED)</div>
+                            <div style="color: #ff4444;">[BLOCKED] 45.123.45.67:22 → SSH (UNAUTHORIZED)</div>
+                            <div style="color: #00ff88;">[OUT] API.BINLIST.NET:443 → HTTPS (SECURE)</div>
+                            <div style="color: #feca57;">[WARN] HIGH TRAFFIC DETECTED</div>
+                        </div>
+                        <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: 'Courier New', monospace; font-size: 12px;">
+                            <div style="padding: 10px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; text-align: center;">
+                                <div style="color: #00ff88; font-size: 20px; font-weight: 800;" id="packetsIn">0</div>
+                                <div style="color: #00ff88;">PACKETS IN</div>
+                            </div>
+                            <div style="padding: 10px; background: rgba(102, 126, 234, 0.1); border: 1px solid #667eea; border-radius: 6px; text-align: center;">
+                                <div style="color: #667eea; font-size: 20px; font-weight: 800;" id="packetsOut">0</div>
+                                <div style="color: #667eea;">PACKETS OUT</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Resources Monitor -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #f093fb, #d66fe6);">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h3 class="card-title terminal-text">SYSTEM RESOURCES</h3>
+                    </div>
+                    <div class="card-content">
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="terminal-text" style="font-size: 13px;">CPU USAGE</span>
+                                <span class="terminal-text" style="font-size: 13px; color: #00ff88;" id="cpuValue">45%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #00ff88;">
+                                <div id="cpuBar" style="width: 45%; height: 100%; background: linear-gradient(90deg, #00ff88, #00cc6a); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="terminal-text" style="font-size: 13px;">MEMORY USAGE</span>
+                                <span class="terminal-text" style="font-size: 13px; color: #667eea;" id="memValue">62%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #667eea;">
+                                <div id="memBar" style="width: 62%; height: 100%; background: linear-gradient(90deg, #667eea, #5568d3); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="terminal-text" style="font-size: 13px;">DISK USAGE</span>
+                                <span class="terminal-text" style="font-size: 13px; color: #f093fb;" id="diskValue">38%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #f093fb;">
+                                <div id="diskBar" style="width: 38%; height: 100%; background: linear-gradient(90deg, #f093fb, #d66fe6); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="terminal-text" style="font-size: 13px;">NETWORK I/O</span>
+                                <span class="terminal-text" style="font-size: 13px; color: #feca57;" id="netValue">28%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #feca57;">
+                                <div id="netBar" style="width: 28%; height: 100%; background: linear-gradient(90deg, #feca57, #e1b12c); transition: width 0.5s;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1414,6 +1607,264 @@
                 })['constructor']('debugger')['call']();
             }, 50);
         })();
+        
+        // ==================== ADVANCED HACKER FEATURES ====================
+        
+        // Matrix Rain Animation
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+        
+        const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*(){}[]<>?/|\\~';
+        const fontSize = 14;
+        const columns = Math.floor(matrixCanvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+        
+        function drawMatrix() {
+            matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            
+            matrixCtx.fillStyle = '#00ff88';
+            matrixCtx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                matrixCtx.fillText(text, x, y);
+                
+                if (y > matrixCanvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        window.addEventListener('resize', () => {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+        });
+        
+        // Terminal Command System
+        const terminalCommands = {
+            help: () => `
+[HELP] Available commands:
+  • status     - Show system status
+  • scan       - Run security scan
+  • firewall   - Check firewall status
+  • trace      - Trace network route
+  • info       - System information
+  • clear      - Clear terminal
+  • hack       - Initialize penetration test
+  • encrypt    - Encrypt data
+  • decrypt    - Decrypt data
+  • whoami     - Show current user
+            `,
+            status: () => `
+[STATUS] System Health Check:
+  ✓ Firewall: ACTIVE
+  ✓ IDS/IPS: ENABLED
+  ✓ Anti-Malware: RUNNING
+  ✓ SSL/TLS: SECURE
+  ✓ Database: CONNECTED
+  ✓ API Services: OPERATIONAL
+[OK] All systems operational
+            `,
+            scan: () => {
+                let output = '[SCAN] Initializing security scan...\n';
+                output += '[SCAN] Checking for vulnerabilities...\n';
+                setTimeout(() => {
+                    addTerminalLine('[SCAN] ████████████ 100%');
+                    addTerminalLine('[OK] No vulnerabilities detected');
+                }, 1000);
+                return output + '[SCAN] ████░░░░░░░░ 33%';
+            },
+            firewall: () => `
+[FIREWALL] Configuration Status:
+  • Rules Active: 247
+  • Blocked IPs: 1,432
+  • Allowed IPs: 89
+  • Ports Open: 80, 443, 22
+  • DDoS Protection: ENABLED
+[OK] Firewall operating normally
+            `,
+            trace: () => {
+                let output = '[TRACE] Tracing route to api.legendshop.com\n';
+                output += '  1  192.168.1.1      <1 ms\n';
+                output += '  2  10.0.0.1         2 ms\n';
+                output += '  3  172.16.0.1       5 ms\n';
+                output += '[OK] Trace complete - 3 hops';
+                return output;
+            },
+            info: () => `
+[INFO] System Information:
+  • OS: Linux 5.15.0 (x64)
+  • Kernel: Ubuntu 22.04 LTS
+  • Uptime: 47 days, 3 hours
+  • CPU: 8 cores @ 3.6GHz
+  • RAM: 32GB (62% used)
+  • Disk: 512GB SSD (38% used)
+            `,
+            clear: () => {
+                document.getElementById('terminalOutput').innerHTML = '<div>root@legendshop:~$ <span id="terminalCursor" style="animation: blink 1s infinite;">_</span></div>';
+                return '';
+            },
+            hack: () => `
+[HACK] Initializing penetration testing framework...
+[HACK] Loading exploit modules...
+[HACK] Scanning target: 127.0.0.1
+[WARN] This is a simulation. Actual hacking is illegal!
+[OK] Penetration test simulation complete
+            `,
+            encrypt: () => `
+[ENCRYPT] AES-256 encryption ready
+[ENCRYPT] Enter data in Hash Generator tool
+[OK] Encryption module loaded
+            `,
+            decrypt: () => `
+[DECRYPT] Decryption module loaded
+[DECRYPT] Provide encrypted data to decrypt
+[OK] Ready to decrypt
+            `,
+            whoami: () => `
+[INFO] Current User: ${user.firstName} ${user.lastName}
+[INFO] Email: ${user.email}
+[INFO] Role: ADMIN
+[INFO] Clearance Level: MAXIMUM
+            `
+        };
+        
+        function addTerminalLine(text) {
+            const output = document.getElementById('terminalOutput');
+            const cursorLine = output.querySelector('#terminalCursor')?.parentElement;
+            if (cursorLine) {
+                cursorLine.remove();
+            }
+            
+            const newLine = document.createElement('div');
+            newLine.textContent = text;
+            output.appendChild(newLine);
+            
+            const promptLine = document.createElement('div');
+            promptLine.style.marginTop = '10px';
+            promptLine.innerHTML = 'root@legendshop:~$ <span id="terminalCursor" style="animation: blink 1s infinite;">_</span>';
+            output.appendChild(promptLine);
+            
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function executeCommand() {
+            const input = document.getElementById('terminalInput');
+            const command = input.value.trim().toLowerCase();
+            
+            if (!command) return;
+            
+            addTerminalLine(`root@legendshop:~$ ${command}`);
+            
+            if (terminalCommands[command]) {
+                const output = terminalCommands[command]();
+                if (output) {
+                    output.split('\n').forEach(line => {
+                        if (line.trim()) addTerminalLine(line);
+                    });
+                }
+            } else {
+                addTerminalLine(`[ERROR] Command not found: ${command}`);
+                addTerminalLine('[TIP] Type "help" for available commands');
+            }
+            
+            input.value = '';
+        }
+        
+        function quickCommand(cmd) {
+            document.getElementById('terminalInput').value = cmd;
+            executeCommand();
+        }
+        
+        // Add CSS for cursor blink
+        const style = document.createElement('style');
+        style.textContent = '@keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }';
+        document.head.appendChild(style);
+        
+        // Network Traffic Simulator
+        let packetsIn = 0;
+        let packetsOut = 0;
+        
+        const networkMessages = [
+            { type: 'in', color: '#00ff88', msg: '[IN] HTTPS:443 → SECURE CONNECTION' },
+            { type: 'out', color: '#667eea', msg: '[OUT] API:443 → DATA TRANSMISSION' },
+            { type: 'blocked', color: '#ff4444', msg: '[BLOCKED] UNAUTHORIZED ACCESS ATTEMPT' },
+            { type: 'in', color: '#00ff88', msg: '[IN] DNS:53 → QUERY RESOLVED' },
+            { type: 'out', color: '#667eea', msg: '[OUT] CDN:443 → ASSET FETCH' },
+            { type: 'warn', color: '#feca57', msg: '[WARN] HIGH BANDWIDTH USAGE' },
+            { type: 'in', color: '#00ff88', msg: '[IN] WSS:443 → WEBSOCKET OPEN' },
+            { type: 'blocked', color: '#ff4444', msg: '[BLOCKED] SQL INJECTION ATTEMPT' }
+        ];
+        
+        function updateNetworkTraffic() {
+            const networkLog = document.getElementById('networkLog');
+            const randomMsg = networkMessages[Math.floor(Math.random() * networkMessages.length)];
+            
+            const line = document.createElement('div');
+            line.style.color = randomMsg.color;
+            line.textContent = randomMsg.msg;
+            networkLog.appendChild(line);
+            
+            if (networkLog.children.length > 12) {
+                networkLog.removeChild(networkLog.firstChild);
+            }
+            
+            if (randomMsg.type === 'in') packetsIn += Math.floor(Math.random() * 50) + 10;
+            if (randomMsg.type === 'out') packetsOut += Math.floor(Math.random() * 30) + 5;
+            
+            document.getElementById('packetsIn').textContent = packetsIn;
+            document.getElementById('packetsOut').textContent = packetsOut;
+            
+            networkLog.scrollTop = networkLog.scrollHeight;
+        }
+        
+        setInterval(updateNetworkTraffic, 2000);
+        
+        // System Resources Monitor
+        function updateSystemStats() {
+            const cpu = Math.floor(Math.random() * 30) + 30;
+            const mem = Math.floor(Math.random() * 20) + 50;
+            const disk = Math.floor(Math.random() * 10) + 35;
+            const net = Math.floor(Math.random() * 40) + 20;
+            
+            document.getElementById('cpuValue').textContent = cpu + '%';
+            document.getElementById('cpuBar').style.width = cpu + '%';
+            
+            document.getElementById('memValue').textContent = mem + '%';
+            document.getElementById('memBar').style.width = mem + '%';
+            
+            document.getElementById('diskValue').textContent = disk + '%';
+            document.getElementById('diskBar').style.width = disk + '%';
+            
+            document.getElementById('netValue').textContent = net + '%';
+            document.getElementById('netBar').style.width = net + '%';
+        }
+        
+        setInterval(updateSystemStats, 3000);
+        
+        // System Uptime Counter
+        let uptimeSeconds = 0;
+        function updateUptime() {
+            uptimeSeconds++;
+            const hours = Math.floor(uptimeSeconds / 3600);
+            const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+            const seconds = uptimeSeconds % 60;
+            const uptimeEl = document.getElementById('uptime');
+            if (uptimeEl) {
+                uptimeEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+        }
+        setInterval(updateUptime, 1000);
         
         // ==================== TOOLS FUNCTIONS ====================
         
