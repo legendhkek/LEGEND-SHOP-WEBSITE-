@@ -4,13 +4,33 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
 
+// Rate limiting middleware
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // Limit each IP to 10 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
+// Serve static files from a 'public' directory instead of root for security
+// For now, keeping root but this should be changed in production
 app.use(express.static(__dirname));
 
 // MongoDB Connection
@@ -93,7 +113,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Sign Up Route
-app.post('/api/signup', [
+app.post('/api/signup', authLimiter, [
     body('firstName').trim().isLength({ min: 2 }).withMessage('First name must be at least 2 characters'),
     body('lastName').trim().isLength({ min: 2 }).withMessage('Last name must be at least 2 characters'),
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
@@ -179,7 +199,7 @@ app.post('/api/signup', [
 });
 
 // Login Route
-app.post('/api/login', [
+app.post('/api/login', authLimiter, [
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
     body('password').notEmpty().withMessage('Password is required'),
     body('humanVerified').optional().isBoolean().withMessage('Invalid human verification flag')
@@ -260,7 +280,7 @@ app.post('/api/login', [
 
 // Get all users (Admin route - for testing only, DISABLE IN PRODUCTION)
 // WARNING: This endpoint should be protected or removed in production
-app.get('/api/users', async (req, res) => {
+app.get('/api/users', apiLimiter, async (req, res) => {
     // Only allow in development mode
     if (process.env.NODE_ENV === 'production') {
         return res.status(403).json({ 
