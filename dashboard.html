@@ -353,6 +353,142 @@
             .btn-primary, .btn-danger {
                 min-width: 100%;
             }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .menu-toggle {
+                display: block !important;
+            }
+            
+            .dashboard-main {
+                margin-left: 0 !important;
+            }
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, rgba(20, 20, 40, 0.98), rgba(10, 10, 20, 0.98));
+            backdrop-filter: blur(30px);
+            border-right: 2px solid rgba(0, 255, 136, 0.2);
+            padding: 30px 0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            text-align: center;
+        }
+        
+        .sidebar-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #00ff88, #667eea);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #0a0a0a;
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+        }
+        
+        .sidebar-title {
+            color: #00ff88;
+            font-size: 20px;
+            font-weight: 800;
+            margin: 0;
+        }
+        
+        .sidebar-nav {
+            padding: 30px 0;
+        }
+        
+        .nav-item {
+            padding: 15px 25px;
+            color: #b0b0b0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            text-decoration: none;
+        }
+        
+        .nav-item:hover {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border-left-color: #00ff88;
+        }
+        
+        .nav-item.active {
+            background: rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+            border-left-color: #00ff88;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            width: 24px;
+        }
+        
+        .nav-item span {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .nav-section {
+            padding: 0 25px;
+            margin: 20px 0 10px;
+            color: rgba(0, 255, 136, 0.5);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Dashboard Main */
+        .dashboard-main {
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        /* Menu Toggle */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border-radius: 12px;
+            border: none;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+        }
+        
+        .menu-toggle i {
+            font-size: 24px;
+            color: #0a0a0a;
         }
     </style>
 </head>
@@ -362,6 +498,72 @@
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
+    
+    <!-- Menu Toggle Button (Mobile) -->
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h2 class="sidebar-title">Legend Shop</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main Menu</div>
+            <a href="#home" class="nav-item active" onclick="navigateTo('home')">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#dashboard" class="nav-item" onclick="navigateTo('dashboard')">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#shop" class="nav-item" onclick="navigateTo('shop')">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Shop</span>
+            </a>
+            <a href="#orders" class="nav-item" onclick="navigateTo('orders')">
+                <i class="fas fa-box"></i>
+                <span>My Orders</span>
+            </a>
+            
+            <div class="nav-section">Account</div>
+            <a href="#profile" class="nav-item" onclick="navigateTo('profile')">
+                <i class="fas fa-user-circle"></i>
+                <span>Profile</span>
+            </a>
+            <a href="#settings" class="nav-item" onclick="navigateTo('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a href="#security" class="nav-item" onclick="navigateTo('security')">
+                <i class="fas fa-shield-alt"></i>
+                <span>Security</span>
+            </a>
+            
+            <div class="nav-section">More</div>
+            <a href="#help" class="nav-item" onclick="navigateTo('help')">
+                <i class="fas fa-question-circle"></i>
+                <span>Help & Support</span>
+            </a>
+            <a href="#about" class="nav-item" onclick="navigateTo('about')">
+                <i class="fas fa-info-circle"></i>
+                <span>About</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="logout()" style="color: #ff4444; margin-top: 20px;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- Dashboard Main Content -->
+    <div class="dashboard-main">
 
     <div class="dashboard-container">
         <!-- Security Status Header -->
@@ -536,8 +738,61 @@
             </div>
         </div>
     </div>
+    </div> <!-- Close dashboard-main -->
 
     <script>
+        // Sidebar Navigation Functions
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+        
+        function navigateTo(page) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+            
+            // Add page navigation logic here
+            console.log('Navigating to:', page);
+            
+            // Example: Show different content based on page
+            switch(page) {
+                case 'home':
+                    // Show home content
+                    break;
+                case 'profile':
+                    viewProfile();
+                    break;
+                case 'settings':
+                    // Show settings
+                    break;
+                case 'shop':
+                    alert('🛍️ Shop feature coming soon!');
+                    break;
+                case 'orders':
+                    alert('📦 Orders feature coming soon!');
+                    break;
+                case 'security':
+                    alert('🔒 Advanced security settings coming soon!');
+                    break;
+                case 'help':
+                    alert('💬 Contact support: @legend_bl on Telegram');
+                    break;
+                case 'about':
+                    alert('ℹ️ Legend Shop - Premium Shopping Platform v1.0');
+                    break;
+            }
+        }
+        
         // Anti-debugging protection
         (function() {
             const detectDevTools = () => {
