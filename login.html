@@ -6,6 +6,22 @@
     <title>Login - Legend Shop</title>
     <link rel="stylesheet" href="styles.css?v=20251218">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Anti-Copy Protection */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+    </style>
 </head>
 <body>
     <div class="background-animation">
@@ -126,5 +142,83 @@
     </div>
 
     <script src="script.js?v=20251218"></script>
+    
+    <script>
+        // ==================== EXTREME PROTECTION ====================
+        
+        // Disable right-click
+        document.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable all keyboard shortcuts
+        document.addEventListener('keydown', e => {
+            // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S, Ctrl+Shift+C
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S'))) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Detect DevTools
+        const devtoolsDetector = () => {
+            const threshold = 160;
+            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+            
+            if (widthThreshold || heightThreshold) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a0a;color:#ff0000;font-size:24px;font-weight:bold;">⚠️ Developer tools detected! Please close DevTools.</div>';
+            }
+        };
+        setInterval(devtoolsDetector, 1000);
+
+        // Disable text selection on everything except inputs
+        document.onselectstart = function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return true;
+            }
+            return false;
+        };
+        document.ondragstart = () => false;
+
+        // Console warning
+        console.log('%c⛔ STOP!', 'color: red; font-size: 60px; font-weight: bold;');
+        console.log('%cThis is a browser feature intended for developers.', 'font-size: 20px;');
+        console.log('%cIf someone told you to copy-paste something here, it is a scam!', 'font-size: 18px; color: red;');
+        console.log('%c🛡️ This website is protected by Legend Shop Security System', 'font-size: 16px; color: #00ff88;');
+
+        // Clear console repeatedly
+        setInterval(() => {
+            console.clear();
+        }, 2000);
+
+        // Prevent Ctrl+A (except in inputs)
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'a' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        });
+
+        // Anti-debugger
+        (function() {
+            setInterval(() => {
+                (function() {
+                    return false;
+                })['constructor']('debugger')['call']();
+            }, 50);
+        })();
+
+        // Prevent viewing source
+        document.addEventListener('keydown', e => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+                e.preventDefault();
+                alert('⚠️ Source code viewing is disabled for security reasons!');
+                return false;
+            }
+        });
+    </script>
 </body>
 </html>
