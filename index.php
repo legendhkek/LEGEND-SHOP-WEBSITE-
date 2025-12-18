@@ -1004,16 +1004,9 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
         /* High-DPI Retina Display Optimizations */
         @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
             * {
-                -webkit-font-smoothing: subpixel-antialiased;
-                -moz-osx-font-smoothing: auto;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
                 text-rendering: optimizeLegibility;
-            }
-
-            .main-title,
-            .subtitle,
-            .legendary-logo i {
-                image-rendering: -webkit-optimize-contrast;
-                image-rendering: crisp-edges;
             }
         }
 
@@ -1277,23 +1270,46 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
                     ctx.stroke();
                 }
 
-                // Draw main particle with enhanced glow
+                // Optimized single-pass particle with gradient fill for glow
                 ctx.shadowBlur = 30 + size * 5;
                 ctx.shadowColor = `hsla(${hue}, 100%, 50%, ${finalOpacity})`;
-                ctx.fillStyle = `hsla(${hue}, 100%, ${50 + depthOpacity * 30}%, ${finalOpacity})`;
                 
-                // Layered glow effect
-                for (let layer = 3; layer >= 0; layer--) {
-                    ctx.shadowBlur = (30 + size * 5) * (layer + 1);
-                    ctx.beginPath();
-                    ctx.arc(x2d, y2d, size * (1 + layer * 0.1), 0, Math.PI * 2);
-                    ctx.fill();
-                }
+                // Create radial gradient for efficient glow
+                const gradient = ctx.createRadialGradient(x2d, y2d, 0, x2d, y2d, size * 3);
+                gradient.addColorStop(0, `hsla(${hue}, 100%, ${70 + depthOpacity * 20}%, ${finalOpacity})`);
+                gradient.addColorStop(0.4, `hsla(${hue}, 100%, ${50 + depthOpacity * 30}%, ${finalOpacity * 0.8})`);
+                gradient.addColorStop(1, `hsla(${hue}, 100%, 40%, 0)`);
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x2d, y2d, size * 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Core particle
+                ctx.shadowBlur = 15;
+                ctx.fillStyle = `hsla(${hue}, 100%, ${80 + depthOpacity * 20}%, ${finalOpacity})`;
+                ctx.beginPath();
+                ctx.arc(x2d, y2d, size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
         const particles = [];
-        const particleCount = window.innerWidth > 1920 ? 200 : window.innerWidth > 1280 ? 150 : 100;
+        // Adaptive particle count based on device capability
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isHighDPI = window.devicePixelRatio > 1.5;
+        let particleCount;
+        
+        if (isMobile) {
+            particleCount = 50; // Fewer particles on mobile for performance
+        } else if (window.innerWidth > 2560) {
+            particleCount = isHighDPI ? 150 : 200; // 4K/8K displays
+        } else if (window.innerWidth > 1920) {
+            particleCount = 120; // 2K displays
+        } else {
+            particleCount = 100; // Standard displays
+        }
+        
         for (let i = 0; i < particleCount; i++) {
             particles.push(new Particle3D());
         }
@@ -1319,38 +1335,47 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
                 particle.draw(time);
             });
 
-            // Connect nearby particles with dynamic colors
+            // Connect nearby particles with optimized spatial approach
+            // Use a maximum connection distance to limit computation
+            const maxConnectionDist = 200;
+            const maxConnectionsPerParticle = 3; // Limit connections per particle
+            
             particles.forEach((p1, i) => {
-                particles.slice(i + 1).forEach(p2 => {
+                let connections = 0;
+                for (let j = i + 1; j < particles.length && connections < maxConnectionsPerParticle; j++) {
+                    const p2 = particles[j];
                     const dx = p1.x - p2.x;
                     const dy = p1.y - p2.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < 200) {
-                        const opacity = (200 - dist) / 200 * 0.4;
-                        const avgZ = (p1.z + p2.z) / 2;
-                        const depthOpacity = (2000 - avgZ) / 2000;
-                        const currentPalette = colorPalettes[currentPaletteIndex];
-                        const hue = (currentPalette[1] + time * 0.01) % 360;
-                        
-                        ctx.strokeStyle = `hsla(${hue}, 100%, 50%, ${opacity * depthOpacity * 0.5})`;
-                        ctx.lineWidth = 1.5;
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = `hsla(${hue}, 100%, 50%, ${opacity * depthOpacity * 0.3})`;
-                        ctx.beginPath();
-                        
-                        const scale1 = 2000 / (2000 + p1.z);
-                        const scale2 = 2000 / (2000 + p2.z);
-                        const x1 = (p1.x - canvas.width / 2) * scale1 + canvas.width / 2;
-                        const y1 = (p1.y - canvas.height / 2) * scale1 + canvas.height / 2;
-                        const x2 = (p2.x - canvas.width / 2) * scale2 + canvas.width / 2;
-                        const y2 = (p2.y - canvas.height / 2) * scale2 + canvas.height / 2;
-                        
-                        ctx.moveTo(x1, y1);
-                        ctx.lineTo(x2, y2);
-                        ctx.stroke();
-                    }
-                });
+                    
+                    // Quick distance check before expensive sqrt
+                    const distSq = dx * dx + dy * dy;
+                    if (distSq > maxConnectionDist * maxConnectionDist) continue;
+                    
+                    const dist = Math.sqrt(distSq);
+                    const opacity = (maxConnectionDist - dist) / maxConnectionDist * 0.4;
+                    const avgZ = (p1.z + p2.z) / 2;
+                    const depthOpacity = (2000 - avgZ) / 2000;
+                    const currentPalette = colorPalettes[currentPaletteIndex];
+                    const hue = (currentPalette[1] + time * 0.01) % 360;
+                    
+                    ctx.strokeStyle = `hsla(${hue}, 100%, 50%, ${opacity * depthOpacity * 0.5})`;
+                    ctx.lineWidth = 1.5;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = `hsla(${hue}, 100%, 50%, ${opacity * depthOpacity * 0.3})`;
+                    ctx.beginPath();
+                    
+                    const scale1 = 2000 / (2000 + p1.z);
+                    const scale2 = 2000 / (2000 + p2.z);
+                    const x1 = (p1.x - canvas.width / 2) * scale1 + canvas.width / 2;
+                    const y1 = (p1.y - canvas.height / 2) * scale1 + canvas.height / 2;
+                    const x2 = (p2.x - canvas.width / 2) * scale2 + canvas.width / 2;
+                    const y2 = (p2.y - canvas.height / 2) * scale2 + canvas.height / 2;
+                    
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                    connections++;
+                }
             });
 
             requestAnimationFrame(animate);
