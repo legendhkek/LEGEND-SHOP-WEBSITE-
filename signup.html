@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Legend Shop</title>
+    <link rel="stylesheet" href="styles.css?v=20251218">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Anti-Copy Protection */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container">
+        <div class="auth-card signup-card" data-tilt-card>
+            <div class="card-shine"></div>
+            <div class="card-header">
+                <div class="logo-container">
+                    <div class="logo-circle">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                </div>
+                <div class="brand-badge">Legend Shop</div>
+                <h1 class="card-title">Create Account</h1>
+                <p class="card-subtitle">✨ Create your Legend Shop account ✨</p>
+            </div>
+
+            <form class="auth-form" id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">
+                            <i class="fas fa-user"></i>
+                            First Name
+                        </label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                name="firstName" 
+                                class="form-input" 
+                                placeholder="John"
+                                required
+                            >
+                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                        </div>
+                        <span class="error-message" id="firstNameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Last Name
+                        </label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                name="lastName" 
+                                class="form-input" 
+                                placeholder="Doe"
+                                required
+                            >
+                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                        </div>
+                        <span class="error-message" id="lastNameError"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dob" class="form-label">
+                        <i class="fas fa-calendar"></i>
+                        Date of Birth (You must be 13+)
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="date" 
+                            id="dob" 
+                            name="dob" 
+                            class="form-input"
+                            required
+                        >
+                        <span class="input-icon"><i class="fas fa-calendar-alt"></i></span>
+                    </div>
+                    <span class="error-message" id="dobError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="john.doe@example.com"
+                            required
+                        >
+                        <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    </div>
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-key"></i>
+                        Password (Minimum 8 characters)
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Create a strong password"
+                            minlength="8"
+                            required
+                        >
+                        <span class="input-icon"><i class="fas fa-lock"></i></span>
+                        <span class="toggle-password" onclick="togglePassword('password')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    <div class="password-strength" style="display: block;">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="strength-text" id="strengthText">Type to check password strength</span>
+                    </div>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="captcha" class="form-label">
+                        <i class="fas fa-shield-alt"></i>
+                        Solve This Math Problem
+                    </label>
+                    <div class="captcha-display">
+                        <span id="captchaQuestion" class="captcha-question"></span>
+                    </div>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="captcha" 
+                            name="captcha" 
+                            class="form-input" 
+                            placeholder="Enter your answer"
+                            required
+                        >
+                        <span class="input-icon"><i class="fas fa-calculator"></i></span>
+                        <button type="button" class="refresh-captcha" onclick="generateCaptcha()" title="Generate new question">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <span class="error-message" id="captchaError"></span>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="terms" required>
+                        <span class="checkmark"></span>
+                        I agree to the <a href="#" class="terms-link">Terms & Conditions</a>
+                    </label>
+                </div>
+
+                <div class="human-check" role="group" aria-label="Human verification">
+                    <label class="human-box">
+                        <input type="checkbox" id="humanCheck" />
+                        <span class="human-ui" aria-hidden="true">
+                            <span class="human-checkmark"><i class="fas fa-check"></i></span>
+                        </span>
+                        <span class="human-text">I am human</span>
+                    </label>
+                    <div class="human-hint">Required to continue</div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span class="btn-text">Create Account</span>
+                    <span class="btn-loader"></span>
+                </button>
+
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+
+                <div class="social-auth">
+                    <button type="button" class="social-btn google-btn">
+                        <i class="fab fa-google"></i>
+                        Sign up with Google
+                    </button>
+                </div>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html" class="auth-link">Sign in</a></p>
+                    <div class="owner-contact">
+                        <div class="owner-line"><span class="owner-label">Owner</span> Telegram: <a href="https://t.me/legend_bl" target="_blank" rel="noopener">@legend_bl</a></div>
+                        <div class="owner-line"><span class="owner-label">Email</span> <a href="mailto:LEGENDXKEYGRID@GMAIL.COM">LEGENDXKEYGRID@GMAIL.COM</a></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="floating-elements">
+            <div class="float-element"></div>
+            <div class="float-element"></div>
+            <div class="float-element"></div>
+            <div class="float-element"></div>
+            <div class="float-element"></div>
+        </div>
+    </div>
+
+    <script src="script.js?v=20251218"></script>
+    
+    <script>
+        // ==================== EXTREME PROTECTION ====================
+        
+        // Disable right-click
+        document.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable all keyboard shortcuts
+        document.addEventListener('keydown', e => {
+            // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S, Ctrl+Shift+C
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S'))) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Detect DevTools
+        const devtoolsDetector = () => {
+            const threshold = 160;
+            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+            
+            if (widthThreshold || heightThreshold) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a0a;color:#ff0000;font-size:24px;font-weight:bold;">⚠️ Developer tools detected! Please close DevTools.</div>';
+            }
+        };
+        setInterval(devtoolsDetector, 1000);
+
+        // Disable text selection on everything except inputs
+        document.onselectstart = function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return true;
+            }
+            return false;
+        };
+        document.ondragstart = () => false;
+
+        // Console warning
+        console.log('%c⛔ STOP!', 'color: red; font-size: 60px; font-weight: bold;');
+        console.log('%cThis is a browser feature intended for developers.', 'font-size: 20px;');
+        console.log('%cIf someone told you to copy-paste something here, it is a scam!', 'font-size: 18px; color: red;');
+        console.log('%c🛡️ This website is protected by Legend Shop Security System', 'font-size: 16px; color: #00ff88;');
+
+        // Clear console repeatedly
+        setInterval(() => {
+            console.clear();
+        }, 2000);
+
+        // Prevent Ctrl+A (except in inputs)
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'a' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        });
+
+        // Anti-debugger
+        (function() {
+            setInterval(() => {
+                (function() {
+                    return false;
+                })['constructor']('debugger')['call']();
+            }, 50);
+        })();
+
+        // Prevent viewing source
+        document.addEventListener('keydown', e => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+                e.preventDefault();
+                alert('⚠️ Source code viewing is disabled for security reasons!');
+                return false;
+            }
+        });
+        
+        // Auto-redirect if already logged in
+        (function() {
+            const token = localStorage.getItem('legendShopToken');
+            const user = localStorage.getItem('legendShopUser');
+            
+            if (token && user) {
+                // User is already logged in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        })();
+    </script>
+</body>
+</html>
