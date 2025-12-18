@@ -194,10 +194,6 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
         body.intro-complete .main-container {
             background: #000000;
         }
-            max-width: 600px;
-            animation: introProgressReveal 1s ease 6s forwards;
-            opacity: 0;
-        }
 
         /* Ultra HD 8K Background with Auto-Changing Colors */
         .ultra-hd-background {
