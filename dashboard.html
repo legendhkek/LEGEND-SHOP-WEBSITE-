@@ -338,12 +338,28 @@
         
         /* Responsive */
         @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            .security-header {
+                padding: 20px;
+            }
+            
+            .security-status {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
             .dashboard-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .protection-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
             }
             
             .action-buttons {
@@ -363,11 +379,50 @@
             }
             
             .menu-toggle {
-                display: block !important;
+                display: flex !important;
             }
             
             .dashboard-main {
                 margin-left: 0 !important;
+            }
+            
+            .card-value {
+                font-size: 24px;
+            }
+            
+            .user-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+            
+            .monitor-display {
+                font-size: 11px;
+                max-height: 150px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .security-header h2 {
+                font-size: 18px !important;
+            }
+            
+            .card-title {
+                font-size: 16px;
+            }
+            
+            .card-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+            
+            .protection-item {
+                padding: 12px;
+            }
+            
+            .protection-icon {
+                font-size: 22px;
             }
         }
         
@@ -605,6 +660,98 @@
 
         <!-- Dashboard Grid -->
         <div class="dashboard-grid">
+            <!-- Quick Stats -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="card-title">Quick Stats</h3>
+                </div>
+                <div class="card-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="text-align: center; padding: 15px; background: rgba(0, 255, 136, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #00ff88; font-weight: 800;">0</div>
+                            <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">Total Orders</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: rgba(102, 126, 234, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #667eea; font-weight: 800;">$0</div>
+                            <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">Total Spent</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: rgba(240, 147, 251, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #f093fb; font-weight: 800;">0</div>
+                            <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">In Cart</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: rgba(255, 107, 107, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #ff6b6b; font-weight: 800;">0</div>
+                            <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">Wishlist</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Account Overview -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="card-title">Account Overview</h3>
+                </div>
+                <div class="card-content">
+                    <div style="color: #b0b0b0; line-height: 2.2;">
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
+                            <span><i class="fas fa-check-circle" style="color: #00ff88; margin-right: 8px;"></i>Email Verified</span>
+                            <span style="color: #00ff88; font-weight: 700;">YES</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
+                            <span><i class="fas fa-shield-alt" style="color: #00ff88; margin-right: 8px;"></i>2FA Enabled</span>
+                            <span style="color: #00ff88; font-weight: 700;">YES</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
+                            <span><i class="fas fa-calendar" style="color: #00ff88; margin-right: 8px;"></i>Member Since</span>
+                            <span style="color: #00ff88; font-weight: 700;" id="memberSince">2024</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                            <span><i class="fas fa-star" style="color: #00ff88; margin-right: 8px;"></i>Account Status</span>
+                            <span style="color: #00ff88; font-weight: 700;">PREMIUM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="card-title">Recent Activity</h3>
+                </div>
+                <div class="card-content">
+                    <div style="color: #b0b0b0; font-size: 13px; line-height: 2;">
+                        <div style="padding: 10px; background: rgba(0, 255, 136, 0.05); border-radius: 8px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fas fa-sign-in-alt" style="color: #00ff88; margin-right: 8px;"></i>Logged in</span>
+                                <span style="color: #00ff88; font-size: 11px;">Just now</span>
+                            </div>
+                        </div>
+                        <div style="padding: 10px; background: rgba(102, 126, 234, 0.05); border-radius: 8px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fas fa-shield-alt" style="color: #667eea; margin-right: 8px;"></i>Account secured</span>
+                                <span style="color: #667eea; font-size: 11px;">2 mins ago</span>
+                            </div>
+                        </div>
+                        <div style="padding: 10px; background: rgba(240, 147, 251, 0.05); border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fas fa-check-circle" style="color: #f093fb; margin-right: 8px;"></i>Profile updated</span>
+                                <span style="color: #f093fb; font-size: 11px;">1 hour ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
             <!-- Protection Status Card -->
             <div class="security-card">
                 <div class="card-header">
@@ -649,7 +796,7 @@
                 </div>
                 <div class="card-content">
                     <div id="requestCounter" class="card-value">0</div>
-                    <p style="color: #b0b0b0; margin: 0;">Requests Blocked Today</p>
+                    <p style="color: #b0b0b0; margin: 0;">Threats Blocked Today</p>
                     <div class="monitor-display" id="monitorLog">
                         <div class="monitor-line">[INFO] Security system initialized...</div>
                         <div class="monitor-line">[OK] All protection layers active</div>
@@ -700,6 +847,32 @@
                         <p style="margin: 5px 0;"><strong style="color: #00ff88;">IP:</strong> <span id="userIP">Fetching...</span></p>
                         <p style="margin: 5px 0;"><strong style="color: #00ff88;">Device:</strong> <span id="userDevice">Secure Browser</span></p>
                         <p style="margin: 5px 0;"><strong style="color: #00ff88;">Location:</strong> <span id="userLocation">Protected</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="card-title">Quick Actions</h3>
+                </div>
+                <div class="card-content">
+                    <div style="display: grid; gap: 10px;">
+                        <button onclick="navigateTo('shop')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; border-radius: 10px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-shopping-bag"></i> Browse Shop
+                        </button>
+                        <button onclick="navigateTo('orders')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #5568d3); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102,126,234,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-box"></i> View Orders
+                        </button>
+                        <button onclick="navigateTo('profile')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #f093fb, #d66fe6); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(240,147,251,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-user-edit"></i> Edit Profile
+                        </button>
+                        <button onclick="navigateTo('help')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #ff6b6b, #ee5a52); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,107,107,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-headset"></i> Get Support
+                        </button>
                     </div>
                 </div>
             </div>
@@ -805,6 +978,22 @@
             setInterval(detectDevTools, 1000);
         })();
 
+        // ==================== OAUTH URL PARAMETER HANDLING ====================
+        
+        // Check for OAuth redirect parameters in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = urlParams.get('token');
+        const urlUser = urlParams.get('user');
+        
+        if (urlToken && urlUser) {
+            // Store OAuth credentials in localStorage
+            localStorage.setItem('legendShopToken', urlToken);
+            localStorage.setItem('legendShopUser', urlUser);
+            
+            // Clean URL by removing parameters
+            window.history.replaceState({}, document.title, '/dashboard.html');
+        }
+        
         // Check if user is logged in
         const token = localStorage.getItem('legendShopToken');
         const user = JSON.parse(localStorage.getItem('legendShopUser'));
@@ -819,6 +1008,12 @@
                 <p style="margin: 8px 0;"><strong>User ID:</strong> ${user.id}</p>
                 <p style="margin: 8px 0;"><strong>Last Login:</strong> ${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'First login'}</p>
             `;
+            
+            // Set member since date
+            const memberSinceEl = document.getElementById('memberSince');
+            if (memberSinceEl) {
+                memberSinceEl.textContent = new Date().getFullYear();
+            }
         }
 
         // Get user IP (simulated)
@@ -845,7 +1040,7 @@
         }
         document.getElementById('userDevice').textContent = deviceInfo;
 
-        // Simulated blocked requests counter
+        // Simulated blocked threats counter
         let blockedCount = Math.floor(Math.random() * 50) + 10;
         document.getElementById('requestCounter').textContent = blockedCount;
 
