@@ -46,9 +46,9 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             text-rendering: optimizeLegibility;
         }
 
-        /* ==================== CINEMATIC INTRO VIDEO SEQUENCE ==================== */
+        /* ==================== SPACE JOURNEY INTRO SEQUENCE ==================== */
         
-        /* Intro Overlay - Full screen video-like intro */
+        /* Intro Overlay - Full screen space journey */
         #intro-sequence {
             position: fixed;
             top: 0;
@@ -56,13 +56,14 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             width: 100%;
             height: 100%;
             z-index: 10000;
-            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #0f3460, #16213e);
+            background: #000000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: introFadeOut 1s ease 11s forwards;
+            animation: introFadeOut 1.5s ease 16s forwards;
             pointer-events: all;
+            overflow: hidden;
         }
 
         #intro-sequence.hidden {
@@ -76,235 +77,13 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             }
         }
 
-        /* Intro Logo Container */
-        .intro-logo-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin-bottom: 40px;
-            animation: introLogoReveal 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        @keyframes introLogoReveal {
-            0% {
-                transform: scale(0) rotate(-180deg);
-                opacity: 0;
-            }
-            50% {
-                transform: scale(1.3) rotate(20deg);
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-        }
-
-        .intro-logo {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, 
-                rgba(0, 255, 136, 0.5), rgba(102, 126, 234, 0.5),
-                rgba(240, 147, 251, 0.4), rgba(255, 107, 107, 0.4));
-            border: 6px solid rgba(0, 255, 136, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 
-                0 0 150px rgba(0, 255, 136, 0.9),
-                0 0 200px rgba(102, 126, 234, 0.7),
-                0 0 250px rgba(240, 147, 251, 0.5),
-                inset 0 0 100px rgba(0, 255, 136, 0.4);
-            animation: introLogoPulse 3s ease infinite 2s;
-        }
-
-        @keyframes introLogoPulse {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 
-                    0 0 150px rgba(0, 255, 136, 0.9),
-                    0 0 200px rgba(102, 126, 234, 0.7),
-                    0 0 250px rgba(240, 147, 251, 0.5),
-                    inset 0 0 100px rgba(0, 255, 136, 0.4);
-            }
-            50% {
-                transform: scale(1.1);
-                box-shadow: 
-                    0 0 200px rgba(0, 255, 136, 1),
-                    0 0 280px rgba(102, 126, 234, 0.9),
-                    0 0 350px rgba(240, 147, 251, 0.7),
-                    inset 0 0 150px rgba(0, 255, 136, 0.6);
-            }
-        }
-
-        .intro-logo i {
-            font-size: 140px;
-            background: linear-gradient(135deg, #00ff88, #667eea, #f093fb, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 40px rgba(0, 255, 136, 1));
-            animation: introIconSpin 2s ease-in-out 0.5s forwards;
-        }
-
-        @keyframes introIconSpin {
-            0% {
-                transform: rotateY(0deg) scale(0);
-                opacity: 0;
-            }
-            100% {
-                transform: rotateY(360deg) scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* Intro Title */
-        .intro-title {
-            font-size: 100px;
-            font-weight: 900;
-            background: linear-gradient(135deg, 
-                #00ff88, #667eea, #f093fb, #ff6b6b,
-                #feca57, #48dbfb, #1dd1a1, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 400% 400%;
-            animation: introTitleReveal 1.5s ease 2s forwards, introTitleGradient 4s ease infinite 3.5s;
-            margin-bottom: 20px;
-            letter-spacing: -2px;
-            opacity: 0;
-            transform: translateY(50px);
-            filter: drop-shadow(0 0 60px rgba(0, 255, 136, 0.8));
-        }
-
-        @keyframes introTitleReveal {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes introTitleGradient {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        /* Intro Subtitle */
-        .intro-subtitle {
-            font-size: 42px;
-            font-weight: 700;
-            color: #00ff88;
-            text-shadow: 0 0 40px rgba(0, 255, 136, 1);
-            animation: introSubtitleReveal 1.5s ease 3s forwards, introSubtitleGlow 2s ease infinite 4.5s;
-            opacity: 0;
-            transform: translateY(30px);
-            margin-bottom: 60px;
-        }
-
-        @keyframes introSubtitleReveal {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes introSubtitleGlow {
-            0%, 100% {
-                text-shadow: 0 0 40px rgba(0, 255, 136, 1);
-                transform: scale(1);
-            }
-            50% {
-                text-shadow: 0 0 80px rgba(0, 255, 136, 1), 0 0 120px rgba(102, 126, 234, 0.8);
-                transform: scale(1.05);
-            }
-        }
-
-        /* Intro Tagline */
-        .intro-tagline {
-            font-size: 28px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            max-width: 800px;
-            line-height: 1.6;
-            animation: introTaglineReveal 1.5s ease 4.5s forwards;
-            opacity: 0;
-            transform: translateY(20px);
-            margin-bottom: 80px;
-            padding: 0 40px;
-        }
-
-        @keyframes introTaglineReveal {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Loading Progress Bar */
-        .intro-progress-container {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            max-width: 600px;
-            animation: introProgressReveal 1s ease 6s forwards;
-            opacity: 0;
-        }
-
-        @keyframes introProgressReveal {
-            to { opacity: 1; }
-        }
-
-        .intro-progress-label {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .intro-progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-        }
-
-        .intro-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #667eea, #f093fb, #ff6b6b);
-            background-size: 200% 100%;
-            border-radius: 10px;
-            animation: introProgressFill 5s ease forwards 6s, introProgressShine 2s ease infinite 6s;
-            width: 0%;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
-        }
-
-        @keyframes introProgressFill {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        @keyframes introProgressShine {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        /* Intro Particle Burst */
-        #introParticleCanvas {
+        /* Space Canvas for Solar System */
+        #spaceCanvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
             z-index: 1;
         }
 
@@ -339,10 +118,85 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             transform: translateY(-3px);
         }
 
-        /* Hide main content during intro */
+        /* Loading Text */
+        .intro-loading-text {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 10;
+            animation: loadingPulse 2s ease infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Journey Title */
+        .journey-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 80px;
+            font-weight: 900;
+            color: transparent;
+            background: linear-gradient(135deg, #00ff88, #667eea, #f093fb, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            z-index: 10;
+            text-align: center;
+            white-space: nowrap;
+            animation: titleFadeIn 2s ease 13s forwards;
+            filter: drop-shadow(0 0 40px rgba(0, 255, 136, 0.8));
+        }
+
+        @keyframes titleFadeIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Hide main content during intro with black background */
+        body.intro-playing {
+            background: #000000;
+        }
+
         body.intro-playing .main-container {
             opacity: 0;
             pointer-events: none;
+        }
+
+        /* Main content background after intro */
+        body.intro-complete {
+            background: #000000;
+        }
+
+        body.intro-complete .ultra-hd-background,
+        body.intro-complete .gradient-overlay,
+        body.intro-complete .light-rays {
+            display: none;
+        }
+
+        body.intro-complete .main-container {
+            background: #000000;
+        }
+            max-width: 600px;
+            animation: introProgressReveal 1s ease 6s forwards;
+            opacity: 0;
         }
 
         /* Ultra HD 8K Background with Auto-Changing Colors */
@@ -1153,27 +1007,16 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
 
         /* Responsive */
         @media (max-width: 768px) {
-            /* Intro Responsive */
-            .intro-logo-container {
-                width: 200px;
-                height: 200px;
-            }
-            
-            .intro-logo i {
-                font-size: 90px;
-            }
-            
-            .intro-title {
-                font-size: 56px;
-            }
-            
-            .intro-subtitle {
-                font-size: 28px;
-            }
-            
-            .intro-tagline {
-                font-size: 18px;
+            /* Space Journey Intro Responsive */
+            .journey-title {
+                font-size: 40px;
                 padding: 0 20px;
+                white-space: normal;
+            }
+            
+            .intro-loading-text {
+                font-size: 16px;
+                bottom: 50px;
             }
             
             .intro-skip-button {
@@ -1181,11 +1024,6 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
                 right: 20px;
                 padding: 12px 25px;
                 font-size: 14px;
-            }
-            
-            .intro-progress-container {
-                width: 80%;
-                bottom: 40px;
             }
             
             /* Main Content Responsive */
@@ -1358,41 +1196,21 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
     </style>
 </head>
 <body>
-    <!-- ==================== CINEMATIC INTRO SEQUENCE ==================== -->
+    <!-- ==================== SPACE JOURNEY INTRO SEQUENCE ==================== -->
     <div id="intro-sequence">
-        <!-- Intro Particle Canvas -->
-        <canvas id="introParticleCanvas"></canvas>
+        <!-- Space Canvas for Solar System -->
+        <canvas id="spaceCanvas"></canvas>
         
         <!-- Skip Button -->
         <button class="intro-skip-button" onclick="skipIntro()">
             <i class="fas fa-forward"></i> Skip Intro
         </button>
         
-        <!-- Logo Animation -->
-        <div class="intro-logo-container">
-            <div class="intro-logo">
-                <i class="fas fa-crown"></i>
-            </div>
-        </div>
+        <!-- Journey Title (appears at the end) -->
+        <h1 class="journey-title">WELCOME TO LEGEND SHOP</h1>
         
-        <!-- Title -->
-        <h1 class="intro-title">LEGEND SHOP</h1>
-        
-        <!-- Subtitle -->
-        <p class="intro-subtitle">Where Legends Shop</p>
-        
-        <!-- Tagline -->
-        <p class="intro-tagline">
-            Experience the future of premium shopping with cutting-edge technology and military-grade security
-        </p>
-        
-        <!-- Progress Bar -->
-        <div class="intro-progress-container">
-            <div class="intro-progress-label">Loading Experience...</div>
-            <div class="intro-progress-bar">
-                <div class="intro-progress-fill"></div>
-            </div>
-        </div>
+        <!-- Loading Text -->
+        <div class="intro-loading-text">Entering Legend Shop...</div>
     </div>
 
     <!-- Ultra HD Background -->
@@ -1481,84 +1299,208 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
     </div>
 
     <script>
-        // ==================== CINEMATIC INTRO SEQUENCE CONTROL ====================
+        // ==================== SPACE JOURNEY INTRO SEQUENCE ====================
         
         // Add intro-playing class to body
         document.body.classList.add('intro-playing');
         
-        // Intro particle burst effect
-        const introCanvas = document.getElementById('introParticleCanvas');
-        const introCtx = introCanvas.getContext('2d');
-        introCanvas.width = window.innerWidth;
-        introCanvas.height = window.innerHeight;
+        // Space Canvas Setup
+        const spaceCanvas = document.getElementById('spaceCanvas');
+        const spaceCtx = spaceCanvas.getContext('2d');
+        spaceCanvas.width = window.innerWidth;
+        spaceCanvas.height = window.innerHeight;
         
-        class IntroParticle {
-            constructor() {
-                this.reset();
-            }
-            
-            reset() {
-                this.x = window.innerWidth / 2;
-                this.y = window.innerHeight / 2;
-                this.size = Math.random() * 4 + 2;
-                this.speedX = (Math.random() - 0.5) * 15;
-                this.speedY = (Math.random() - 0.5) * 15;
-                this.life = 1;
-                this.decay = Math.random() * 0.015 + 0.005;
-                this.hue = Math.random() * 360;
-            }
-            
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.speedX *= 0.98;
-                this.speedY *= 0.98;
-                this.life -= this.decay;
-                
-                if (this.life <= 0) {
-                    this.reset();
-                }
-            }
-            
-            draw() {
-                introCtx.save();
-                introCtx.globalAlpha = this.life;
-                introCtx.shadowBlur = 20;
-                introCtx.shadowColor = `hsla(${this.hue}, 100%, 50%, ${this.life})`;
-                introCtx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${this.life})`;
-                introCtx.beginPath();
-                introCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                introCtx.fill();
-                introCtx.restore();
-            }
-        }
+        // Planet data (8 planets of our solar system)
+        const planets = [
+            { name: 'Mercury', size: 15, color: '#8C7853', distance: 150, speed: 0.04, angle: 0 },
+            { name: 'Venus', size: 22, color: '#FFC649', distance: 200, speed: 0.03, angle: 0.5 },
+            { name: 'Earth', size: 24, color: '#4A90E2', distance: 250, speed: 0.02, angle: 1.0 },
+            { name: 'Mars', size: 18, color: '#E27B58', distance: 300, speed: 0.018, angle: 1.5 },
+            { name: 'Jupiter', size: 45, color: '#C88B3A', distance: 400, speed: 0.012, angle: 2.0 },
+            { name: 'Saturn', size: 40, color: '#FAD5A5', distance: 480, speed: 0.01, angle: 2.5 },
+            { name: 'Uranus', size: 30, color: '#4FD0E0', distance: 540, speed: 0.008, angle: 3.0 },
+            { name: 'Neptune', size: 28, color: '#4166F5', distance: 590, speed: 0.007, angle: 3.5 }
+        ];
         
-        const introParticles = [];
-        const introParticleCount = 150;
-        
-        for (let i = 0; i < introParticleCount; i++) {
-            const particle = new IntroParticle();
-            particle.reset();
-            // Stagger initial positions
-            setTimeout(() => {
-                introParticles.push(particle);
-            }, i * 10);
-        }
-        
+        // Animation state
+        let animationPhase = 'solar-system'; // solar-system -> zoom-to-earth -> zoom-into-earth -> complete
+        let cameraZoom = 1;
+        let cameraX = 0;
+        let cameraY = 0;
+        let phaseTime = 0;
         let introAnimationId;
-        function animateIntroParticles() {
-            introCtx.fillStyle = 'rgba(10, 10, 10, 0.1)';
-            introCtx.fillRect(0, 0, introCanvas.width, introCanvas.height);
-            
-            introParticles.forEach(particle => {
-                particle.update();
-                particle.draw();
+        
+        // Stars background
+        const stars = [];
+        for (let i = 0; i < 200; i++) {
+            stars.push({
+                x: Math.random() * spaceCanvas.width,
+                y: Math.random() * spaceCanvas.height,
+                size: Math.random() * 2 + 0.5,
+                opacity: Math.random() * 0.8 + 0.2
             });
-            
-            introAnimationId = requestAnimationFrame(animateIntroParticles);
         }
         
-        animateIntroParticles();
+        function drawStars() {
+            stars.forEach(star => {
+                spaceCtx.globalAlpha = star.opacity;
+                spaceCtx.fillStyle = '#ffffff';
+                spaceCtx.beginPath();
+                spaceCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                spaceCtx.fill();
+            });
+            spaceCtx.globalAlpha = 1;
+        }
+        
+        function drawSun() {
+            const centerX = spaceCanvas.width / 2 + cameraX;
+            const centerY = spaceCanvas.height / 2 + cameraY;
+            
+            // Sun glow
+            const gradient = spaceCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 60 * cameraZoom);
+            gradient.addColorStop(0, '#FDB813');
+            gradient.addColorStop(0.5, '#FFAA00');
+            gradient.addColorStop(1, 'rgba(255, 170, 0, 0)');
+            
+            spaceCtx.fillStyle = gradient;
+            spaceCtx.beginPath();
+            spaceCtx.arc(centerX, centerY, 60 * cameraZoom, 0, Math.PI * 2);
+            spaceCtx.fill();
+            
+            // Sun core
+            spaceCtx.fillStyle = '#FFDD00';
+            spaceCtx.shadowBlur = 40;
+            spaceCtx.shadowColor = '#FF8800';
+            spaceCtx.beginPath();
+            spaceCtx.arc(centerX, centerY, 35 * cameraZoom, 0, Math.PI * 2);
+            spaceCtx.fill();
+            spaceCtx.shadowBlur = 0;
+        }
+        
+        function drawPlanets() {
+            const centerX = spaceCanvas.width / 2 + cameraX;
+            const centerY = spaceCanvas.height / 2 + cameraY;
+            
+            planets.forEach((planet, index) => {
+                // Update planet angle
+                planet.angle += planet.speed;
+                
+                // Calculate position
+                const x = centerX + Math.cos(planet.angle) * planet.distance * cameraZoom;
+                const y = centerY + Math.sin(planet.angle) * planet.distance * cameraZoom;
+                
+                // Draw orbit path
+                spaceCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                spaceCtx.lineWidth = 1;
+                spaceCtx.beginPath();
+                spaceCtx.arc(centerX, centerY, planet.distance * cameraZoom, 0, Math.PI * 2);
+                spaceCtx.stroke();
+                
+                // Draw planet
+                spaceCtx.fillStyle = planet.color;
+                spaceCtx.shadowBlur = 15;
+                spaceCtx.shadowColor = planet.color;
+                spaceCtx.beginPath();
+                spaceCtx.arc(x, y, planet.size * cameraZoom, 0, Math.PI * 2);
+                spaceCtx.fill();
+                spaceCtx.shadowBlur = 0;
+                
+                // Highlight Earth
+                if (planet.name === 'Earth') {
+                    spaceCtx.strokeStyle = 'rgba(0, 255, 136, 0.6)';
+                    spaceCtx.lineWidth = 3;
+                    spaceCtx.beginPath();
+                    spaceCtx.arc(x, y, (planet.size + 8) * cameraZoom, 0, Math.PI * 2);
+                    spaceCtx.stroke();
+                }
+            });
+        }
+        
+        function animateSpaceJourney() {
+            phaseTime++;
+            
+            // Clear canvas
+            spaceCtx.fillStyle = '#000000';
+            spaceCtx.fillRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+            
+            // Draw stars
+            drawStars();
+            
+            // Phase 1: Show solar system (0-5 seconds)
+            if (phaseTime < 300) {
+                animationPhase = 'solar-system';
+                cameraZoom = 1;
+                cameraX = 0;
+                cameraY = 0;
+                drawSun();
+                drawPlanets();
+            }
+            // Phase 2: Zoom towards Earth (5-10 seconds)
+            else if (phaseTime < 600) {
+                animationPhase = 'zoom-to-earth';
+                const progress = (phaseTime - 300) / 300;
+                cameraZoom = 1 + progress * 4;
+                
+                // Move camera towards Earth
+                const earth = planets[2]; // Earth is index 2
+                const earthX = Math.cos(earth.angle) * earth.distance;
+                const earthY = Math.sin(earth.angle) * earth.distance;
+                cameraX = -earthX * progress * cameraZoom * 0.5;
+                cameraY = -earthY * progress * cameraZoom * 0.5;
+                
+                drawSun();
+                drawPlanets();
+            }
+            // Phase 3: Zoom into Earth (10-14 seconds)
+            else if (phaseTime < 840) {
+                animationPhase = 'zoom-into-earth';
+                const progress = (phaseTime - 600) / 240;
+                cameraZoom = 5 + progress * 15;
+                
+                const earth = planets[2];
+                const earthX = Math.cos(earth.angle) * earth.distance;
+                const earthY = Math.sin(earth.angle) * earth.distance;
+                cameraX = -earthX * cameraZoom * 0.8;
+                cameraY = -earthY * cameraZoom * 0.8;
+                
+                // Only draw Earth at this point
+                const centerX = spaceCanvas.width / 2 + cameraX;
+                const centerY = spaceCanvas.height / 2 + cameraY;
+                const x = centerX + Math.cos(earth.angle) * earth.distance * cameraZoom;
+                const y = centerY + Math.sin(earth.angle) * earth.distance * cameraZoom;
+                
+                spaceCtx.fillStyle = earth.color;
+                spaceCtx.shadowBlur = 30;
+                spaceCtx.shadowColor = earth.color;
+                spaceCtx.beginPath();
+                spaceCtx.arc(x, y, earth.size * cameraZoom, 0, Math.PI * 2);
+                spaceCtx.fill();
+                spaceCtx.shadowBlur = 0;
+                
+                // Add green glow
+                spaceCtx.strokeStyle = `rgba(0, 255, 136, ${0.8 - progress * 0.6})`;
+                spaceCtx.lineWidth = 5;
+                spaceCtx.beginPath();
+                spaceCtx.arc(x, y, (earth.size + 10) * cameraZoom, 0, Math.PI * 2);
+                spaceCtx.stroke();
+            }
+            // Phase 4: Fade to black and show title (14-16 seconds)
+            else if (phaseTime < 960) {
+                const progress = (phaseTime - 840) / 120;
+                spaceCtx.fillStyle = `rgba(0, 0, 0, ${progress})`;
+                spaceCtx.fillRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+            }
+            // Phase 5: Complete (16+ seconds)
+            else {
+                animationPhase = 'complete';
+                endIntroSequence();
+                return;
+            }
+            
+            introAnimationId = requestAnimationFrame(animateSpaceJourney);
+        }
+        
+        animateSpaceJourney();
         
         // Function to skip intro
         function skipIntro() {
@@ -1570,6 +1512,7 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             const introElement = document.getElementById('intro-sequence');
             introElement.classList.add('hidden');
             document.body.classList.remove('intro-playing');
+            document.body.classList.add('intro-complete');
             cancelAnimationFrame(introAnimationId);
             
             // Trigger main content fade-in
@@ -1579,15 +1522,10 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             mainContainer.style.pointerEvents = 'all';
         }
         
-        // Auto-end intro after 12 seconds
-        setTimeout(() => {
-            endIntroSequence();
-        }, 12000);
-        
         // Window resize handler for intro canvas
         window.addEventListener('resize', () => {
-            introCanvas.width = window.innerWidth;
-            introCanvas.height = window.innerHeight;
+            spaceCanvas.width = window.innerWidth;
+            spaceCanvas.height = window.innerHeight;
         });
         
         // ==================== EXTREME PROTECTION ====================
