@@ -2,6 +2,8 @@
 
 A modern, secure, and feature-rich e-commerce authentication system with a beautiful animated UI.
 
+🌐 **Live Site**: [https://legendbl.tech](https://legendbl.tech)
+
 ## 🌟 Features
 
 - **Secure Authentication**: Advanced user registration and login system with JWT tokens
@@ -57,7 +59,9 @@ A modern, secure, and feature-rich e-commerce authentication system with a beaut
 
 5. **Access the website**
    
-   Open your browser and navigate to:
+   **Production**: [https://legendbl.tech](https://legendbl.tech)
+   
+   **Local Development**: Open your browser and navigate to:
    - Homepage: http://localhost:3000/index.html
    - Login: http://localhost:3000/login.html
    - Signup: http://localhost:3000/signup.html
@@ -163,6 +167,95 @@ LEGEND-SHOP-WEBSITE-/
 
 - `npm start` - Start the production server
 - `npm run dev` - Start development server with nodemon
+
+## 🚀 Deployment
+
+The website is deployed at **[https://legendbl.tech](https://legendbl.tech)**
+
+### Environment Configuration
+
+When deploying to production:
+1. Set `NODE_ENV=production` in your environment variables
+2. Configure `MONGODB_URI` with your production database connection
+3. Use a secure `JWT_SECRET` (not the default one)
+4. Set `PORT` if your hosting platform requires a specific port
+
+### API Endpoint Configuration
+
+The frontend automatically detects the deployment URL:
+- In production (https://legendbl.tech): API calls go to `https://legendbl.tech/api`
+- In local development: API calls go to `http://localhost:3000/api`
+
+No code changes are needed when deploying - the application adapts to its environment.
+
+## 🔐 Google OAuth Setup
+
+The website includes "Sign in with Google" buttons. To enable Google OAuth authentication, you need to configure your Google Cloud Console:
+
+### 1. Create Google OAuth Credentials
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Navigate to **APIs & Services** > **Credentials**
+4. Click **Create Credentials** > **OAuth client ID**
+5. Select **Web application** as the application type
+
+### 2. Configure Authorized JavaScript Origins
+
+Add these URLs to **Authorized JavaScript origins**:
+
+**For Production:**
+```
+https://legendbl.tech
+```
+
+**For Local Development (optional):**
+```
+http://localhost:3000
+```
+
+### 3. Configure Authorized Redirect URIs
+
+Add these URLs to **Authorized redirect URIs**:
+
+**For Production:**
+```
+https://legendbl.tech/login.html
+https://legendbl.tech/signup.html
+https://legendbl.tech/dashboard.html
+https://legendbl.tech/
+```
+
+**For Local Development (optional):**
+```
+http://localhost:3000/login.html
+http://localhost:3000/signup.html
+http://localhost:3000/dashboard.html
+http://localhost:3000/
+```
+
+### 4. Save Your Client ID
+
+After creating the credentials, you'll receive:
+- **Client ID** - Add this to your frontend code
+- **Client Secret** - Keep this secure, add to your `.env` file
+
+### 5. Update Environment Variables
+
+Add to your `.env` file:
+```
+GOOGLE_CLIENT_ID=your_client_id_here
+GOOGLE_CLIENT_SECRET=your_client_secret_here
+```
+
+### Quick Reference
+
+| Setting | Production Value | Local Development Value |
+|---------|-----------------|-------------------------|
+| **JavaScript Origins** | `https://legendbl.tech` | `http://localhost:3000` |
+| **Redirect URIs** | `https://legendbl.tech/login.html`<br>`https://legendbl.tech/signup.html`<br>`https://legendbl.tech/dashboard.html`<br>`https://legendbl.tech/` | `http://localhost:3000/login.html`<br>`http://localhost:3000/signup.html`<br>`http://localhost:3000/dashboard.html`<br>`http://localhost:3000/` |
+
+**Note:** Make sure to use `https://` for your production domain and include all pages where users can sign in or sign up with Google.
 
 ## 🐛 Troubleshooting
 
