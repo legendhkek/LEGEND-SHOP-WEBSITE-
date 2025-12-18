@@ -137,7 +137,7 @@ async function checkBackendHealth() {
 
 function warnIfFileProtocol() {
     if (location && location.protocol === 'file:') {
-        showErrorMessage('Open via http://localhost:3000/login.html so backend + hCaptcha work.');
+        showErrorMessage('Please open via http://localhost:3000 so backend works properly.');
     }
 }
 
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Backend health check (prevents vague 'Server error' messages)
     checkBackendHealth().then((ok) => {
         if (!ok) {
-            showErrorMessage('Backend is OFF. Run `npm start` in D:\\SARTHAK\\WEBSITE, then open http://localhost:3000/login.html');
+            showErrorMessage('Backend is OFF. Run `npm start` in the project directory, then open http://localhost:3000');
             document.querySelectorAll('button[type="submit"]').forEach(btn => {
                 btn.disabled = true;
                 btn.style.opacity = '0.6';

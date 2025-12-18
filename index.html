@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legend Shop - Premium Shopping Experience</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Landing Page Specific Styles */
+        .landing-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .hero-section {
+            margin-bottom: 60px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            animation: pulse 2s infinite;
+        }
+
+        .hero-logo i {
+            font-size: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 5s ease infinite;
+            background-size: 200% 200%;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .cta-btn {
+            padding: 18px 45px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .cta-btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .cta-btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.5);
+        }
+
+        .cta-btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .cta-btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.5);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .feature-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .feature-description {
+            font-size: 16px;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .owner-info {
+            margin-top: 60px;
+            padding: 40px;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .owner-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .owner-details {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .owner-contact {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            color: var(--dark);
+        }
+
+        .owner-contact i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .owner-contact a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .owner-contact a:hover {
+            color: var(--secondary);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .hero-subtitle {
+                font-size: 20px;
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .cta-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .owner-details {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="landing-container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-logo">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h1 class="hero-title">Welcome to Legend Shop</h1>
+            <p class="hero-subtitle">Your Premium Shopping Destination</p>
+            <p class="hero-description">
+                Experience the ultimate shopping platform with secure authentication, 
+                seamless transactions, and premium features designed for legends like you.
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="signup.html" class="cta-btn cta-btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Get Started
+                </a>
+                <a href="login.html" class="cta-btn cta-btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </a>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card" style="animation-delay: 0.1s;">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Secure & Safe</h3>
+                <p class="feature-description">
+                    Advanced security measures to protect your data and transactions with enterprise-grade encryption.
+                </p>
+            </div>
+
+            <div class="feature-card" style="animation-delay: 0.2s;">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p class="feature-description">
+                    Optimized performance for instant loading and smooth browsing experience across all devices.
+                </p>
+            </div>
+
+            <div class="feature-card" style="animation-delay: 0.3s;">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">User Friendly</h3>
+                <p class="feature-description">
+                    Intuitive interface designed for ease of use, making shopping a delightful experience.
+                </p>
+            </div>
+
+            <div class="feature-card" style="animation-delay: 0.4s;">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3 class="feature-title">24/7 Support</h3>
+                <p class="feature-description">
+                    Round-the-clock customer support to assist you whenever you need help or have questions.
+                </p>
+            </div>
+
+            <div class="feature-card" style="animation-delay: 0.5s;">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3 class="feature-title">Premium Quality</h3>
+                <p class="feature-description">
+                    Curated selection of high-quality products and services for discerning customers.
+                </p>
+            </div>
+
+            <div class="feature-card" style="animation-delay: 0.6s;">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">Mobile Ready</h3>
+                <p class="feature-description">
+                    Fully responsive design that works perfectly on all devices, from phones to desktops.
+                </p>
+            </div>
+        </div>
+
+        <!-- Owner Information -->
+        <div class="owner-info">
+            <h2 class="owner-title">Get in Touch</h2>
+            <p class="hero-description">
+                Have questions or need assistance? Feel free to reach out to us!
+            </p>
+            <div class="owner-details">
+                <div class="owner-contact">
+                    <i class="fab fa-telegram"></i>
+                    <span>Telegram:</span>
+                    <a href="https://t.me/legend_bl" target="_blank" rel="noopener">@legend_bl</a>
+                </div>
+                <div class="owner-contact">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email:</span>
+                    <a href="mailto:LEGENDXKEYGRID@GMAIL.COM">LEGENDXKEYGRID@GMAIL.COM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-elements">
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+    </div>
+
+    <script>
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
