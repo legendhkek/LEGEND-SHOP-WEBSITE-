@@ -116,6 +116,8 @@ function validateEmail(email) {
 }
 
 // ===== API CONFIGURATION =====
+// NOTE: In production, consider using environment variables or a configuration file
+// to manage API endpoints rather than this hardcoded fallback
 const API_URL = (location && location.origin && location.origin.startsWith('http'))
     ? `${location.origin}/api`
     : 'http://localhost:3000/api';
@@ -192,8 +194,12 @@ function initCardTilt() {
             const mouseX = e.clientX - centerX;
             const mouseY = e.clientY - centerY;
             
-            const rotateY = (mouseX / (rect.width / 2)) * maxTilt;
-            const rotateX = -(mouseY / (rect.height / 2)) * maxTilt;
+            // Pre-calculate divisors for performance
+            const halfWidth = rect.width / 2;
+            const halfHeight = rect.height / 2;
+            
+            const rotateY = (mouseX / halfWidth) * maxTilt;
+            const rotateX = -(mouseY / halfHeight) * maxTilt;
             
             card.style.transition = 'transform 0.1s ease-out';
             card.style.transform = `perspective(1500px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(${scale})`;

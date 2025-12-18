@@ -14,12 +14,17 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log('✅ MongoDB Connected Successfully!'))
-.catch(err => {
-    console.error('❌ MongoDB Connection Error:', err.message);
+if (!process.env.MONGODB_URI) {
+    console.error('❌ MONGODB_URI is not defined in .env file');
     console.log('⚠️  Server will continue without database (UI testing mode)');
-});
+} else {
+    mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('✅ MongoDB Connected Successfully!'))
+    .catch(err => {
+        console.error('❌ MongoDB Connection Error:', err.message);
+        console.log('⚠️  Server will continue without database (UI testing mode)');
+    });
+}
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
@@ -143,6 +148,9 @@ app.post('/api/signup', [
         await user.save();
 
         // Generate JWT token
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined in environment variables');
+        }
         const token = jwt.sign(
             { userId: user._id, email: user.email },
             process.env.JWT_SECRET,
@@ -219,6 +227,9 @@ app.post('/api/login', [
         await user.save();
 
         // Generate JWT token
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined in environment variables');
+        }
         const token = jwt.sign(
             { userId: user._id, email: user.email },
             process.env.JWT_SECRET,
@@ -247,8 +258,17 @@ app.post('/api/login', [
     }
 });
 
-// Get all users (Admin route - for testing only)
+// Get all users (Admin route - for testing only, DISABLE IN PRODUCTION)
+// WARNING: This endpoint should be protected or removed in production
 app.get('/api/users', async (req, res) => {
+    // Only allow in development mode
+    if (process.env.NODE_ENV === 'production') {
+        return res.status(403).json({ 
+            success: false, 
+            message: 'This endpoint is disabled in production' 
+        });
+    }
+    
     try {
         const users = await User.find().select('-password');
         res.json({
