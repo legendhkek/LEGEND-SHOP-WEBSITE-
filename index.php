@@ -46,9 +46,9 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             text-rendering: optimizeLegibility;
         }
 
-        /* ==================== SPACE JOURNEY INTRO SEQUENCE ==================== */
+        /* ==================== VIDEO INTRO SEQUENCE ==================== */
         
-        /* Intro Overlay - Full screen space journey */
+        /* Intro Overlay - Full screen video intro */
         #intro-sequence {
             position: fixed;
             top: 0;
@@ -61,13 +61,18 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: introFadeOut 1.5s ease 16s forwards;
             pointer-events: all;
             overflow: hidden;
         }
 
         #intro-sequence.hidden {
-            display: none;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        #intro-sequence.fade-out {
+            animation: introFadeOut 1.5s ease forwards;
         }
 
         @keyframes introFadeOut {
@@ -77,14 +82,18 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             }
         }
 
-        /* Space Canvas for Solar System */
-        #spaceCanvas {
+        /* Intro Video */
+        .intro-video {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
             z-index: 1;
+            object-fit: cover;
         }
 
         /* Skip Button */
@@ -118,57 +127,63 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             transform: translateY(-3px);
         }
 
-        /* Loading Text */
-        .intro-loading-text {
+        /* Get Started Button in Video */
+        .video-get-started-button {
             position: absolute;
-            bottom: 100px;
+            bottom: 80px;
             left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+            transform: translateX(-50%) scale(0);
+            padding: 25px 70px;
+            font-size: 28px;
+            font-weight: 900;
+            text-decoration: none;
+            color: #0a0a0a;
+            background: linear-gradient(135deg, #00ff88, #00cc6a, #667eea, #00ff88);
+            background-size: 300% 300%;
+            border-radius: 60px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 
+                0 20px 60px rgba(0, 255, 136, 0.7),
+                0 0 100px rgba(102, 126, 234, 0.5),
+                inset 0 0 30px rgba(255, 255, 255, 0.4);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 10;
-            animation: loadingPulse 2s ease infinite;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: ctaPulse8K 4s ease infinite, ctaGlow 6s ease infinite;
+            text-shadow: 
+                0 2px 10px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        @keyframes loadingPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        .video-get-started-button.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        .video-get-started-button:hover {
+            transform: translateX(-50%) translateY(-10px) scale(1.1);
+            box-shadow: 
+                0 40px 140px rgba(0, 255, 136, 1),
+                0 0 150px rgba(102, 126, 234, 0.9),
+                0 0 200px rgba(240, 147, 251, 0.7),
+                inset 0 0 80px rgba(255, 255, 255, 0.7);
+            filter: brightness(1.2) saturate(1.3);
+        }
+
+        .video-get-started-button i {
+            animation: arrowBounce 1.5s ease infinite;
+        }
+
+        /* Loading Text */
+        /* Removed - no longer needed for video intro */
 
         /* Journey Title */
-        .journey-title {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 80px;
-            font-weight: 900;
-            color: transparent;
-            background: linear-gradient(135deg, #00ff88, #667eea, #f093fb, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            opacity: 0;
-            z-index: 10;
-            text-align: center;
-            white-space: nowrap;
-            animation: titleFadeIn 2s ease 13s forwards;
-            filter: drop-shadow(0 0 40px rgba(0, 255, 136, 0.8));
-        }
-
-        @keyframes titleFadeIn {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.5);
-            }
-            100% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
+        /* Removed - no longer needed for video intro */
 
         /* Hide main content during intro with black background */
         body.intro-playing {
@@ -1003,16 +1018,11 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
 
         /* Responsive */
         @media (max-width: 768px) {
-            /* Space Journey Intro Responsive */
-            .journey-title {
-                font-size: 40px;
-                padding: 0 20px;
-                white-space: normal;
-            }
-            
-            .intro-loading-text {
-                font-size: 16px;
-                bottom: 50px;
+            /* Video Intro Responsive */
+            .video-get-started-button {
+                font-size: 20px;
+                padding: 20px 50px;
+                bottom: 60px;
             }
             
             .intro-skip-button {
@@ -1192,21 +1202,24 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
     </style>
 </head>
 <body>
-    <!-- ==================== SPACE JOURNEY INTRO SEQUENCE ==================== -->
+    <!-- ==================== VIDEO INTRO SEQUENCE ==================== -->
     <div id="intro-sequence">
-        <!-- Space Canvas for Solar System -->
-        <canvas id="spaceCanvas"></canvas>
+        <!-- Video Background -->
+        <video id="introVideo" class="intro-video" autoplay muted playsinline>
+            <source src="1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
         
         <!-- Skip Button -->
         <button class="intro-skip-button" onclick="skipIntro()">
             <i class="fas fa-forward"></i> Skip Intro
         </button>
         
-        <!-- Journey Title (appears at the end) -->
-        <h1 class="journey-title">WELCOME TO LEGEND SHOP</h1>
-        
-        <!-- Loading Text -->
-        <div class="intro-loading-text">Entering Legend Shop...</div>
+        <!-- Get Started Button (appears at the end of video) -->
+        <a href="signup.html" class="video-get-started-button" id="videoGetStartedBtn">
+            Get Started
+            <i class="fas fa-arrow-right"></i>
+        </a>
     </div>
 
     <!-- Ultra HD Background -->
@@ -1286,217 +1299,36 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
                 </div>
             </div>
 
-            <!-- CTA Button -->
-            <a href="signup.html" class="cta-button">
-                Get Started
-                <i class="fas fa-arrow-right"></i>
-            </a>
+            <!-- CTA Button removed - now shown in video intro -->
         </div>
     </div>
 
     <script>
-        // ==================== SPACE JOURNEY INTRO SEQUENCE ====================
+        // ==================== VIDEO INTRO SEQUENCE ====================
         
         // Add intro-playing class to body
         document.body.classList.add('intro-playing');
         
-        // Space Canvas Setup
-        const spaceCanvas = document.getElementById('spaceCanvas');
-        const spaceCtx = spaceCanvas.getContext('2d');
-        spaceCanvas.width = window.innerWidth;
-        spaceCanvas.height = window.innerHeight;
+        const introVideo = document.getElementById('introVideo');
+        const videoGetStartedBtn = document.getElementById('videoGetStartedBtn');
+        let introEnded = false;
         
-        // Planet data (8 planets of our solar system)
-        const planets = [
-            { name: 'Mercury', size: 15, color: '#8C7853', distance: 150, speed: 0.04, angle: 0 },
-            { name: 'Venus', size: 22, color: '#FFC649', distance: 200, speed: 0.03, angle: 0.5 },
-            { name: 'Earth', size: 24, color: '#4A90E2', distance: 250, speed: 0.02, angle: 1.0 },
-            { name: 'Mars', size: 18, color: '#E27B58', distance: 300, speed: 0.018, angle: 1.5 },
-            { name: 'Jupiter', size: 45, color: '#C88B3A', distance: 400, speed: 0.012, angle: 2.0 },
-            { name: 'Saturn', size: 40, color: '#FAD5A5', distance: 480, speed: 0.01, angle: 2.5 },
-            { name: 'Uranus', size: 30, color: '#4FD0E0', distance: 540, speed: 0.008, angle: 3.0 },
-            { name: 'Neptune', size: 28, color: '#4166F5', distance: 590, speed: 0.007, angle: 3.5 }
-        ];
-        
-        // Animation state
-        let animationPhase = 'solar-system'; // solar-system -> zoom-to-earth -> zoom-into-earth -> complete
-        let cameraZoom = 1;
-        let cameraX = 0;
-        let cameraY = 0;
-        let phaseTime = 0;
-        let introAnimationId;
-        
-        // Stars background
-        const stars = [];
-        for (let i = 0; i < 200; i++) {
-            stars.push({
-                x: Math.random() * spaceCanvas.width,
-                y: Math.random() * spaceCanvas.height,
-                size: Math.random() * 2 + 0.5,
-                opacity: Math.random() * 0.8 + 0.2
-            });
-        }
-        
-        function drawStars() {
-            stars.forEach(star => {
-                spaceCtx.globalAlpha = star.opacity;
-                spaceCtx.fillStyle = '#ffffff';
-                spaceCtx.beginPath();
-                spaceCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                spaceCtx.fill();
-            });
-            spaceCtx.globalAlpha = 1;
-        }
-        
-        function drawSun() {
-            const centerX = spaceCanvas.width / 2 + cameraX;
-            const centerY = spaceCanvas.height / 2 + cameraY;
-            
-            // Sun glow
-            const gradient = spaceCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 60 * cameraZoom);
-            gradient.addColorStop(0, '#FDB813');
-            gradient.addColorStop(0.5, '#FFAA00');
-            gradient.addColorStop(1, 'rgba(255, 170, 0, 0)');
-            
-            spaceCtx.fillStyle = gradient;
-            spaceCtx.beginPath();
-            spaceCtx.arc(centerX, centerY, 60 * cameraZoom, 0, Math.PI * 2);
-            spaceCtx.fill();
-            
-            // Sun core
-            spaceCtx.fillStyle = '#FFDD00';
-            spaceCtx.shadowBlur = 40;
-            spaceCtx.shadowColor = '#FF8800';
-            spaceCtx.beginPath();
-            spaceCtx.arc(centerX, centerY, 35 * cameraZoom, 0, Math.PI * 2);
-            spaceCtx.fill();
-            spaceCtx.shadowBlur = 0;
-        }
-        
-        function drawPlanets() {
-            const centerX = spaceCanvas.width / 2 + cameraX;
-            const centerY = spaceCanvas.height / 2 + cameraY;
-            
-            planets.forEach((planet, index) => {
-                // Update planet angle
-                planet.angle += planet.speed;
-                
-                // Calculate position
-                const x = centerX + Math.cos(planet.angle) * planet.distance * cameraZoom;
-                const y = centerY + Math.sin(planet.angle) * planet.distance * cameraZoom;
-                
-                // Draw orbit path
-                spaceCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-                spaceCtx.lineWidth = 1;
-                spaceCtx.beginPath();
-                spaceCtx.arc(centerX, centerY, planet.distance * cameraZoom, 0, Math.PI * 2);
-                spaceCtx.stroke();
-                
-                // Draw planet
-                spaceCtx.fillStyle = planet.color;
-                spaceCtx.shadowBlur = 15;
-                spaceCtx.shadowColor = planet.color;
-                spaceCtx.beginPath();
-                spaceCtx.arc(x, y, planet.size * cameraZoom, 0, Math.PI * 2);
-                spaceCtx.fill();
-                spaceCtx.shadowBlur = 0;
-                
-                // Highlight Earth
-                if (planet.name === 'Earth') {
-                    spaceCtx.strokeStyle = 'rgba(0, 255, 136, 0.6)';
-                    spaceCtx.lineWidth = 3;
-                    spaceCtx.beginPath();
-                    spaceCtx.arc(x, y, (planet.size + 8) * cameraZoom, 0, Math.PI * 2);
-                    spaceCtx.stroke();
-                }
-            });
-        }
-        
-        function animateSpaceJourney() {
-            phaseTime++;
-            
-            // Clear canvas
-            spaceCtx.fillStyle = '#000000';
-            spaceCtx.fillRect(0, 0, spaceCanvas.width, spaceCanvas.height);
-            
-            // Draw stars
-            drawStars();
-            
-            // Phase 1: Show solar system (0-5 seconds)
-            if (phaseTime < 300) {
-                animationPhase = 'solar-system';
-                cameraZoom = 1;
-                cameraX = 0;
-                cameraY = 0;
-                drawSun();
-                drawPlanets();
+        // Show "Get Started" button 2 seconds before video ends
+        introVideo.addEventListener('timeupdate', function() {
+            const timeRemaining = introVideo.duration - introVideo.currentTime;
+            if (timeRemaining <= 2 && timeRemaining > 0 && !introEnded) {
+                videoGetStartedBtn.classList.add('show');
             }
-            // Phase 2: Zoom towards Earth (5-10 seconds)
-            else if (phaseTime < 600) {
-                animationPhase = 'zoom-to-earth';
-                const progress = (phaseTime - 300) / 300;
-                cameraZoom = 1 + progress * 4;
-                
-                // Move camera towards Earth
-                const earth = planets[2]; // Earth is index 2
-                const earthX = Math.cos(earth.angle) * earth.distance;
-                const earthY = Math.sin(earth.angle) * earth.distance;
-                cameraX = -earthX * progress * cameraZoom * 0.5;
-                cameraY = -earthY * progress * cameraZoom * 0.5;
-                
-                drawSun();
-                drawPlanets();
-            }
-            // Phase 3: Zoom into Earth (10-14 seconds)
-            else if (phaseTime < 840) {
-                animationPhase = 'zoom-into-earth';
-                const progress = (phaseTime - 600) / 240;
-                cameraZoom = 5 + progress * 15;
-                
-                const earth = planets[2];
-                const earthX = Math.cos(earth.angle) * earth.distance;
-                const earthY = Math.sin(earth.angle) * earth.distance;
-                cameraX = -earthX * cameraZoom * 0.8;
-                cameraY = -earthY * cameraZoom * 0.8;
-                
-                // Only draw Earth at this point
-                const centerX = spaceCanvas.width / 2 + cameraX;
-                const centerY = spaceCanvas.height / 2 + cameraY;
-                const x = centerX + Math.cos(earth.angle) * earth.distance * cameraZoom;
-                const y = centerY + Math.sin(earth.angle) * earth.distance * cameraZoom;
-                
-                spaceCtx.fillStyle = earth.color;
-                spaceCtx.shadowBlur = 30;
-                spaceCtx.shadowColor = earth.color;
-                spaceCtx.beginPath();
-                spaceCtx.arc(x, y, earth.size * cameraZoom, 0, Math.PI * 2);
-                spaceCtx.fill();
-                spaceCtx.shadowBlur = 0;
-                
-                // Add green glow
-                spaceCtx.strokeStyle = `rgba(0, 255, 136, ${0.8 - progress * 0.6})`;
-                spaceCtx.lineWidth = 5;
-                spaceCtx.beginPath();
-                spaceCtx.arc(x, y, (earth.size + 10) * cameraZoom, 0, Math.PI * 2);
-                spaceCtx.stroke();
-            }
-            // Phase 4: Fade to black and show title (14-16 seconds)
-            else if (phaseTime < 960) {
-                const progress = (phaseTime - 840) / 120;
-                spaceCtx.fillStyle = `rgba(0, 0, 0, ${progress})`;
-                spaceCtx.fillRect(0, 0, spaceCanvas.width, spaceCanvas.height);
-            }
-            // Phase 5: Complete (16+ seconds)
-            else {
-                animationPhase = 'complete';
+        });
+        
+        // Handle video end
+        introVideo.addEventListener('ended', function() {
+            introEnded = true;
+            // Keep showing the button for a few more seconds
+            setTimeout(() => {
                 endIntroSequence();
-                return;
-            }
-            
-            introAnimationId = requestAnimationFrame(animateSpaceJourney);
-        }
-        
-        animateSpaceJourney();
+            }, 3000);
+        });
         
         // Function to skip intro
         function skipIntro() {
@@ -1506,10 +1338,14 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
         // Function to end intro sequence
         function endIntroSequence() {
             const introElement = document.getElementById('intro-sequence');
-            introElement.classList.add('hidden');
+            introElement.classList.add('fade-out');
             document.body.classList.remove('intro-playing');
             document.body.classList.add('intro-complete');
-            cancelAnimationFrame(introAnimationId);
+            
+            // Remove intro element after animation
+            setTimeout(() => {
+                introElement.classList.add('hidden');
+            }, 1500);
             
             // Trigger main content fade-in
             const mainContainer = document.querySelector('.main-container');
@@ -1517,12 +1353,6 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
             mainContainer.style.opacity = '1';
             mainContainer.style.pointerEvents = 'all';
         }
-        
-        // Window resize handler for intro canvas
-        window.addEventListener('resize', () => {
-            spaceCanvas.width = window.innerWidth;
-            spaceCanvas.height = window.innerHeight;
-        });
         
         // ==================== EXTREME PROTECTION ====================
         

@@ -5,7 +5,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
+const axios = require('axios');
 require('dotenv').config();
+
+// Google OAuth Configuration
+const GOOGLE_CLIENT_ID = '674654993812-krpej9648d2205dqpls1dsq7tuhvlbft.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET = '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';
 
 const app = express();
 
@@ -82,6 +87,11 @@ const userSchema = new mongoose.Schema({
     dateOfBirth: {
         type: Date,
         required: true
+    },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
     },
     createdAt: {
         type: Date,
@@ -302,6 +312,83 @@ app.get('/api/users', apiLimiter, async (req, res) => {
             success: false, 
             message: 'Server error' 
         });
+    }
+});
+
+// Google OAuth Callback Route
+app.get('/auth/google/callback', async (req, res) => {
+    try {
+        const { code } = req.query;
+        
+        if (!code) {
+            return res.status(400).json({
+                success: false,
+                message: 'Authorization code not provided'
+            });
+        }
+        
+        // Exchange authorization code for access token
+        const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
+            code,
+            client_id: GOOGLE_CLIENT_ID,
+            client_secret: GOOGLE_CLIENT_SECRET,
+            redirect_uri: `${req.protocol}://${req.get('host')}/auth/google/callback`,
+            grant_type: 'authorization_code'
+        });
+        
+        const { access_token } = tokenResponse.data;
+        
+        // Get user info from Google
+        const userInfoResponse = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        });
+        
+        const googleUser = userInfoResponse.data;
+        
+        // Check if user exists in database
+        let user = await User.findOne({ email: googleUser.email });
+        
+        if (!user) {
+            // Create new user
+            const nameParts = googleUser.name.split(' ');
+            user = new User({
+                firstName: nameParts[0] || 'User',
+                lastName: nameParts.slice(1).join(' ') || 'Account',
+                email: googleUser.email,
+                password: await bcrypt.hash(Math.random().toString(36), 12), // Random password for OAuth users
+                dateOfBirth: new Date('2000-01-01'), // Default DOB for OAuth users
+                googleId: googleUser.id
+            });
+            await user.save();
+        }
+        
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
+        
+        // Generate JWT token
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined in environment variables');
+        }
+        const token = jwt.sign(
+            { userId: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+        
+        // Redirect to dashboard with token
+        res.redirect(`/dashboard.html?token=${token}&user=${encodeURIComponent(JSON.stringify({
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email
+        }))}`);
+        
+    } catch (error) {
+        console.error('Google OAuth Error:', error);
+        res.redirect('/login.html?error=oauth_failed');
     }
 });
 
