@@ -632,6 +632,93 @@ app.get('/auth/google/callback', authLimiter, requireMongoConnection, async (req
     }
 });
 
+// POST endpoint for Google OAuth callback (used by callback page)
+app.post('/api/auth/google/callback', authLimiter, requireMongoConnection, async (req, res) => {
+    try {
+        const { code, redirectUri } = req.body;
+        
+        if (!code) {
+            return res.status(400).json({
+                success: false,
+                error: 'Authorization code not provided'
+            });
+        }
+        
+        // Exchange authorization code for access token
+        const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
+            code,
+            client_id: GOOGLE_CLIENT_ID,
+            client_secret: GOOGLE_CLIENT_SECRET,
+            redirect_uri: redirectUri || `${req.protocol}://${req.get('host')}/auth/google/callback`,
+            grant_type: 'authorization_code'
+        });
+        
+        const { access_token } = tokenResponse.data;
+        
+        // Get user info from Google
+        const userInfoResponse = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        });
+        
+        const googleUser = userInfoResponse.data;
+        
+        // Check if user exists in database
+        let user = await User.findOne({ email: googleUser.email });
+        
+        if (!user) {
+            // Create new user
+            const nameParts = googleUser.name.split(' ');
+            user = new User({
+                firstName: nameParts[0] || 'User',
+                lastName: nameParts.slice(1).join(' ') || 'Account',
+                email: googleUser.email,
+                password: await bcrypt.hash(Math.random().toString(36), 12), // Random password for OAuth users
+                dateOfBirth: new Date('2000-01-01'), // Default DOB for OAuth users
+                googleId: googleUser.id,
+                credits: 100 // Initial credits for new users
+            });
+            await user.save();
+            console.log('✅ New Google OAuth user created:', user.email);
+        }
+        
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
+        
+        // Generate JWT token
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined in environment variables');
+        }
+        const token = jwt.sign(
+            { userId: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+        
+        // Return token and user data
+        res.json({
+            success: true,
+            token: token,
+            user: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                credits: user.credits || 0
+            }
+        });
+        
+    } catch (error) {
+        console.error('Google OAuth Error:', error.message);
+        res.status(400).json({
+            success: false,
+            error: error.response?.data?.error_description || 'Authentication failed. Please try again.'
+        });
+    }
+});
+
 // ===== NEW FEATURES =====
 
 // Get total users count
