@@ -16,94 +16,64 @@
             -webkit-touch-callout: none;
         }
         
-        /* Advanced Dashboard Styles - 8K Optimized with Hacker Vibe */
+        /* Professional Dashboard Styles - Black & White Theme */
         body {
             overflow-x: hidden;
             font-smooth: always;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            background: #000000;
+            background: #0a0a0a;
             position: relative;
+            color: #e0e0e0;
         }
         
-        /* Matrix Rain Background */
-        #matrixCanvas {
+        /* Subtle Grid Background */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.15;
+            opacity: 0.03;
             pointer-events: none;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
         }
         
-        /* Scan Line Effect */
+        /* Remove Matrix Canvas and Scan Line - not professional */
+        #matrixCanvas,
         .scan-line {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.8), transparent);
-            z-index: 9999;
-            pointer-events: none;
-            animation: scanLine 3s linear infinite;
+            display: none;
         }
         
-        @keyframes scanLine {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(100vh); }
-        }
-        
-        /* Glitch Effect for Headers */
-        .glitch {
-            position: relative;
-            animation: glitchText 3s infinite;
-        }
-        
-        @keyframes glitchText {
-            0%, 90%, 100% { text-shadow: 0 0 10px rgba(0, 255, 136, 0.8); }
-            92% { 
-                text-shadow: 
-                    -2px 0 #ff00ff,
-                    2px 0 #00ffff,
-                    0 0 20px rgba(0, 255, 136, 1);
-                transform: translate(-2px, 0);
-            }
-            94% { 
-                text-shadow: 
-                    2px 0 #ff00ff,
-                    -2px 0 #00ffff,
-                    0 0 20px rgba(0, 255, 136, 1);
-                transform: translate(2px, 0);
-            }
-        }
-        
-        /* Terminal Style Text */
-        .terminal-text {
-            font-family: 'Courier New', monospace;
-            color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        /* Professional Header Text */
+        .professional-text {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
         
         .dashboard-container {
             max-width: 1400px;
             margin: 30px auto;
             padding: 20px;
-            perspective: 2000px;
         }
         
-        /* Security Header */
+        /* Professional Header */
         .security-header {
-            background: linear-gradient(135deg, rgba(20, 20, 40, 0.95), rgba(40, 40, 80, 0.95));
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 25px 35px;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px 28px;
             margin-bottom: 25px;
-            border: 2px solid rgba(0, 255, 136, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.1), 0 0 50px rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
             position: relative;
             overflow: hidden;
         }
@@ -115,11 +85,11 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
-            animation: scan 3s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            animation: shine 3s infinite;
         }
         
-        @keyframes scan {
+        @keyframes shine {
             0% { left: -100%; }
             100% { left: 100%; }
         }
@@ -138,34 +108,29 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: #00ff88;
-            font-weight: 600;
+            color: #ffffff;
+            font-weight: 500;
             font-size: 14px;
         }
         
         .status-indicator {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 10px #00ff88;
-            animation: pulse-glow 2s infinite;
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: pulse-professional 2s infinite;
         }
         
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 10px #00ff88; }
-            50% { box-shadow: 0 0 20px #00ff88, 0 0 30px #00ff88; }
+        @keyframes pulse-professional {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
         
         .shield-icon {
             font-size: 24px;
-            color: #00ff88;
-            animation: rotate-shield 10s linear infinite;
-        }
-        
-        @keyframes rotate-shield {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            color: #ffffff;
+            opacity: 0.9;
         }
         
         /* Dashboard Grid */
@@ -176,15 +141,15 @@
             margin-bottom: 25px;
         }
         
-        /* Security Cards */
+        /* Professional Security Cards */
         .security-card {
-            background: linear-gradient(135deg, rgba(20, 20, 40, 0.9), rgba(40, 40, 80, 0.9));
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 25px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #1a1a1a, #222222);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
@@ -192,23 +157,23 @@
         .security-card::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
-            animation: glow-pulse 4s infinite;
-        }
-        
-        @keyframes glow-pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .security-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 255, 136, 0.5);
-            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.2);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        .security-card:hover::before {
+            opacity: 1;
         }
         
         .card-header {
@@ -224,13 +189,13 @@
             width: 45px;
             height: 45px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             color: #0a0a0a;
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
         }
         
         .card-title {
@@ -250,7 +215,7 @@
         .card-value {
             font-size: 32px;
             font-weight: 800;
-            color: #00ff88;
+            color: #ffffff;
             margin: 10px 0;
             font-family: 'Courier New', monospace;
         }
@@ -264,8 +229,8 @@
         }
         
         .protection-item {
-            background: rgba(0, 255, 136, 0.05);
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             padding: 15px;
             text-align: center;
@@ -273,13 +238,13 @@
         }
         
         .protection-item:hover {
-            background: rgba(0, 255, 136, 0.1);
-            border-color: rgba(0, 255, 136, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
         }
         
         .protection-icon {
             font-size: 28px;
-            color: #00ff88;
+            color: #ffffff;
             margin-bottom: 8px;
         }
         
@@ -291,7 +256,7 @@
         }
         
         .protection-status {
-            color: #00ff88;
+            color: #ffffff;
             font-size: 14px;
             font-weight: 700;
             margin-top: 5px;
@@ -303,7 +268,7 @@
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 30px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             margin-bottom: 25px;
         }
         
@@ -311,14 +276,14 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 36px;
             color: #0a0a0a;
             margin: 0 auto 20px;
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
         }
         
         .user-details {
@@ -327,7 +292,7 @@
         }
         
         .user-details strong {
-            color: #00ff88;
+            color: #ffffff;
         }
         
         /* Action Buttons */
@@ -354,14 +319,14 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
             color: #0a0a0a;
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.5);
         }
         
         .btn-danger {
@@ -378,11 +343,11 @@
         /* Real-time Monitor */
         .monitor-display {
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             padding: 15px;
             font-family: 'Courier New', monospace;
-            color: #00ff88;
+            color: #ffffff;
             font-size: 13px;
             line-height: 1.8;
             max-height: 200px;
@@ -498,7 +463,7 @@
             height: 100vh;
             background: linear-gradient(180deg, rgba(20, 20, 40, 0.98), rgba(10, 10, 20, 0.98));
             backdrop-filter: blur(30px);
-            border-right: 2px solid rgba(0, 255, 136, 0.2);
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
             padding: 30px 0;
             z-index: 1000;
             overflow-y: auto;
@@ -507,7 +472,7 @@
         
         .sidebar-header {
             padding: 0 25px 30px;
-            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
         }
         
@@ -515,18 +480,18 @@
             width: 60px;
             height: 60px;
             margin: 0 auto 15px;
-            background: linear-gradient(135deg, #00ff88, #667eea);
+            background: linear-gradient(135deg, #ffffff, #cccccc);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 30px;
             color: #0a0a0a;
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
         }
         
         .sidebar-title {
-            color: #00ff88;
+            color: #ffffff;
             font-size: 20px;
             font-weight: 800;
             margin: 0;
@@ -549,15 +514,15 @@
         }
         
         .nav-item:hover {
-            background: rgba(0, 255, 136, 0.1);
-            color: #00ff88;
-            border-left-color: #00ff88;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-left-color: #ffffff;
         }
         
         .nav-item.active {
-            background: rgba(0, 255, 136, 0.15);
-            color: #00ff88;
-            border-left-color: #00ff88;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border-left-color: #ffffff;
         }
         
         .nav-item i {
@@ -573,7 +538,7 @@
         .nav-section {
             padding: 0 25px;
             margin: 20px 0 10px;
-            color: rgba(0, 255, 136, 0.5);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
@@ -593,7 +558,7 @@
             left: 20px;
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
             border-radius: 12px;
             border: none;
             display: none;
@@ -601,7 +566,7 @@
             justify-content: center;
             cursor: pointer;
             z-index: 1001;
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
         }
         
         .menu-toggle i {
@@ -696,22 +661,22 @@
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <i class="fas fa-shield-alt shield-icon"></i>
                     <div>
-                        <h2 class="glitch terminal-text" style="color: #00ff88; margin: 0; font-size: 24px;">⚡ LEGEND SHOP SECURITY TERMINAL ⚡</h2>
-                        <p class="terminal-text" style="color: #00ff88; margin: 5px 0 0 0; font-size: 13px;">[SYSTEM STATUS: <span style="color: #0f0;">ONLINE</span>] [THREAT LEVEL: <span style="color: #0f0;">LOW</span>] [UPTIME: <span id="uptime">00:00:00</span>]</p>
+                        <h2 class="professional-text" style="color: #ffffff; margin: 0; font-size: 24px;">LEGEND SHOP Dashboard</h2>
+                        <p class="professional-text" style="color: #ffffff; margin: 5px 0 0 0; font-size: 13px;">System Status: <span style="color: #fff;">ONLINE</span>] Security: <span style="color: #fff;">LOW</span>] Uptime: <span id="uptime">00:00:00</span>]</p>
                     </div>
                 </div>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span class="terminal-text">FIREWALL: ACTIVE</span>
+                        <span class="professional-text">FIREWALL: ACTIVE</span>
                     </div>
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span class="terminal-text">IDS/IPS: ENABLED</span>
+                        <span class="professional-text">IDS/IPS: ENABLED</span>
                     </div>
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span class="terminal-text">SSL: SECURED</span>
+                        <span class="professional-text">SSL: SECURED</span>
                     </div>
                 </div>
             </div>
@@ -739,12 +704,12 @@
                 </div>
                 <div class="card-content">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div style="text-align: center; padding: 15px; background: rgba(0, 255, 136, 0.05); border-radius: 12px;">
-                            <div style="font-size: 28px; color: #00ff88; font-weight: 800;">0</div>
+                        <div style="text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #ffffff; font-weight: 800;">0</div>
                             <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">Total Orders</div>
                         </div>
                         <div style="text-align: center; padding: 15px; background: rgba(102, 126, 234, 0.05); border-radius: 12px;">
-                            <div style="font-size: 28px; color: #667eea; font-weight: 800;">$0</div>
+                            <div style="font-size: 28px; color: #cccccc; font-weight: 800;">$0</div>
                             <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">Total Spent</div>
                         </div>
                         <div style="text-align: center; padding: 15px; background: rgba(240, 147, 251, 0.05); border-radius: 12px;">
@@ -769,21 +734,21 @@
                 </div>
                 <div class="card-content">
                     <div style="color: #b0b0b0; line-height: 2.2;">
-                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
-                            <span><i class="fas fa-check-circle" style="color: #00ff88; margin-right: 8px;"></i>Email Verified</span>
-                            <span style="color: #00ff88; font-weight: 700;">YES</span>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <span><i class="fas fa-check-circle" style="color: #ffffff; margin-right: 8px;"></i>Email Verified</span>
+                            <span style="color: #ffffff; font-weight: 700;">YES</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
-                            <span><i class="fas fa-shield-alt" style="color: #00ff88; margin-right: 8px;"></i>2FA Enabled</span>
-                            <span style="color: #00ff88; font-weight: 700;">YES</span>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <span><i class="fas fa-shield-alt" style="color: #ffffff; margin-right: 8px;"></i>2FA Enabled</span>
+                            <span style="color: #ffffff; font-weight: 700;">YES</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
-                            <span><i class="fas fa-calendar" style="color: #00ff88; margin-right: 8px;"></i>Member Since</span>
-                            <span style="color: #00ff88; font-weight: 700;" id="memberSince">2024</span>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <span><i class="fas fa-calendar" style="color: #ffffff; margin-right: 8px;"></i>Member Since</span>
+                            <span style="color: #ffffff; font-weight: 700;" id="memberSince">2024</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; padding: 8px 0;">
-                            <span><i class="fas fa-star" style="color: #00ff88; margin-right: 8px;"></i>Account Status</span>
-                            <span style="color: #00ff88; font-weight: 700;">PREMIUM</span>
+                            <span><i class="fas fa-star" style="color: #ffffff; margin-right: 8px;"></i>Account Status</span>
+                            <span style="color: #ffffff; font-weight: 700;">PREMIUM</span>
                         </div>
                     </div>
                 </div>
@@ -799,16 +764,16 @@
                 </div>
                 <div class="card-content">
                     <div style="color: #b0b0b0; font-size: 13px; line-height: 2;">
-                        <div style="padding: 10px; background: rgba(0, 255, 136, 0.05); border-radius: 8px; margin-bottom: 8px;">
+                        <div style="padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin-bottom: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-sign-in-alt" style="color: #00ff88; margin-right: 8px;"></i>Logged in</span>
-                                <span style="color: #00ff88; font-size: 11px;">Just now</span>
+                                <span><i class="fas fa-sign-in-alt" style="color: #ffffff; margin-right: 8px;"></i>Logged in</span>
+                                <span style="color: #ffffff; font-size: 11px;">Just now</span>
                             </div>
                         </div>
                         <div style="padding: 10px; background: rgba(102, 126, 234, 0.05); border-radius: 8px; margin-bottom: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-shield-alt" style="color: #667eea; margin-right: 8px;"></i>Account secured</span>
-                                <span style="color: #667eea; font-size: 11px;">2 mins ago</span>
+                                <span><i class="fas fa-shield-alt" style="color: #cccccc; margin-right: 8px;"></i>Account secured</span>
+                                <span style="color: #cccccc; font-size: 11px;">2 mins ago</span>
                             </div>
                         </div>
                         <div style="padding: 10px; background: rgba(240, 147, 251, 0.05); border-radius: 8px;">
@@ -885,18 +850,18 @@
                 <div class="card-content">
                     <div class="card-value">99.8%</div>
                     <p style="color: #b0b0b0; margin: 10px 0;">System Integrity</p>
-                    <div style="background: rgba(0, 255, 136, 0.1); border-radius: 10px; padding: 12px; margin-top: 15px;">
+                    <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px; margin-top: 15px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                             <span style="color: #b0b0b0; font-size: 13px;">Authentication</span>
-                            <span style="color: #00ff88; font-weight: 700;">100%</span>
+                            <span style="color: #ffffff; font-weight: 700;">100%</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                             <span style="color: #b0b0b0; font-size: 13px;">Data Protection</span>
-                            <span style="color: #00ff88; font-weight: 700;">99%</span>
+                            <span style="color: #ffffff; font-weight: 700;">99%</span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: #b0b0b0; font-size: 13px;">Network Security</span>
-                            <span style="color: #00ff88; font-weight: 700;">100%</span>
+                            <span style="color: #ffffff; font-weight: 700;">100%</span>
                         </div>
                     </div>
                 </div>
@@ -912,10 +877,10 @@
                 </div>
                 <div class="card-content">
                     <div style="color: #b0b0b0; line-height: 2;">
-                        <p style="margin: 5px 0;"><strong style="color: #00ff88;">Status:</strong> Active & Secure</p>
-                        <p style="margin: 5px 0;"><strong style="color: #00ff88;">IP:</strong> <span id="userIP">Fetching...</span></p>
-                        <p style="margin: 5px 0;"><strong style="color: #00ff88;">Device:</strong> <span id="userDevice">Secure Browser</span></p>
-                        <p style="margin: 5px 0;"><strong style="color: #00ff88;">Location:</strong> <span id="userLocation">Protected</span></p>
+                        <p style="margin: 5px 0;"><strong style="color: #ffffff;">Status:</strong> Active & Secure</p>
+                        <p style="margin: 5px 0;"><strong style="color: #ffffff;">IP:</strong> <span id="userIP">Fetching...</span></p>
+                        <p style="margin: 5px 0;"><strong style="color: #ffffff;">Device:</strong> <span id="userDevice">Secure Browser</span></p>
+                        <p style="margin: 5px 0;"><strong style="color: #ffffff;">Location:</strong> <span id="userLocation">Protected</span></p>
                     </div>
                 </div>
             </div>
@@ -930,10 +895,10 @@
                 </div>
                 <div class="card-content">
                     <div style="display: grid; gap: 10px;">
-                        <button onclick="navigateTo('shop')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; border-radius: 10px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <button onclick="navigateTo('shop')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #ffffff, #e0e0e0); border: none; border-radius: 10px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fas fa-shopping-bag"></i> Browse Shop
                         </button>
-                        <button onclick="navigateTo('orders')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #5568d3); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102,126,234,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <button onclick="navigateTo('orders')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #cccccc, #5568d3); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102,126,234,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fas fa-box"></i> View Orders
                         </button>
                         <button onclick="navigateTo('profile')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #f093fb, #d66fe6); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(240,147,251,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
@@ -957,19 +922,19 @@
                 <div class="card-content">
                     <div style="color: #b0b0b0; line-height: 2.5;">
                         <div class="setting-item" onclick="toggleNotifications()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
-                            <i class="fas fa-bell" style="color: #00ff88; margin-right: 10px;"></i>
+                            <i class="fas fa-bell" style="color: #ffffff; margin-right: 10px;"></i>
                             <span>Notifications</span>
-                            <span style="float: right; color: #00ff88;" id="notifStatus">ON</span>
+                            <span style="float: right; color: #ffffff;" id="notifStatus">ON</span>
                         </div>
                         <div class="setting-item" onclick="toggle2FA()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
-                            <i class="fas fa-shield-alt" style="color: #00ff88; margin-right: 10px;"></i>
+                            <i class="fas fa-shield-alt" style="color: #ffffff; margin-right: 10px;"></i>
                             <span>Two-Factor Auth</span>
-                            <span style="float: right; color: #00ff88;" id="2faStatus">ENABLED</span>
+                            <span style="float: right; color: #ffffff;" id="2faStatus">ENABLED</span>
                         </div>
                         <div class="setting-item" onclick="viewProfile()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
-                            <i class="fas fa-user-circle" style="color: #00ff88; margin-right: 10px;"></i>
+                            <i class="fas fa-user-circle" style="color: #ffffff; margin-right: 10px;"></i>
                             <span>Edit Profile</span>
-                            <i class="fas fa-chevron-right" style="float: right; color: #00ff88;"></i>
+                            <i class="fas fa-chevron-right" style="float: right; color: #ffffff;"></i>
                         </div>
                         <div class="setting-item" style="cursor: pointer; padding: 12px; background: rgba(255, 68, 68, 0.1); border-radius: 10px; margin-top: 15px; border: 1px solid rgba(255, 68, 68, 0.3); transition: all 0.3s;" onclick="logout()" onmouseover="this.style.background='rgba(255,68,68,0.2)'" onmouseout="this.style.background='rgba(255,68,68,0.1)'">
                             <i class="fas fa-sign-out-alt" style="color: #ff4444; margin-right: 10px;"></i>
@@ -984,21 +949,21 @@
         <!-- ==================== ADVANCED HACKER FEATURES ==================== -->
         <div style="margin-top: 40px; margin-bottom: 40px;">
             <div style="text-align: center; margin-bottom: 30px;">
-                <h2 class="glitch terminal-text" style="font-size: 32px; font-weight: 800; margin: 0;">⚡ TERMINAL & MONITORING ⚡</h2>
-                <p class="terminal-text" style="margin: 10px 0 0 0;">[AUTHORIZED ACCESS ONLY]</p>
+                <h2 class="professional-text" style="font-size: 32px; font-weight: 800; margin: 0;">⚡ TERMINAL & MONITORING ⚡</h2>
+                <p class="professional-text" style="margin: 10px 0 0 0;">[AUTHORIZED ACCESS ONLY]</p>
             </div>
             
             <div class="dashboard-grid">
                 <!-- Terminal Command Interface -->
                 <div class="security-card" style="grid-column: span 2;">
                     <div class="card-header">
-                        <div class="card-icon" style="background: linear-gradient(135deg, #00ff88, #00cc6a);">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #ffffff, #e0e0e0);">
                             <i class="fas fa-terminal"></i>
                         </div>
-                        <h3 class="card-title terminal-text">SYSTEM TERMINAL</h3>
+                        <h3 class="card-title professional-text">SYSTEM TERMINAL</h3>
                     </div>
                     <div class="card-content">
-                        <div id="terminalOutput" style="background: #000; border: 2px solid #00ff88; border-radius: 8px; padding: 15px; min-height: 250px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; color: #00ff88; font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
+                        <div id="terminalOutput" style="background: #000; border: 2px solid #ffffff; border-radius: 8px; padding: 15px; min-height: 250px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; color: #ffffff; font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
                             <div>[SYSTEM] Legend Shop Security Terminal v2.0</div>
                             <div>[INFO] System initialized successfully</div>
                             <div>[OK] All security protocols active</div>
@@ -1006,16 +971,16 @@
                             <div style="margin-top: 10px;">root@legendshop:~$ <span id="terminalCursor" style="animation: blink 1s infinite;">_</span></div>
                         </div>
                         <div style="display: flex; gap: 10px;">
-                            <input type="text" id="terminalInput" placeholder="Enter command..." style="flex: 1; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 2px solid #00ff88; border-radius: 8px; color: #00ff88; font-size: 14px; font-family: 'Courier New', monospace;" onkeypress="if(event.key==='Enter') executeCommand()">
-                            <button onclick="executeCommand()" style="padding: 12px 24px; background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; border-radius: 8px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <input type="text" id="terminalInput" placeholder="Enter command..." style="flex: 1; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 2px solid #ffffff; border-radius: 8px; color: #ffffff; font-size: 14px; font-family: 'Courier New', monospace;" onkeypress="if(event.key==='Enter') executeCommand()">
+                            <button onclick="executeCommand()" style="padding: 12px 24px; background: linear-gradient(135deg, #ffffff, #e0e0e0); border: none; border-radius: 8px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                                 <i class="fas fa-play"></i> EXECUTE
                             </button>
                         </div>
                         <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button onclick="quickCommand('status')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">status</button>
-                            <button onclick="quickCommand('scan')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">scan</button>
-                            <button onclick="quickCommand('firewall')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">firewall</button>
-                            <button onclick="quickCommand('trace')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">trace</button>
+                            <button onclick="quickCommand('status')" style="padding: 8px 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid #ffffff; border-radius: 6px; color: #ffffff; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">status</button>
+                            <button onclick="quickCommand('scan')" style="padding: 8px 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid #ffffff; border-radius: 6px; color: #ffffff; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">scan</button>
+                            <button onclick="quickCommand('firewall')" style="padding: 8px 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid #ffffff; border-radius: 6px; color: #ffffff; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">firewall</button>
+                            <button onclick="quickCommand('trace')" style="padding: 8px 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid #ffffff; border-radius: 6px; color: #ffffff; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">trace</button>
                             <button onclick="quickCommand('clear')" style="padding: 8px 16px; background: rgba(255, 68, 68, 0.1); border: 1px solid #ff4444; border-radius: 6px; color: #ff4444; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">clear</button>
                         </div>
                     </div>
@@ -1024,28 +989,28 @@
                 <!-- Network Traffic Monitor -->
                 <div class="security-card">
                     <div class="card-header">
-                        <div class="card-icon" style="background: linear-gradient(135deg, #667eea, #5568d3);">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #cccccc, #5568d3);">
                             <i class="fas fa-network-wired"></i>
                         </div>
-                        <h3 class="card-title terminal-text">NETWORK TRAFFIC</h3>
+                        <h3 class="card-title professional-text">NETWORK TRAFFIC</h3>
                     </div>
                     <div class="card-content">
-                        <div style="background: #000; border: 2px solid #667eea; border-radius: 8px; padding: 15px; min-height: 250px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; color: #667eea; font-size: 12px; line-height: 1.8;" id="networkLog">
+                        <div style="background: #000; border: 2px solid #cccccc; border-radius: 8px; padding: 15px; min-height: 250px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; color: #cccccc; font-size: 12px; line-height: 1.8;" id="networkLog">
                             <div>[NETWORK] Monitoring active connections...</div>
-                            <div style="color: #00ff88;">[IN] 192.168.1.100:443 → HTTPS (SECURE)</div>
-                            <div style="color: #00ff88;">[IN] 192.168.1.100:80 → HTTP (REDIRECTED)</div>
+                            <div style="color: #ffffff;">[IN] 192.168.1.100:443 → HTTPS (SECURE)</div>
+                            <div style="color: #ffffff;">[IN] 192.168.1.100:80 → HTTP (REDIRECTED)</div>
                             <div style="color: #ff4444;">[BLOCKED] 45.123.45.67:22 → SSH (UNAUTHORIZED)</div>
-                            <div style="color: #00ff88;">[OUT] API.BINLIST.NET:443 → HTTPS (SECURE)</div>
+                            <div style="color: #ffffff;">[OUT] API.BINLIST.NET:443 → HTTPS (SECURE)</div>
                             <div style="color: #feca57;">[WARN] HIGH TRAFFIC DETECTED</div>
                         </div>
                         <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: 'Courier New', monospace; font-size: 12px;">
-                            <div style="padding: 10px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; text-align: center;">
-                                <div style="color: #00ff88; font-size: 20px; font-weight: 800;" id="packetsIn">0</div>
-                                <div style="color: #00ff88;">PACKETS IN</div>
+                            <div style="padding: 10px; background: rgba(255, 255, 255, 0.1); border: 1px solid #ffffff; border-radius: 6px; text-align: center;">
+                                <div style="color: #ffffff; font-size: 20px; font-weight: 800;" id="packetsIn">0</div>
+                                <div style="color: #ffffff;">PACKETS IN</div>
                             </div>
-                            <div style="padding: 10px; background: rgba(102, 126, 234, 0.1); border: 1px solid #667eea; border-radius: 6px; text-align: center;">
-                                <div style="color: #667eea; font-size: 20px; font-weight: 800;" id="packetsOut">0</div>
-                                <div style="color: #667eea;">PACKETS OUT</div>
+                            <div style="padding: 10px; background: rgba(102, 126, 234, 0.1); border: 1px solid #cccccc; border-radius: 6px; text-align: center;">
+                                <div style="color: #cccccc; font-size: 20px; font-weight: 800;" id="packetsOut">0</div>
+                                <div style="color: #cccccc;">PACKETS OUT</div>
                             </div>
                         </div>
                     </div>
@@ -1057,33 +1022,33 @@
                         <div class="card-icon" style="background: linear-gradient(135deg, #f093fb, #d66fe6);">
                             <i class="fas fa-server"></i>
                         </div>
-                        <h3 class="card-title terminal-text">SYSTEM RESOURCES</h3>
+                        <h3 class="card-title professional-text">SYSTEM RESOURCES</h3>
                     </div>
                     <div class="card-content">
                         <div style="margin-bottom: 20px;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span class="terminal-text" style="font-size: 13px;">CPU USAGE</span>
-                                <span class="terminal-text" style="font-size: 13px; color: #00ff88;" id="cpuValue">45%</span>
+                                <span class="professional-text" style="font-size: 13px;">CPU USAGE</span>
+                                <span class="professional-text" style="font-size: 13px; color: #ffffff;" id="cpuValue">45%</span>
                             </div>
-                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #00ff88;">
-                                <div id="cpuBar" style="width: 45%; height: 100%; background: linear-gradient(90deg, #00ff88, #00cc6a); transition: width 0.5s;"></div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span class="terminal-text" style="font-size: 13px;">MEMORY USAGE</span>
-                                <span class="terminal-text" style="font-size: 13px; color: #667eea;" id="memValue">62%</span>
-                            </div>
-                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #667eea;">
-                                <div id="memBar" style="width: 62%; height: 100%; background: linear-gradient(90deg, #667eea, #5568d3); transition: width 0.5s;"></div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #ffffff;">
+                                <div id="cpuBar" style="width: 45%; height: 100%; background: linear-gradient(90deg, #ffffff, #e0e0e0); transition: width 0.5s;"></div>
                             </div>
                         </div>
                         
                         <div style="margin-bottom: 20px;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span class="terminal-text" style="font-size: 13px;">DISK USAGE</span>
-                                <span class="terminal-text" style="font-size: 13px; color: #f093fb;" id="diskValue">38%</span>
+                                <span class="professional-text" style="font-size: 13px;">MEMORY USAGE</span>
+                                <span class="professional-text" style="font-size: 13px; color: #cccccc;" id="memValue">62%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #cccccc;">
+                                <div id="memBar" style="width: 62%; height: 100%; background: linear-gradient(90deg, #cccccc, #5568d3); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="professional-text" style="font-size: 13px;">DISK USAGE</span>
+                                <span class="professional-text" style="font-size: 13px; color: #f093fb;" id="diskValue">38%</span>
                             </div>
                             <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #f093fb;">
                                 <div id="diskBar" style="width: 38%; height: 100%; background: linear-gradient(90deg, #f093fb, #d66fe6); transition: width 0.5s;"></div>
@@ -1092,8 +1057,8 @@
                         
                         <div>
                             <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span class="terminal-text" style="font-size: 13px;">NETWORK I/O</span>
-                                <span class="terminal-text" style="font-size: 13px; color: #feca57;" id="netValue">28%</span>
+                                <span class="professional-text" style="font-size: 13px;">NETWORK I/O</span>
+                                <span class="professional-text" style="font-size: 13px; color: #feca57;" id="netValue">28%</span>
                             </div>
                             <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #feca57;">
                                 <div id="netBar" style="width: 28%; height: 100%; background: linear-gradient(90deg, #feca57, #e1b12c); transition: width 0.5s;"></div>
@@ -1107,7 +1072,7 @@
         <!-- ==================== TOOLS SECTION ==================== -->
         <div style="margin-top: 40px;">
             <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="color: #00ff88; font-size: 32px; font-weight: 800; margin: 0;">🛠️ Advanced Tools</h2>
+                <h2 style="color: #ffffff; font-size: 32px; font-weight: 800; margin: 0;">🛠️ Advanced Tools</h2>
                 <p style="color: #b0b0b0; margin: 10px 0 0 0;">Professional utilities for power users</p>
             </div>
             
@@ -1115,15 +1080,15 @@
                 <!-- BIN Lookup Tool -->
                 <div class="security-card">
                     <div class="card-header">
-                        <div class="card-icon" style="background: linear-gradient(135deg, #667eea, #5568d3);">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #cccccc, #5568d3);">
                             <i class="fas fa-credit-card"></i>
                         </div>
                         <h3 class="card-title">BIN Lookup</h3>
                     </div>
                     <div class="card-content">
                         <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Check credit card BIN information</p>
-                        <input type="text" id="binInput" placeholder="Enter first 6-8 digits" maxlength="8" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px;" onkeypress="if(event.key==='Enter') lookupBIN()">
-                        <button onclick="lookupBIN()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #5568d3); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102,126,234,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <input type="text" id="binInput" placeholder="Enter first 6-8 digits" maxlength="8" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px;" onkeypress="if(event.key==='Enter') lookupBIN()">
+                        <button onclick="lookupBIN()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #cccccc, #5568d3); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102,126,234,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fas fa-search"></i> Lookup BIN
                         </button>
                         <div id="binResult" style="margin-top: 15px; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none;">
@@ -1233,7 +1198,7 @@
                         <div id="pwdResult" style="padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none;">
                             <div style="color: #ff6b6b; font-size: 14px; font-family: 'Courier New', monospace; word-break: break-all; display: flex; justify-content: space-between; align-items: center;">
                                 <span id="pwdText"></span>
-                                <button onclick="copyPassword()" style="background: none; border: none; color: #00ff88; cursor: pointer; font-size: 16px; padding: 5px;" title="Copy to clipboard">
+                                <button onclick="copyPassword()" style="background: none; border: none; color: #ffffff; cursor: pointer; font-size: 16px; padding: 5px;" title="Copy to clipboard">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
@@ -1257,7 +1222,7 @@
                         <div id="uuidResult" style="padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none;">
                             <div style="color: #1dd1a1; font-size: 13px; font-family: 'Courier New', monospace; word-break: break-all; display: flex; justify-content: space-between; align-items: center;">
                                 <span id="uuidText"></span>
-                                <button onclick="copyUUID()" style="background: none; border: none; color: #00ff88; cursor: pointer; font-size: 16px; padding: 5px;" title="Copy to clipboard">
+                                <button onclick="copyUUID()" style="background: none; border: none; color: #ffffff; cursor: pointer; font-size: 16px; padding: 5px;" title="Copy to clipboard">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
@@ -1526,7 +1491,7 @@
                 statusEl.style.color = '#ff4444';
             } else {
                 statusEl.textContent = 'ON';
-                statusEl.style.color = '#00ff88';
+                statusEl.style.color = '#ffffff';
             }
         }
         
@@ -1537,7 +1502,7 @@
                 statusEl.style.color = '#ff4444';
             } else {
                 statusEl.textContent = 'ENABLED';
-                statusEl.style.color = '#00ff88';
+                statusEl.style.color = '#ffffff';
             }
         }
         
@@ -1567,7 +1532,7 @@
         // Console warning
         console.log('%c⚠️ WARNING ⚠️', 'color: #ff4444; font-size: 20px; font-weight: bold;');
         console.log('%cThis is a browser feature intended for developers. If someone told you to copy-paste something here, it is a scam and will give them access to your account.', 'font-size: 14px;');
-        console.log('%cSee https://legendbl.tech for more information.', 'font-size: 12px; color: #00ff88;');
+        console.log('%cSee https://legendbl.tech for more information.', 'font-size: 12px; color: #ffffff;');
         
         // ==================== EXTREME PROTECTION ====================
         
@@ -1626,7 +1591,7 @@
             matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
             
-            matrixCtx.fillStyle = '#00ff88';
+            matrixCtx.fillStyle = '#ffffff';
             matrixCtx.font = fontSize + 'px monospace';
             
             for (let i = 0; i < drops.length; i++) {
@@ -1799,13 +1764,13 @@
         let packetsOut = 0;
         
         const networkMessages = [
-            { type: 'in', color: '#00ff88', msg: '[IN] HTTPS:443 → SECURE CONNECTION' },
-            { type: 'out', color: '#667eea', msg: '[OUT] API:443 → DATA TRANSMISSION' },
+            { type: 'in', color: '#ffffff', msg: '[IN] HTTPS:443 → SECURE CONNECTION' },
+            { type: 'out', color: '#cccccc', msg: '[OUT] API:443 → DATA TRANSMISSION' },
             { type: 'blocked', color: '#ff4444', msg: '[BLOCKED] UNAUTHORIZED ACCESS ATTEMPT' },
-            { type: 'in', color: '#00ff88', msg: '[IN] DNS:53 → QUERY RESOLVED' },
-            { type: 'out', color: '#667eea', msg: '[OUT] CDN:443 → ASSET FETCH' },
+            { type: 'in', color: '#ffffff', msg: '[IN] DNS:53 → QUERY RESOLVED' },
+            { type: 'out', color: '#cccccc', msg: '[OUT] CDN:443 → ASSET FETCH' },
             { type: 'warn', color: '#feca57', msg: '[WARN] HIGH BANDWIDTH USAGE' },
-            { type: 'in', color: '#00ff88', msg: '[IN] WSS:443 → WEBSOCKET OPEN' },
+            { type: 'in', color: '#ffffff', msg: '[IN] WSS:443 → WEBSOCKET OPEN' },
             { type: 'blocked', color: '#ff4444', msg: '[BLOCKED] SQL INJECTION ATTEMPT' }
         ];
         
@@ -1892,7 +1857,7 @@
                 
                 const data = await response.json();
                 resultContent.innerHTML = `
-                    <strong style="color: #00ff88;">✓ BIN Information:</strong><br>
+                    <strong style="color: #ffffff;">✓ BIN Information:</strong><br>
                     <strong>Brand:</strong> ${data.scheme || 'Unknown'}<br>
                     <strong>Type:</strong> ${data.type || 'Unknown'}<br>
                     <strong>Category:</strong> ${data.brand || 'Unknown'}<br>
@@ -1921,7 +1886,7 @@
                 if (data.error) throw new Error(data.reason);
                 
                 resultContent.innerHTML = `
-                    <strong style="color: #00ff88;">✓ IP Information:</strong><br>
+                    <strong style="color: #ffffff;">✓ IP Information:</strong><br>
                     <strong>IP:</strong> ${data.ip}<br>
                     <strong>City:</strong> ${data.city || 'Unknown'}<br>
                     <strong>Region:</strong> ${data.region || 'Unknown'}<br>
