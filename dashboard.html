@@ -662,7 +662,7 @@
                     <i class="fas fa-shield-alt shield-icon"></i>
                     <div>
                         <h2 class="professional-text" style="color: #ffffff; margin: 0; font-size: 24px;">LEGEND SHOP Dashboard</h2>
-                        <p class="professional-text" style="color: #ffffff; margin: 5px 0 0 0; font-size: 13px;">System Status: <span style="color: #fff;">ONLINE</span>] Security: <span style="color: #fff;">LOW</span>] Uptime: <span id="uptime">00:00:00</span>]</p>
+                        <p class="professional-text" style="color: #ffffff; margin: 5px 0 0 0; font-size: 13px;">System Status: <span style="color: #fff;">Online</span> | Security: <span style="color: #fff;">Secure</span> | Uptime: <span id="uptime">00:00:00</span></p>
                     </div>
                 </div>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
@@ -895,7 +895,7 @@
                 </div>
                 <div class="card-content">
                     <div style="display: grid; gap: 10px;">
-                        <button onclick="navigateTo('shop')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #ffffff, #e0e0e0); border: none; border-radius: 10px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <button onclick="navigateTo('shop')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #ffffff, #e0e0e0); border: none; border-radius: 10px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,255,255,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fas fa-shopping-bag"></i> Browse Shop
                         </button>
                         <button onclick="navigateTo('orders')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #cccccc, #5568d3); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102,126,234,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
@@ -921,17 +921,17 @@
                 </div>
                 <div class="card-content">
                     <div style="color: #b0b0b0; line-height: 2.5;">
-                        <div class="setting-item" onclick="toggleNotifications()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
+                        <div class="setting-item" onclick="toggleNotifications()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
                             <i class="fas fa-bell" style="color: #ffffff; margin-right: 10px;"></i>
                             <span>Notifications</span>
                             <span style="float: right; color: #ffffff;" id="notifStatus">ON</span>
                         </div>
-                        <div class="setting-item" onclick="toggle2FA()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
+                        <div class="setting-item" onclick="toggle2FA()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
                             <i class="fas fa-shield-alt" style="color: #ffffff; margin-right: 10px;"></i>
                             <span>Two-Factor Auth</span>
                             <span style="float: right; color: #ffffff;" id="2faStatus">ENABLED</span>
                         </div>
-                        <div class="setting-item" onclick="viewProfile()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'">
+                        <div class="setting-item" onclick="viewProfile()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
                             <i class="fas fa-user-circle" style="color: #ffffff; margin-right: 10px;"></i>
                             <span>Edit Profile</span>
                             <i class="fas fa-chevron-right" style="float: right; color: #ffffff;"></i>
@@ -972,7 +972,7 @@
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <input type="text" id="terminalInput" placeholder="Enter command..." style="flex: 1; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 2px solid #ffffff; border-radius: 8px; color: #ffffff; font-size: 14px; font-family: 'Courier New', monospace;" onkeypress="if(event.key==='Enter') executeCommand()">
-                            <button onclick="executeCommand()" style="padding: 12px 24px; background: linear-gradient(135deg, #ffffff, #e0e0e0); border: none; border-radius: 8px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <button onclick="executeCommand()" style="padding: 12px 24px; background: linear-gradient(135deg, #ffffff, #e0e0e0); border: none; border-radius: 8px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,255,255,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                                 <i class="fas fa-play"></i> EXECUTE
                             </button>
                         </div>
