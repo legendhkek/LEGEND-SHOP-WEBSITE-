@@ -435,38 +435,14 @@
         </div>
     </div>
 
-    <!-- Load Security Utilities -->
-    <script src="security-utils.js"></script>
-    
     <script>
         // Configuration
         const API_BASE = 'cc-checker/';
         let csrfToken = null;
         let userToken = null;
-        let rateLimiter = null;
-        let activityMonitor = null;
-        let deviceFingerprint = null;
 
         // Initialize on page load
         window.addEventListener('load', async function() {
-            // Initialize security features
-            rateLimiter = new ClientRateLimiter(10, 60000); // 10 requests per minute
-            activityMonitor = new ActivityMonitor();
-            
-            // Generate device fingerprint
-            deviceFingerprint = await DeviceFingerprint.generate();
-            console.log('Device fingerprint:', deviceFingerprint);
-            
-            // Run bot detection
-            const botDetector = new BotDetector();
-            const isBot = await botDetector.isBot();
-            if (isBot) {
-                const report = botDetector.getReport();
-                console.warn('Bot detected:', report);
-                showError('Automated access detected. Please verify you are human.');
-                return;
-            }
-            
             // Check authentication
             userToken = localStorage.getItem('token');
             if (!userToken) {
@@ -553,20 +529,6 @@
                 showError('Security token not initialized. Please refresh the page.');
                 return;
             }
-            
-            // Check rate limit
-            const rateCheck = rateLimiter.canMakeRequest();
-            if (!rateCheck.allowed) {
-                showError(`Rate limit exceeded. Please wait ${rateCheck.retryAfter} seconds before trying again.`);
-                return;
-            }
-            
-            // Check for suspicious activity
-            if (activityMonitor.isSuspicious()) {
-                showError('Suspicious activity detected. Please refresh the page and try again.');
-                activityMonitor.reset();
-                return;
-            }
 
             // Get form values
             const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
@@ -575,22 +537,9 @@
             const cvv = document.getElementById('cvv').value;
             const gateway = document.getElementById('gateway').value;
 
-            // Advanced validation using InputValidator
-            const cardValidation = InputValidator.validateCardNumber(cardNumber);
-            if (!cardValidation.valid) {
-                showError(cardValidation.error);
-                return;
-            }
-            
-            const expiryValidation = InputValidator.validateExpiry(expiryMonth, expiryYear);
-            if (!expiryValidation.valid) {
-                showError(expiryValidation.error);
-                return;
-            }
-            
-            const cvvValidation = InputValidator.validateCVV(cvv);
-            if (!cvvValidation.valid) {
-                showError(cvvValidation.error);
+            // Validate inputs
+            if (!validateCardNumber(cardNumber)) {
+                showError('Invalid card number');
                 return;
             }
 
@@ -605,9 +554,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + userToken,
-                        'X-Device-Fingerprint': deviceFingerprint,
-                        'X-Client-Version': '2.0.0'
+                        'Authorization': 'Bearer ' + userToken
                     },
                     body: JSON.stringify({
                         action: 'check_card',
