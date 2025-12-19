@@ -796,16 +796,21 @@ app.get('/api/user-credits', authenticateToken, requireMongoConnection, async (r
 });
 
 // Redeem code
-app.post('/api/redeem-code', authenticateToken, requireMongoConnection, async (req, res) => {
+app.post('/api/redeem-code', authenticateToken, requireMongoConnection, [
+    body('code').trim().notEmpty().withMessage('Redeem code is required')
+        .matches(/^[A-Z0-9-]+$/).withMessage('Invalid code format')
+], async (req, res) => {
     try {
-        const { code } = req.body;
-
-        if (!code) {
-            return res.status(400).json({
-                success: false,
-                message: 'Redeem code is required'
+        // Validate request
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                success: false, 
+                message: errors.array()[0].msg
             });
         }
+
+        const { code } = req.body;
 
         // Find the redeem code
         const redeemCode = await RedeemCode.findOne({ 
@@ -903,16 +908,21 @@ app.get('/api/credit-transactions', authenticateToken, requireMongoConnection, a
 // ===== ADMIN ROUTES =====
 
 // Generate redeem code (Admin only)
-app.post('/api/admin/generate-code', authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
+app.post('/api/admin/generate-code', authenticateToken, requireMongoConnection, requireAdmin, [
+    body('credits').isInt({ min: 1, max: 10000 }).withMessage('Credits must be between 1 and 10000'),
+    body('expiresInDays').optional().isInt({ min: 1, max: 365 }).withMessage('Expiration days must be between 1 and 365')
+], async (req, res) => {
     try {
-        const { credits, expiresInDays } = req.body;
-
-        if (!credits || credits <= 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid credits amount'
+        // Validate request
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                success: false, 
+                message: errors.array()[0].msg
             });
         }
+
+        const { credits, expiresInDays } = req.body;
 
         // Generate random code
         const code = Math.random().toString(36).substring(2, 10).toUpperCase() + 

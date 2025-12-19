@@ -428,6 +428,69 @@
             color: #fff;
         }
 
+        /* Notification Toast */
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 15px 20px;
+            min-width: 300px;
+            display: none;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification-toast.show {
+            display: block;
+        }
+
+        .notification-toast.success {
+            border-color: #22c55e;
+            background: linear-gradient(135deg, #1a1a1a, #1a2e1a);
+        }
+
+        .notification-toast.error {
+            border-color: #dc2626;
+            background: linear-gradient(135deg, #1a1a1a, #2e1a1a);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+        }
+
+        .notification-icon.success {
+            color: #22c55e;
+        }
+
+        .notification-icon.error {
+            color: #dc2626;
+        }
+
+        .notification-message {
+            flex: 1;
+            color: #e0e0e0;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -766,6 +829,14 @@
         </div>
     </div>
 
+    <!-- Notification Toast -->
+    <div class="notification-toast" id="notificationToast">
+        <div class="notification-content">
+            <i class="notification-icon" id="notificationIcon"></i>
+            <div class="notification-message" id="notificationMessage"></div>
+        </div>
+    </div>
+
     <!-- Redeem Code Modal -->
     <div class="modal" id="redeemModal">
         <div class="modal-content">
@@ -782,6 +853,33 @@
     </div>
 
     <script>
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const toast = document.getElementById('notificationToast');
+            const icon = document.getElementById('notificationIcon');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            // Set content
+            messageEl.textContent = message;
+            
+            // Set icon and style
+            if (type === 'success') {
+                icon.className = 'notification-icon success fas fa-check-circle';
+                toast.className = 'notification-toast success';
+            } else {
+                icon.className = 'notification-icon error fas fa-exclamation-circle';
+                toast.className = 'notification-toast error';
+            }
+            
+            // Show toast
+            toast.classList.add('show');
+            
+            // Auto hide after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
         // Navigation
         function navigateTo(page) {
             document.querySelectorAll('.nav-item').forEach(item => {
@@ -821,7 +919,7 @@
         function redeemCode() {
             const code = document.getElementById('redeemCode').value.trim();
             if (!code) {
-                alert('Please enter a redeem code');
+                showNotification('Please enter a redeem code', 'error');
                 return;
             }
 
@@ -837,16 +935,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(`Success! ${data.credits} credits added to your account`);
+                    showNotification(`Success! ${data.credits} credits added to your account`, 'success');
                     document.getElementById('userCredits').textContent = data.newBalance;
                     closeRedeemModal();
                 } else {
-                    alert(data.message || 'Invalid or expired code');
+                    showNotification(data.message || 'Invalid or expired code', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to redeem code. Please try again.');
+                showNotification('Failed to redeem code. Please try again.', 'error');
             });
         }
 
