@@ -936,10 +936,34 @@
                             <span>Edit Profile</span>
                             <i class="fas fa-chevron-right" style="float: right; color: #ffffff;"></i>
                         </div>
+                        <div class="setting-item" onclick="openProfilePictureUpload()" style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; margin-top: 8px;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
+                            <i class="fas fa-camera" style="color: #ffffff; margin-right: 10px;"></i>
+                            <span>Profile Picture</span>
+                            <i class="fas fa-chevron-right" style="float: right; color: #ffffff;"></i>
+                        </div>
                         <div class="setting-item" style="cursor: pointer; padding: 12px; background: rgba(255, 68, 68, 0.1); border-radius: 10px; margin-top: 15px; border: 1px solid rgba(255, 68, 68, 0.3); transition: all 0.3s;" onclick="logout()" onmouseover="this.style.background='rgba(255,68,68,0.2)'" onmouseout="this.style.background='rgba(255,68,68,0.1)'">
                             <i class="fas fa-sign-out-alt" style="color: #ff4444; margin-right: 10px;"></i>
                             <span style="color: #ff4444; font-weight: 700;">Logout</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner Panel Card -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ffffff, #cccccc);">
+                        <i class="fas fa-crown" style="color: #0a0a0a;"></i>
+                    </div>
+                    <h3 class="card-title">Owner Panel</h3>
+                </div>
+                <div class="card-content">
+                    <div style="color: #b0b0b0; line-height: 1.8;">
+                        <p style="margin-bottom: 15px; font-size: 13px;">Access restricted to authorized owners only.</p>
+                        <button onclick="openOwnerPanel()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #ffffff, #e0e0e0); border: none; border-radius: 10px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 14px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,255,255,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-key" style="margin-right: 8px;"></i>
+                            Enter Access Key
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1070,13 +1094,29 @@
         </div>
         
         <!-- ==================== TOOLS SECTION ==================== -->
-        <div style="margin-top: 40px;">
+        <div style="margin-top: 40px;" id="toolsSection">
             <div style="text-align: center; margin-bottom: 30px;">
                 <h2 style="color: #ffffff; font-size: 32px; font-weight: 800; margin: 0;">🛠️ Advanced Tools</h2>
                 <p style="color: #b0b0b0; margin: 10px 0 0 0;">Professional utilities for power users</p>
             </div>
             
-            <div class="dashboard-grid">
+            <!-- Tools Search Bar -->
+            <div style="max-width: 600px; margin: 0 auto 30px;">
+                <div style="position: relative;">
+                    <input type="text" id="toolsSearch" placeholder="Search tools..." style="width: 100%; padding: 15px 50px 15px 20px; background: linear-gradient(135deg, #1a1a1a, #222222); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #fff; font-size: 16px; transition: all 0.3s;" oninput="searchTools(this.value)" onfocus="this.style.borderColor='rgba(255,255,255,0.3)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                    <i class="fas fa-search" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none;"></i>
+                </div>
+            </div>
+
+            <!-- Recommended Tools -->
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #ffffff; font-size: 18px; font-weight: 600; margin-bottom: 15px; padding-left: 5px;">
+                    <i class="fas fa-star" style="color: #ffffff; margin-right: 8px;"></i>
+                    <span id="toolsSectionTitle">Recommended</span>
+                </h3>
+            </div>
+            
+            <div class="dashboard-grid" id="toolsContainer">
                 <!-- BIN Lookup Tool -->
                 <div class="security-card">
                     <div class="card-header">
