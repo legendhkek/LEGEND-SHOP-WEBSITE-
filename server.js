@@ -1232,6 +1232,59 @@ app.post('/api/vault/save-charged', apiLimiter, authenticateToken, requireMongoC
     }
 });
 
+// Set owner proxy (Owner only)
+app.post('/api/admin/set-owner-proxy', authLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || user.role !== 'owner') {
+            return res.status(403).json({
+                success: false,
+                message: 'Only owners can set global proxy'
+            });
+        }
+
+        const { proxy } = req.body;
+        
+        // Save to environment or database
+        process.env.OWNER_PROXY = proxy || '';
+
+        res.json({
+            success: true,
+            message: 'Owner proxy updated successfully'
+        });
+    } catch (error) {
+        console.error('Error setting owner proxy:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error setting owner proxy'
+        });
+    }
+});
+
+// Get owner proxy (Owner only)
+app.get('/api/admin/get-owner-proxy', authLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || user.role !== 'owner') {
+            return res.status(403).json({
+                success: false,
+                message: 'Only owners can view global proxy'
+            });
+        }
+
+        res.json({
+            success: true,
+            proxy: process.env.OWNER_PROXY || ''
+        });
+    } catch (error) {
+        console.error('Error getting owner proxy:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error getting owner proxy'
+        });
+    }
+});
+
 // Add credits to user (Admin only)
 app.post('/api/admin/add-credits', authLimiter, authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
     try {
