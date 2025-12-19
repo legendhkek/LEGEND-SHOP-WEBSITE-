@@ -131,6 +131,14 @@ app.post('/api/signup', authLimiter, [
     body('dateOfBirth').isISO8601().withMessage('Invalid date of birth')
 ], async (req, res) => {
     try {
+        // Check MongoDB connection
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({
+                success: false,
+                message: 'Database is not connected. Please ensure MongoDB is running and properly configured in .env file.'
+            });
+        }
+
         // Validate request
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -215,6 +223,14 @@ app.post('/api/login', authLimiter, [
     body('humanVerified').optional().isBoolean().withMessage('Invalid human verification flag')
 ], async (req, res) => {
     try {
+        // Check MongoDB connection
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({
+                success: false,
+                message: 'Database is not connected. Please ensure MongoDB is running and properly configured in .env file.'
+            });
+        }
+
         // Validate request
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -318,6 +334,11 @@ app.get('/api/users', apiLimiter, async (req, res) => {
 // Google OAuth Callback Route
 app.get('/auth/google/callback', async (req, res) => {
     try {
+        // Check MongoDB connection
+        if (mongoose.connection.readyState !== 1) {
+            return res.redirect('/login.html?error=database_unavailable');
+        }
+
         const { code } = req.query;
         
         if (!code) {
