@@ -9,6 +9,7 @@ const axios = require('axios');
 const fs = require('fs').promises;
 const path = require('path');
 const multer = require('multer');
+const crypto = require('crypto');
 require('dotenv').config();
 
 // File paths for JSON storage
@@ -99,6 +100,15 @@ const apiLimiter = rateLimit({
     legacyHeaders: false,
 });
 
+// Rate limiter for redeem code attempts (prevent brute force)
+const redeemLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 5, // Limit each IP to 5 redeem attempts per hour
+    message: 'Too many redeem attempts, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -167,6 +177,14 @@ const userSchema = new mongoose.Schema({
     },
     lastLogin: {
         type: Date
+    },
+    credits: {
+        type: Number,
+        default: 100
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -178,6 +196,75 @@ userSchema.pre('save', async function(next) {
 });
 
 const User = mongoose.model('User', userSchema);
+
+// Redeem Code Schema
+const redeemCodeSchema = new mongoose.Schema({
+    code: {
+        type: String,
+        required: true,
+        unique: true,
+        uppercase: true
+    },
+    credits: {
+        type: Number,
+        required: true
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    usedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    usedAt: {
+        type: Date
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    expiresAt: {
+        type: Date
+    }
+});
+
+const RedeemCode = mongoose.model('RedeemCode', redeemCodeSchema);
+
+// Credit Transaction Schema
+const creditTransactionSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ['redeem', 'purchase', 'spend', 'admin'],
+        required: true
+    },
+    description: {
+        type: String
+    },
+    redeemCode: {
+        type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const CreditTransaction = mongoose.model('CreditTransaction', creditTransactionSchema);
 
 // ===== MIDDLEWARE =====
 
@@ -194,6 +281,50 @@ const requireMongoConnection = (req, res, next) => {
         });
     }
     next();
+};
+
+// JWT Authentication Middleware
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: 'Access token required'
+        });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.userId = decoded.userId;
+        req.userEmail = decoded.email;
+        next();
+    } catch (error) {
+        return res.status(403).json({
+            success: false,
+            message: 'Invalid or expired token'
+        });
+    }
+};
+
+// Admin check middleware
+const requireAdmin = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || !user.isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: 'Admin access required'
+            });
+        }
+        next();
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error checking admin status'
+        });
+    }
 };
 
 // ===== API ROUTES =====
@@ -300,7 +431,9 @@ app.post('/api/signup', authLimiter, requireMongoConnection, [
                 id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                email: user.email
+                email: user.email,
+                isAdmin: user.isAdmin || false,
+                credits: user.credits || 100
             }
         });
 
@@ -380,7 +513,9 @@ app.post('/api/login', authLimiter, requireMongoConnection, [
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                lastLogin: user.lastLogin
+                lastLogin: user.lastLogin,
+                isAdmin: user.isAdmin || false,
+                credits: user.credits || 100
             }
         });
 
@@ -644,6 +779,300 @@ app.get('/api/profile', async (req, res) => {
     }
 });
 
+// ===== CREDIT & REDEEM CODE ROUTES =====
+
+// Get user credits
+app.get('/api/user-credits', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select('credits');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            credits: user.credits || 0
+        });
+    } catch (error) {
+        console.error('Error fetching credits:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching credits'
+        });
+    }
+});
+
+// Redeem code
+app.post('/api/redeem-code', redeemLimiter, authenticateToken, requireMongoConnection, [
+    body('code').trim().notEmpty().withMessage('Redeem code is required')
+        .matches(/^[A-Z0-9-]+$/).withMessage('Invalid code format')
+], async (req, res) => {
+    try {
+        // Validate request
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                success: false, 
+                message: errors.array()[0].msg
+            });
+        }
+
+        const { code } = req.body;
+
+        // Find the redeem code
+        const redeemCode = await RedeemCode.findOne({ 
+            code: code.toUpperCase() 
+        });
+
+        if (!redeemCode) {
+            return res.status(404).json({
+                success: false,
+                message: 'Invalid redeem code'
+            });
+        }
+
+        // Check if code is active
+        if (!redeemCode.isActive) {
+            return res.status(400).json({
+                success: false,
+                message: 'This code has already been used'
+            });
+        }
+
+        // Check if code has expired
+        if (redeemCode.expiresAt && new Date() > redeemCode.expiresAt) {
+            return res.status(400).json({
+                success: false,
+                message: 'This code has expired'
+            });
+        }
+
+        // Get user
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Add credits to user
+        user.credits = (user.credits || 0) + redeemCode.credits;
+        await user.save();
+
+        // Mark code as used
+        redeemCode.isActive = false;
+        redeemCode.usedBy = user._id;
+        redeemCode.usedAt = new Date();
+        await redeemCode.save();
+
+        // Create transaction record
+        const transaction = new CreditTransaction({
+            userId: user._id,
+            amount: redeemCode.credits,
+            type: 'redeem',
+            description: `Redeemed code: ${code}`,
+            redeemCode: code
+        });
+        await transaction.save();
+
+        res.json({
+            success: true,
+            message: 'Code redeemed successfully!',
+            credits: redeemCode.credits,
+            newBalance: user.credits
+        });
+
+    } catch (error) {
+        console.error('Error redeeming code:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error redeeming code'
+        });
+    }
+});
+
+// Get credit transactions
+app.get('/api/credit-transactions', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const transactions = await CreditTransaction.find({ userId: req.userId })
+            .sort({ createdAt: -1 })
+            .limit(50);
+
+        res.json({
+            success: true,
+            transactions
+        });
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching transactions'
+        });
+    }
+});
+
+// ===== ADMIN ROUTES =====
+
+// Generate redeem code (Admin only)
+app.post('/api/admin/generate-code', authLimiter, authenticateToken, requireMongoConnection, requireAdmin, [
+    body('credits').isInt({ min: 1, max: 10000 }).withMessage('Credits must be between 1 and 10000'),
+    body('expiresInDays').optional().isInt({ min: 1, max: 365 }).withMessage('Expiration days must be between 1 and 365')
+], async (req, res) => {
+    try {
+        // Validate request
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                success: false, 
+                message: errors.array()[0].msg
+            });
+        }
+
+        const { credits, expiresInDays } = req.body;
+
+        // Generate cryptographically secure random code
+        const generateSecureCode = () => {
+            const bytes = crypto.randomBytes(8);
+            const part1 = bytes.slice(0, 4).toString('hex').toUpperCase();
+            const part2 = bytes.slice(4, 8).toString('hex').toUpperCase();
+            return `${part1}-${part2}`;
+        };
+        const code = generateSecureCode();
+
+        // Calculate expiration date if provided
+        let expiresAt = null;
+        if (expiresInDays && expiresInDays > 0) {
+            expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + expiresInDays);
+        }
+
+        // Create redeem code
+        const redeemCode = new RedeemCode({
+            code,
+            credits,
+            createdBy: req.userId,
+            expiresAt
+        });
+
+        await redeemCode.save();
+
+        res.json({
+            success: true,
+            message: 'Redeem code generated successfully',
+            code: {
+                code: redeemCode.code,
+                credits: redeemCode.credits,
+                expiresAt: redeemCode.expiresAt,
+                createdAt: redeemCode.createdAt
+            }
+        });
+
+    } catch (error) {
+        console.error('Error generating code:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error generating code'
+        });
+    }
+});
+
+// Get all redeem codes (Admin only)
+app.get('/api/admin/codes', apiLimiter, authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
+    try {
+        const codes = await RedeemCode.find()
+            .populate('createdBy', 'firstName lastName email')
+            .populate('usedBy', 'firstName lastName email')
+            .sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            codes
+        });
+    } catch (error) {
+        console.error('Error fetching codes:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching codes'
+        });
+    }
+});
+
+// Delete redeem code (Admin only)
+app.delete('/api/admin/codes/:id', authLimiter, authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const code = await RedeemCode.findByIdAndDelete(id);
+        if (!code) {
+            return res.status(404).json({
+                success: false,
+                message: 'Code not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Code deleted successfully'
+        });
+    } catch (error) {
+        console.error('Error deleting code:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting code'
+        });
+    }
+});
+
+// Add credits to user (Admin only)
+app.post('/api/admin/add-credits', authLimiter, authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
+    try {
+        const { userId, credits, description } = req.body;
+
+        if (!userId || !credits || credits <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid request data'
+            });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        user.credits = (user.credits || 0) + credits;
+        await user.save();
+
+        // Create transaction record
+        const transaction = new CreditTransaction({
+            userId: user._id,
+            amount: credits,
+            type: 'admin',
+            description: description || 'Admin credit addition'
+        });
+        await transaction.save();
+
+        res.json({
+            success: true,
+            message: 'Credits added successfully',
+            newBalance: user.credits
+        });
+    } catch (error) {
+        console.error('Error adding credits:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error adding credits'
+        });
+    }
+});
+
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -661,5 +1090,10 @@ initializeStorage().then(() => {
         console.log(`   - GET  http://localhost:${PORT}/api/stats/users`);
         console.log(`   - POST http://localhost:${PORT}/api/profile/upload-picture`);
         console.log(`   - POST http://localhost:${PORT}/api/owner/validate-key`);
+        console.log(`   - GET  http://localhost:${PORT}/api/user-credits`);
+        console.log(`   - POST http://localhost:${PORT}/api/redeem-code`);
+        console.log(`   - GET  http://localhost:${PORT}/api/credit-transactions`);
+        console.log(`   - POST http://localhost:${PORT}/api/admin/generate-code (Admin)`);
+        console.log(`   - GET  http://localhost:${PORT}/api/admin/codes (Admin)`);
     });
 });

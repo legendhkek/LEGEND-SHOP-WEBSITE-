@@ -621,6 +621,16 @@
                 <span>My Orders</span>
             </a>
             
+            <div class="nav-section">Tools</div>
+            <a href="tools/index.html" class="nav-item">
+                <i class="fas fa-tools"></i>
+                <span>All Tools</span>
+            </a>
+            <a href="tools/legend-checker.html" class="nav-item">
+                <i class="fas fa-credit-card"></i>
+                <span>LEGEND CHECKER</span>
+            </a>
+            
             <div class="nav-section">Account</div>
             <a href="#profile" class="nav-item" onclick="navigateTo('profile')">
                 <i class="fas fa-user-circle"></i>
@@ -644,6 +654,16 @@
                 <i class="fas fa-info-circle"></i>
                 <span>About</span>
             </a>
+            
+            <!-- Admin Panel Link (shown only for admin users) -->
+            <div id="adminSection" style="display: none;">
+                <div class="nav-section">Admin</div>
+                <a href="tools/admin.html" class="nav-item" style="color: #f59e0b;">
+                    <i class="fas fa-crown"></i>
+                    <span>Admin Panel</span>
+                </a>
+            </div>
+            
             <a href="javascript:void(0)" class="nav-item" onclick="logout()" style="color: #ff4444; margin-top: 20px;">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
@@ -2200,6 +2220,25 @@
                 resultDiv.style.display = 'block';
             }
         }
+        
+        // Check if user is admin and show admin panel link
+        (function checkAdminStatus() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            // Try to load user data and check admin status
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    if (user.isAdmin) {
+                        document.getElementById('adminSection').style.display = 'block';
+                    }
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
+            }
+        })();
     </script>
 </body>
 </html>

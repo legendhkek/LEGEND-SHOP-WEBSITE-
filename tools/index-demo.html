@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools - Legend Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #999;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #7c3aed;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .tool-card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            border-color: #7c3aed;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.3);
+        }
+
+        .tool-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4);
+        }
+
+        .tool-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .tool-description {
+            font-size: 15px;
+            color: #999;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tool-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .tool-features li {
+            font-size: 14px;
+            color: #b0b0b0;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-features li i {
+            color: #7c3aed;
+            font-size: 12px;
+        }
+
+        .tool-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .tool-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #7c3aed;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin: 50px 0 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, #2a2a2a, transparent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="#" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <div class="header">
+            <h1>🛠️ Tools</h1>
+            <p>Powerful tools and utilities for Legend Shop users</p>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-star"></i>
+            Recommended
+        </div>
+
+        <div class="tools-grid">
+            <!-- LEGEND CHECKER - Recommended -->
+            <a href="#" class="tool-card">
+                <div class="tool-badge">⭐ Recommended</div>
+                <div class="tool-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="tool-title">LEGEND CHECKER</div>
+                <div class="tool-description">
+                    Advanced CC checker with multiple gateway support, real-time validation, and comprehensive vault system.
+                </div>
+                <ul class="tool-features">
+                    <li><i class="fas fa-check-circle"></i> Multiple gateway checkers</li>
+                    <li><i class="fas fa-check-circle"></i> Vault system for saved cards</li>
+                    <li><i class="fas fa-check-circle"></i> Credit & redeem system</li>
+                    <li><i class="fas fa-check-circle"></i> Real-time leaderboard</li>
+                </ul>
+                <div class="tool-action">
+                    Open Tool
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

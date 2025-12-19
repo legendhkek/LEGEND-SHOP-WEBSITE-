@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools - Legend Shop</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #999;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #7c3aed;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 15px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .tool-card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            border-color: #7c3aed;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.3);
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .tool-card.recommended .tool-icon {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4);
+        }
+
+        .tool-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .tool-description {
+            font-size: 15px;
+            color: #999;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tool-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .tool-features li {
+            font-size: 14px;
+            color: #b0b0b0;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-features li i {
+            color: #7c3aed;
+            font-size: 12px;
+        }
+
+        .tool-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .tool-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #7c3aed;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover .tool-action {
+            background: #a855f7;
+        }
+
+        .coming-soon {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .coming-soon::after {
+            content: 'Coming Soon';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #666;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin: 50px 0 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, #2a2a2a, transparent);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../dashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <div class="header">
+            <h1>🛠️ Tools</h1>
+            <p>Powerful tools and utilities for Legend Shop users</p>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-star"></i>
+            Recommended
+        </div>
+
+        <div class="tools-grid">
+            <!-- LEGEND CHECKER - Recommended -->
+            <a href="legend-checker.html" class="tool-card recommended">
+                <div class="tool-badge">⭐ Recommended</div>
+                <div class="tool-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="tool-title">LEGEND CHECKER</div>
+                <div class="tool-description">
+                    Advanced CC checker with multiple gateway support, real-time validation, and comprehensive vault system.
+                </div>
+                <ul class="tool-features">
+                    <li><i class="fas fa-check-circle"></i> Multiple gateway checkers</li>
+                    <li><i class="fas fa-check-circle"></i> Vault system for saved cards</li>
+                    <li><i class="fas fa-check-circle"></i> Credit & redeem system</li>
+                    <li><i class="fas fa-check-circle"></i> Real-time leaderboard</li>
+                </ul>
+                <div class="tool-action">
+                    Open Tool
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-tools"></i>
+            All Tools
+        </div>
+
+        <div class="tools-grid">
+            <!-- Stripe Checker -->
+            <a href="#" class="tool-card coming-soon">
+                <div class="tool-icon">
+                    <i class="fab fa-stripe-s"></i>
+                </div>
+                <div class="tool-title">Stripe Checker</div>
+                <div class="tool-description">
+                    Validate credit cards using Stripe's API with detailed response information.
+                </div>
+                <ul class="tool-features">
+                    <li><i class="fas fa-check-circle"></i> Stripe API integration</li>
+                    <li><i class="fas fa-check-circle"></i> Detailed card validation</li>
+                    <li><i class="fas fa-check-circle"></i> CVV verification</li>
+                </ul>
+            </a>
+
+            <!-- BIN Lookup -->
+            <a href="#" class="tool-card coming-soon">
+                <div class="tool-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="tool-title">BIN Lookup</div>
+                <div class="tool-description">
+                    Look up detailed information about any Bank Identification Number (BIN).
+                </div>
+                <ul class="tool-features">
+                    <li><i class="fas fa-check-circle"></i> Bank information</li>
+                    <li><i class="fas fa-check-circle"></i> Card type & level</li>
+                    <li><i class="fas fa-check-circle"></i> Country & issuer</li>
+                </ul>
+            </a>
+
+            <!-- Card Generator -->
+            <a href="#" class="tool-card coming-soon">
+                <div class="tool-icon">
+                    <i class="fas fa-random"></i>
+                </div>
+                <div class="tool-title">Card Generator</div>
+                <div class="tool-description">
+                    Generate valid test credit card numbers for development and testing purposes.
+                </div>
+                <ul class="tool-features">
+                    <li><i class="fas fa-check-circle"></i> Multiple card types</li>
+                    <li><i class="fas fa-check-circle"></i> Luhn algorithm validation</li>
+                    <li><i class="fas fa-check-circle"></i> Bulk generation</li>
+                </ul>
+            </a>
+
+            <!-- PayPal Checker -->
+            <a href="#" class="tool-card coming-soon">
+                <div class="tool-icon">
+                    <i class="fab fa-paypal"></i>
+                </div>
+                <div class="tool-title">PayPal Checker</div>
+                <div class="tool-description">
+                    Verify PayPal accounts and check transaction capabilities.
+                </div>
+                <ul class="tool-features">
+                    <li><i class="fas fa-check-circle"></i> Account verification</li>
+                    <li><i class="fas fa-check-circle"></i> Balance checking</li>
+                    <li><i class="fas fa-check-circle"></i> Transaction history</li>
+                </ul>
+            </a>
+
+            <!-- Proxy Checker -->
+            <a href="#" class="tool-card coming-soon">
+                <div class="tool-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="tool-title">Proxy Checker</div>
+                <div class="tool-description">
+                    Test and validate proxy servers for speed, anonymity, and reliability.
+                </div>
+                <ul class="tool-features">
+                    <li><i class="fas fa-check-circle"></i> Speed testing</li>
+                    <li><i class="fas fa-check-circle"></i> Anonymity level check</li>
+                    <li><i class="fas fa-check-circle"></i> Bulk validation</li>
+                </ul>
+            </a>
+
+            <!-- Email Validator -->
+            <a href="#" class="tool-card coming-soon">
+                <div class="tool-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="tool-title">Email Validator</div>
+                <div class="tool-description">
+                    Validate email addresses and check for disposable or temporary emails.
+                </div>
+                <ul class="tool-features">
+                    <li><i class="fas fa-check-circle"></i> Syntax validation</li>
+                    <li><i class="fas fa-check-circle"></i> Domain verification</li>
+                    <li><i class="fas fa-check-circle"></i> Disposable email detection</li>
+                </ul>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '../login.html';
+            }
+        });
+    </script>
+</body>
+</html>
