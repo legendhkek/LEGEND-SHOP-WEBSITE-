@@ -9,6 +9,7 @@ const axios = require('axios');
 const fs = require('fs').promises;
 const path = require('path');
 const multer = require('multer');
+const crypto = require('crypto');
 require('dotenv').config();
 
 // File paths for JSON storage
@@ -95,6 +96,15 @@ const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
     message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Rate limiter for redeem code attempts (prevent brute force)
+const redeemLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 5, // Limit each IP to 5 redeem attempts per hour
+    message: 'Too many redeem attempts, please try again later.',
     standardHeaders: true,
     legacyHeaders: false,
 });
@@ -796,7 +806,7 @@ app.get('/api/user-credits', authenticateToken, requireMongoConnection, async (r
 });
 
 // Redeem code
-app.post('/api/redeem-code', authenticateToken, requireMongoConnection, [
+app.post('/api/redeem-code', redeemLimiter, authenticateToken, requireMongoConnection, [
     body('code').trim().notEmpty().withMessage('Redeem code is required')
         .matches(/^[A-Z0-9-]+$/).withMessage('Invalid code format')
 ], async (req, res) => {
@@ -924,9 +934,14 @@ app.post('/api/admin/generate-code', authenticateToken, requireMongoConnection, 
 
         const { credits, expiresInDays } = req.body;
 
-        // Generate random code
-        const code = Math.random().toString(36).substring(2, 10).toUpperCase() + 
-                     '-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        // Generate cryptographically secure random code
+        const generateSecureCode = () => {
+            const bytes = crypto.randomBytes(8);
+            const part1 = bytes.slice(0, 4).toString('hex').toUpperCase();
+            const part2 = bytes.slice(4, 8).toString('hex').toUpperCase();
+            return `${part1}-${part2}`;
+        };
+        const code = generateSecureCode();
 
         // Calculate expiration date if provided
         let expiresAt = null;

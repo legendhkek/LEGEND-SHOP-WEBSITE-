@@ -10,10 +10,17 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+        }
+        
+        /* Allow text selection for important content */
+        .card-number,
+        .code-display,
+        .notification-message,
+        .input-field {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
         }
 
         body {
@@ -21,6 +28,21 @@
             background: #0a0a0a;
             color: #e0e0e0;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Performance optimization for mobile */
+        @media (max-width: 768px) {
+            * {
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            /* Reduce animations on mobile for better performance */
+            * {
+                animation-duration: 0.2s !important;
+                transition-duration: 0.2s !important;
+            }
         }
 
         /* Sidebar Styles */
@@ -35,6 +57,7 @@
             padding: 0;
             overflow-y: auto;
             z-index: 1000;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         .sidebar-header {
@@ -76,6 +99,7 @@
             text-decoration: none;
             transition: all 0.3s ease;
             cursor: pointer;
+            will-change: background-color, color;
         }
 
         .nav-item:hover {
@@ -238,11 +262,21 @@
             border-radius: 12px;
             padding: 25px;
             transition: all 0.3s ease;
+            transform: translateZ(0); /* Enable hardware acceleration */
+            will-change: transform;
         }
 
         .stat-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-4px) translateZ(0);
             border-color: #3a3a3a;
+        }
+        
+        /* Disable hover effects on touch devices */
+        @media (hover: none) {
+            .stat-card:hover {
+                transform: translateZ(0);
+                border-color: #2a2a2a;
+            }
         }
 
         .stat-value {
@@ -505,14 +539,16 @@
         }
 
         /* Responsive */
+        /* Mobile optimizations */
         @media (max-width: 768px) {
             .sidebar {
-                transform: translateX(-100%);
+                transform: translateX(-100%) translateZ(0);
                 transition: transform 0.3s ease;
+                will-change: transform;
             }
 
             .sidebar.active {
-                transform: translateX(0);
+                transform: translateX(0) translateZ(0);
             }
 
             .main-content {
@@ -521,6 +557,41 @@
 
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .content-area {
+                padding: 20px 15px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .top-bar {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+            }
+            
+            /* Reduce font sizes for better mobile fit */
+            .page-title {
+                font-size: 18px;
+            }
+            
+            .stat-value {
+                font-size: 28px;
+            }
+            
+            .credit-amount {
+                font-size: 20px;
+            }
+            
+            /* Optimize touch targets */
+            .btn-action,
+            .btn-redeem,
+            .icon-btn {
+                min-height: 44px;
+                min-width: 44px;
             }
         }
 
@@ -650,7 +721,7 @@
                 <i class="fas fa-bolt"></i>
             </div>
             <div>
-                <div class="sidebar-title">Wasvictus</div>
+                <div class="sidebar-title">LEGEND CHECKER</div>
             </div>
         </div>
         
@@ -881,11 +952,13 @@
         }
 
         // Navigation
-        function navigateTo(page) {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
+        function navigateTo(page, event) {
+            if (event) {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.currentTarget.classList.add('active');
+            }
             
             // Update page title
             const titles = {
@@ -900,8 +973,10 @@
         }
 
         // Toggle dropdown
-        function toggleDropdown(id) {
-            event.preventDefault();
+        function toggleDropdown(id, event) {
+            if (event) {
+                event.preventDefault();
+            }
             const dropdown = document.getElementById(id);
             dropdown.classList.toggle('open');
         }
@@ -966,13 +1041,20 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('userCredits').textContent = data.credits;
+                    document.getElementById('userCredits').textContent = data.credits || 0;
                     // Update user info
-                    const userData = JSON.parse(localStorage.getItem('user'));
-                    if (userData) {
-                        document.querySelector('.user-name').textContent = `${userData.firstName} ${userData.lastName}`;
-                        document.querySelector('.user-handle').textContent = `@${userData.email.split('@')[0]}`;
-                        document.querySelector('.user-avatar').textContent = userData.firstName.charAt(0).toUpperCase();
+                    const userDataStr = localStorage.getItem('user');
+                    if (userDataStr) {
+                        try {
+                            const userData = JSON.parse(userDataStr);
+                            if (userData && userData.firstName && userData.lastName && userData.email) {
+                                document.querySelector('.user-name').textContent = `${userData.firstName} ${userData.lastName}`;
+                                document.querySelector('.user-handle').textContent = `@${userData.email.split('@')[0]}`;
+                                document.querySelector('.user-avatar').textContent = userData.firstName.charAt(0).toUpperCase();
+                            }
+                        } catch (e) {
+                            console.error('Error parsing user data:', e);
+                        }
                     }
                 }
             })
