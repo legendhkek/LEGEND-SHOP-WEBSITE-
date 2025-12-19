@@ -378,6 +378,12 @@
                 <span>Protected by Advanced PHP Security Layer</span>
             </div>
 
+            <!-- Credit Display -->
+            <div class="security-badge" style="background: rgba(34, 197, 94, 0.1); border-color: #22c55e; color: #22c55e; margin-bottom: 20px;">
+                <i class="fas fa-coins"></i>
+                <span>Available Credits: <strong data-credit-display id="creditBalance">Loading...</strong> | Cost: 1 credit per check</span>
+            </div>
+
             <!-- Check Card Form -->
             <div class="content-card">
                 <div class="card-header">
@@ -543,9 +549,41 @@
                 const data = await response.json();
                 if (!data.success) {
                     window.location.href = '../login.html';
+                } else {
+                    // Load credit balance after successful verification
+                    await loadCreditBalance();
                 }
             } catch (error) {
                 console.error('Error verifying token:', error);
+            }
+        }
+
+        // Load user credit balance
+        async function loadCreditBalance() {
+            try {
+                // Get API base URL
+                const apiBaseUrl = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:3000' 
+                    : 'https://legendbl.tech';
+                
+                const response = await fetch(apiBaseUrl + '/api/user-credits', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + userToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('creditBalance').textContent = data.credits;
+                    updateCreditDisplay(data.credits);
+                } else {
+                    document.getElementById('creditBalance').textContent = 'Error';
+                }
+            } catch (error) {
+                console.error('Error loading credits:', error);
+                document.getElementById('creditBalance').textContent = 'Error';
             }
         }
 
@@ -627,7 +665,9 @@
                 const data = await response.json();
 
                 if (data.success && data.result) {
-                    showResult(data.result);
+                    showResult(data.result, data.creditsDeducted, data.remainingCredits);
+                    // Update credit display if present
+                    updateCreditDisplay(data.remainingCredits);
                 } else {
                     showError(data.error || 'Card check failed');
                 }
@@ -639,6 +679,15 @@
                 document.getElementById('loadingSpinner').style.display = 'none';
             }
         });
+
+        // Update credit display
+        function updateCreditDisplay(credits) {
+            // Update in security badge if exists
+            const creditElements = document.querySelectorAll('[data-credit-display]');
+            creditElements.forEach(el => {
+                el.textContent = credits;
+            });
+        }
 
         // Validate card number (Luhn algorithm)
         function validateCardNumber(number) {
@@ -667,7 +716,7 @@
         }
 
         // Show result
-        function showResult(result) {
+        function showResult(result, creditsDeducted, remainingCredits) {
             const resultBox = document.getElementById('resultBox');
             const resultTitle = document.getElementById('resultTitle');
             const resultDetails = document.getElementById('resultDetails');
@@ -691,7 +740,10 @@
                 <strong>Brand:</strong> ${result.brand}<br>
                 <strong>BIN:</strong> ${result.bin}<br>
                 <strong>Last 4:</strong> ${result.last4}<br>
-                <strong>Gateway:</strong> ${result.gateway.toUpperCase()}
+                <strong>Gateway:</strong> ${result.gateway.toUpperCase()}<br>
+                <hr style="margin: 10px 0; border: none; border-top: 1px solid #2a2a2a;">
+                <strong style="color: #f59e0b;">Credits Used:</strong> ${creditsDeducted || 1}<br>
+                <strong style="color: #22c55e;">Remaining Credits:</strong> ${remainingCredits !== undefined ? remainingCredits : 'N/A'}
             `;
 
             resultBox.style.display = 'block';

@@ -113,10 +113,18 @@ function handleCheckCard($data, $token) {
         handleError('Invalid CVV', 400);
     }
     
+    // Deduct credits before checking (1 credit per check)
+    $creditResult = deductCredits($token, 1, 'CC Check - ' . $gateway);
+    if (!$creditResult['success']) {
+        handleError($creditResult['message'], 400);
+    }
+    
     // Log the check attempt
     logSecurityEvent('card_check_attempt', [
         'gateway' => $gateway,
-        'bin' => substr($cardNumber, 0, 6)
+        'bin' => substr($cardNumber, 0, 6),
+        'credits_deducted' => 1,
+        'new_balance' => $creditResult['newBalance']
     ]);
     
     // Make API call to payment gateway
@@ -130,7 +138,9 @@ function handleCheckCard($data, $token) {
     
     sendJSON([
         'success' => true,
-        'result' => $result
+        'result' => $result,
+        'creditsDeducted' => 1,
+        'remainingCredits' => $creditResult['newBalance']
     ]);
 }
 
@@ -237,6 +247,45 @@ function handleGetBinInfo($data, $token) {
         'success' => true,
         'binInfo' => $binInfo
     ]);
+}
+
+/**
+ * Deduct Credits from User Account
+ */
+function deductCredits($token, $amount = 1, $description = 'Card check operation') {
+    // Call Node.js backend to deduct credits
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, API_BASE_URL . '/deduct-credit');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+        'amount' => $amount,
+        'description' => $description
+    ]));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $token,
+        'Content-Type: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    if ($httpCode === 200) {
+        $data = json_decode($response, true);
+        return [
+            'success' => true,
+            'newBalance' => $data['newBalance'] ?? 0
+        ];
+    } else {
+        $data = json_decode($response, true);
+        return [
+            'success' => false,
+            'message' => $data['message'] ?? 'Failed to deduct credits'
+        ];
+    }
 }
 
 /**

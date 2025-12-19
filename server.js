@@ -1114,6 +1114,58 @@ app.delete('/api/admin/codes/:id', authLimiter, authenticateToken, requireMongoC
     }
 });
 
+// Deduct credits for card check
+app.post('/api/deduct-credit', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const { amount, description } = req.body;
+        const deductAmount = amount || 1; // Default 1 credit per check
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Check if user has enough credits
+        if ((user.credits || 0) < deductAmount) {
+            return res.status(400).json({
+                success: false,
+                message: 'Insufficient credits',
+                currentBalance: user.credits || 0,
+                required: deductAmount
+            });
+        }
+
+        // Deduct credits
+        user.credits = (user.credits || 0) - deductAmount;
+        await user.save();
+
+        // Create transaction record
+        const transaction = new CreditTransaction({
+            userId: user._id,
+            amount: -deductAmount, // Negative for deduction
+            type: 'usage',
+            description: description || 'Card check operation'
+        });
+        await transaction.save();
+
+        res.json({
+            success: true,
+            message: 'Credit deducted successfully',
+            deducted: deductAmount,
+            newBalance: user.credits
+        });
+    } catch (error) {
+        console.error('Error deducting credits:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deducting credits'
+        });
+    }
+});
+
 // Add credits to user (Admin only)
 app.post('/api/admin/add-credits', authLimiter, authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
     try {
