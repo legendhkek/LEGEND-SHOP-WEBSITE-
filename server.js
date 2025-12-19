@@ -782,7 +782,7 @@ app.get('/api/profile', async (req, res) => {
 // ===== CREDIT & REDEEM CODE ROUTES =====
 
 // Get user credits
-app.get('/api/user-credits', authenticateToken, requireMongoConnection, async (req, res) => {
+app.get('/api/user-credits', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
     try {
         const user = await User.findById(req.userId).select('credits');
         if (!user) {
@@ -896,7 +896,7 @@ app.post('/api/redeem-code', redeemLimiter, authenticateToken, requireMongoConne
 });
 
 // Get credit transactions
-app.get('/api/credit-transactions', authenticateToken, requireMongoConnection, async (req, res) => {
+app.get('/api/credit-transactions', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
     try {
         const transactions = await CreditTransaction.find({ userId: req.userId })
             .sort({ createdAt: -1 })
@@ -918,7 +918,7 @@ app.get('/api/credit-transactions', authenticateToken, requireMongoConnection, a
 // ===== ADMIN ROUTES =====
 
 // Generate redeem code (Admin only)
-app.post('/api/admin/generate-code', authenticateToken, requireMongoConnection, requireAdmin, [
+app.post('/api/admin/generate-code', authLimiter, authenticateToken, requireMongoConnection, requireAdmin, [
     body('credits').isInt({ min: 1, max: 10000 }).withMessage('Credits must be between 1 and 10000'),
     body('expiresInDays').optional().isInt({ min: 1, max: 365 }).withMessage('Expiration days must be between 1 and 365')
 ], async (req, res) => {
@@ -981,7 +981,7 @@ app.post('/api/admin/generate-code', authenticateToken, requireMongoConnection, 
 });
 
 // Get all redeem codes (Admin only)
-app.get('/api/admin/codes', authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
+app.get('/api/admin/codes', apiLimiter, authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
     try {
         const codes = await RedeemCode.find()
             .populate('createdBy', 'firstName lastName email')
@@ -1002,7 +1002,7 @@ app.get('/api/admin/codes', authenticateToken, requireMongoConnection, requireAd
 });
 
 // Delete redeem code (Admin only)
-app.delete('/api/admin/codes/:id', authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
+app.delete('/api/admin/codes/:id', authLimiter, authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -1028,7 +1028,7 @@ app.delete('/api/admin/codes/:id', authenticateToken, requireMongoConnection, re
 });
 
 // Add credits to user (Admin only)
-app.post('/api/admin/add-credits', authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
+app.post('/api/admin/add-credits', authLimiter, authenticateToken, requireMongoConnection, requireAdmin, async (req, res) => {
     try {
         const { userId, credits, description } = req.body;
 
