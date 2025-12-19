@@ -6,6 +6,74 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 const axios = require('axios');
+const fs = require('fs').promises;
+const path = require('path');
+const multer = require('multer');
+require('dotenv').config();
+
+// File paths for JSON storage
+const USERS_FILE = path.join(__dirname, 'users.json');
+const UPLOADS_DIR = path.join(__dirname, 'uploads');
+const PROFILE_PICS_DIR = path.join(UPLOADS_DIR, 'profile-pics');
+
+// Initialize storage directories
+async function initializeStorage() {
+    try {
+        await fs.mkdir(UPLOADS_DIR, { recursive: true });
+        await fs.mkdir(PROFILE_PICS_DIR, { recursive: true });
+        
+        // Initialize users.json if it doesn't exist
+        try {
+            await fs.access(USERS_FILE);
+        } catch {
+            await fs.writeFile(USERS_FILE, JSON.stringify({ users: [] }, null, 2));
+            console.log('✅ Created users.json file');
+        }
+    } catch (error) {
+        console.error('Error initializing storage:', error);
+    }
+}
+
+// Helper functions for users.json
+async function readUsers() {
+    try {
+        const data = await fs.readFile(USERS_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        return { users: [] };
+    }
+}
+
+async function writeUsers(data) {
+    await fs.writeFile(USERS_FILE, JSON.stringify(data, null, 2));
+}
+
+// Configure multer for profile picture uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, PROFILE_PICS_DIR);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|gif/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        
+        if (extname && mimetype) {
+            return cb(null, true);
+        }
+        cb(new Error('Only image files are allowed!'));
+    }
+});
+
 require('dotenv').config();
 
 // Google OAuth Configuration
@@ -111,6 +179,23 @@ userSchema.pre('save', async function(next) {
 
 const User = mongoose.model('User', userSchema);
 
+// ===== MIDDLEWARE =====
+
+// MongoDB connection check middleware
+const requireMongoConnection = (req, res, next) => {
+    if (mongoose.connection.readyState !== 1) {
+        // For OAuth callbacks, redirect instead of JSON response
+        if (req.path.includes('/auth/google/callback')) {
+            return res.redirect('/login.html?error=database_unavailable');
+        }
+        return res.status(503).json({
+            success: false,
+            message: 'Database is not connected. Please ensure MongoDB is running and properly configured in .env file.'
+        });
+    }
+    next();
+};
+
 // ===== API ROUTES =====
 
 // Health check
@@ -123,7 +208,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Sign Up Route
-app.post('/api/signup', authLimiter, [
+app.post('/api/signup', authLimiter, requireMongoConnection, [
     body('firstName').trim().isLength({ min: 2 }).withMessage('First name must be at least 2 characters'),
     body('lastName').trim().isLength({ min: 2 }).withMessage('Last name must be at least 2 characters'),
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
@@ -177,6 +262,26 @@ app.post('/api/signup', authLimiter, [
 
         await user.save();
 
+        // Also save to users.json for file-based access
+        try {
+            const usersData = await readUsers();
+            const hashedPassword = await bcrypt.hash(password, 10);
+            usersData.users.push({
+                id: user._id.toString(),
+                firstName,
+                lastName,
+                email,
+                password: hashedPassword,
+                dateOfBirth: birthDate.toISOString(),
+                profilePicture: null,
+                createdAt: new Date().toISOString()
+            });
+            await writeUsers(usersData);
+            console.log('✅ User saved to users.json');
+        } catch (jsonError) {
+            console.log('⚠️  Failed to save to users.json:', jsonError.message);
+        }
+
         // Generate JWT token
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined in environment variables');
@@ -209,7 +314,7 @@ app.post('/api/signup', authLimiter, [
 });
 
 // Login Route
-app.post('/api/login', authLimiter, [
+app.post('/api/login', authLimiter, requireMongoConnection, [
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
     body('password').notEmpty().withMessage('Password is required'),
     body('humanVerified').optional().isBoolean().withMessage('Invalid human verification flag')
@@ -316,7 +421,7 @@ app.get('/api/users', apiLimiter, async (req, res) => {
 });
 
 // Google OAuth Callback Route
-app.get('/auth/google/callback', async (req, res) => {
+app.get('/auth/google/callback', authLimiter, requireMongoConnection, async (req, res) => {
     try {
         const { code } = req.query;
         
@@ -392,12 +497,169 @@ app.get('/auth/google/callback', async (req, res) => {
     }
 });
 
+// ===== NEW FEATURES =====
+
+// Get total users count
+app.get('/api/stats/users', async (req, res) => {
+    try {
+        const usersData = await readUsers();
+        res.json({
+            success: true,
+            totalUsers: usersData.users.length
+        });
+    } catch (error) {
+        console.error('Error getting user stats:', error);
+        res.status(500).json({ success: false, message: 'Error fetching stats' });
+    }
+});
+
+// Upload profile picture
+app.post('/api/profile/upload-picture', upload.single('profilePicture'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No file uploaded' });
+        }
+
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ success: false, message: 'No token provided' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
+        const usersData = await readUsers();
+        const userIndex = usersData.users.findIndex(u => u.email === decoded.email);
+
+        if (userIndex === -1) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Delete old profile picture if exists
+        if (usersData.users[userIndex].profilePicture) {
+            const oldPicPath = path.join(__dirname, usersData.users[userIndex].profilePicture);
+            try {
+                await fs.unlink(oldPicPath);
+            } catch (err) {
+                console.log('Old profile picture not found or already deleted');
+            }
+        }
+
+        // Update user with new profile picture path
+        usersData.users[userIndex].profilePicture = `/uploads/profile-pics/${req.file.filename}`;
+        await writeUsers(usersData);
+
+        res.json({
+            success: true,
+            message: 'Profile picture updated',
+            profilePicture: usersData.users[userIndex].profilePicture
+        });
+    } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        res.status(500).json({ success: false, message: 'Error uploading picture' });
+    }
+});
+
+// Owner panel key validation
+app.post('/api/owner/validate-key', authLimiter, async (req, res) => {
+    try {
+        const { key, username } = req.body;
+
+        if (!key) {
+            return res.status(400).json({ success: false, message: 'Key is required' });
+        }
+
+        // Make request to external validation API
+        const response = await axios.post('https://sonugamingop.tech/connect', {
+            key: key,
+            username: username || 'LegendShop',
+            source: 'web'
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            timeout: 10000
+        });
+
+        if (response.data && response.data.success) {
+            res.json({
+                success: true,
+                data: {
+                    slot: response.data.slot || 'N/A',
+                    status: response.data.status || 'Active',
+                    expiry: response.data.expiry || response.data.exp || 'N/A',
+                    join: response.data.join || response.data.telegram || 'N/A'
+                }
+            });
+        } else {
+            res.status(401).json({
+                success: false,
+                message: response.data?.message || 'Invalid key'
+            });
+        }
+    } catch (error) {
+        console.error('Owner key validation error:', error.message);
+        
+        if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
+            return res.status(503).json({
+                success: false,
+                message: 'Validation service unavailable. Please try again later.'
+            });
+        }
+
+        res.status(500).json({
+            success: false,
+            message: 'Error validating key'
+        });
+    }
+});
+
+// Get user profile
+app.get('/api/profile', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ success: false, message: 'No token provided' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
+        const usersData = await readUsers();
+        const user = usersData.users.find(u => u.email === decoded.email);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.json({
+            success: true,
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                profilePicture: user.profilePicture || null,
+                createdAt: user.createdAt
+            }
+        });
+    } catch (error) {
+        console.error('Error getting profile:', error);
+        res.status(500).json({ success: false, message: 'Error fetching profile' });
+    }
+});
+
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Start Server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Legend Shop Server running on http://localhost:${PORT}`);
-    console.log(`📝 API Endpoints:`);
-    console.log(`   - POST http://localhost:${PORT}/api/signup`);
-    console.log(`   - POST http://localhost:${PORT}/api/login`);
-    console.log(`   - GET  http://localhost:${PORT}/api/users`);
+
+// Initialize storage before starting server
+initializeStorage().then(() => {
+    app.listen(PORT, () => {
+        console.log(`🚀 Legend Shop Server running on http://localhost:${PORT}`);
+        console.log(`📝 API Endpoints:`);
+        console.log(`   - POST http://localhost:${PORT}/api/signup`);
+        console.log(`   - POST http://localhost:${PORT}/api/login`);
+        console.log(`   - GET  http://localhost:${PORT}/api/users`);
+        console.log(`   - GET  http://localhost:${PORT}/api/stats/users`);
+        console.log(`   - POST http://localhost:${PORT}/api/profile/upload-picture`);
+        console.log(`   - POST http://localhost:${PORT}/api/owner/validate-key`);
+    });
 });

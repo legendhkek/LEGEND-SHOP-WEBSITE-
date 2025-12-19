@@ -6,3 +6,6 @@ npm-debug.log*
 package-lock.json
 *.rar
 *.zip
+users.json
+uploads/
+VERIFICATION_REPORT.md

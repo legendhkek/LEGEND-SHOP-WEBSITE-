@@ -39,13 +39,24 @@ A modern, secure, and feature-rich e-commerce authentication system with a beaut
 
 3. **Configure environment variables**
    
-   The `.env` file is already configured with MongoDB connection. You can update it if needed:
+   A `.env` file is required for the backend to work. A template has been created for you.
+   
+   **Important:** You need to configure MongoDB. See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed instructions.
+   
+   Quick setup:
+   - Open the `.env` file in the project root
+   - Update `MONGODB_URI` with your MongoDB connection string
+   - Choose either local MongoDB or free MongoDB Atlas (recommended)
+   
+   Example:
    ```
-   MONGODB_URI=your_mongodb_connection_string
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/legendshop
    JWT_SECRET=your_jwt_secret_key
    PORT=3000
    NODE_ENV=development
    ```
+   
+   **Having issues?** Check [SETUP_GUIDE.md](SETUP_GUIDE.md) for troubleshooting.
 
 4. **Start the server**
    ```bash
@@ -259,10 +270,21 @@ GOOGLE_CLIENT_SECRET=your_client_secret_here
 
 ## 🐛 Troubleshooting
 
+### "Backend is OFF" error on Login/Signup
+**See [SETUP_GUIDE.md](SETUP_GUIDE.md) for complete setup instructions.**
+
+Common fixes:
+1. Make sure you've created the `.env` file with MongoDB configuration
+2. Run `npm install` to install dependencies
+3. Run `npm start` to start the backend server
+4. Configure MongoDB (local or Atlas) in the `.env` file
+5. Access the site via `http://localhost:3000` (not file://)
+
 ### Backend not connecting
 - Ensure MongoDB URI is correct in `.env`
 - Check if MongoDB Atlas IP whitelist includes your IP
 - Verify Node.js and npm are installed
+- Check MongoDB is running (if using local MongoDB)
 
 ### Frontend not loading
 - Make sure server is running (`npm start`)
