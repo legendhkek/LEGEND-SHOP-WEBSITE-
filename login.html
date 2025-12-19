@@ -189,17 +189,16 @@
     <script>
         // ==================== BACKGROUND ROTATION SYSTEM ====================
         
-        const ANIME_WALLPAPERS = [
+        // Use wallpapers from CONFIG (loaded from config.js)
+        const ANIME_WALLPAPERS = CONFIG && CONFIG.ANIME_WALLPAPERS ? CONFIG.ANIME_WALLPAPERS : [
             'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=3840',
             'https://images.unsplash.com/photo-1613376023733-0a73315d9b06?q=80&w=3840',
             'https://images.unsplash.com/photo-1578632292335-df3abbb0d586?q=80&w=3840',
             'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=3840',
-            'https://images.unsplash.com/photo-1613332725672-8fc7da5d2912?q=80&w=3840',
-            'https://images.pexels.com/photos/1629236/pexels-photo-1629236.jpeg?auto=compress&cs=tinysrgb&w=3840',
-            'https://images.pexels.com/photos/3945683/pexels-photo-3945683.jpeg?auto=compress&cs=tinysrgb&w=3840'
+            'https://images.unsplash.com/photo-1613332725672-8fc7da5d2912?q=80&w=3840'
         ];
         
-        const ROTATION_INTERVAL = 3 * 24 * 60 * 60 * 1000; // 3 days in milliseconds
+        const ROTATION_INTERVAL = CONFIG && CONFIG.BACKGROUND_ROTATION_INTERVAL ? CONFIG.BACKGROUND_ROTATION_INTERVAL : 3 * 24 * 60 * 60 * 1000; // 3 days in milliseconds
         
         function initBackgroundRotation() {
             const rotatingBg = document.getElementById('rotatingBg');
@@ -243,7 +242,8 @@
                 
                 // Google OAuth configuration
                 const clientId = '674654993812-krpej9648d2205dqpls1dsq7tuhvlbft.apps.googleusercontent.com';
-                const redirectUri = window.location.origin + '/auth/google/callback';
+                // Use the exact redirect URI format that matches the server
+                const redirectUri = `${window.location.protocol}//${window.location.host}/auth/google/callback`;
                 const scope = 'email profile';
                 
                 // Build OAuth URL

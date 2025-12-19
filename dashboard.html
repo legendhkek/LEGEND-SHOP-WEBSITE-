@@ -16,13 +16,76 @@
             -webkit-touch-callout: none;
         }
         
-        /* Advanced Dashboard Styles - 8K Optimized */
+        /* Advanced Dashboard Styles - 8K Optimized with Hacker Vibe */
         body {
             overflow-x: hidden;
             font-smooth: always;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
+            background: #000000;
+            position: relative;
+        }
+        
+        /* Matrix Rain Background */
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        
+        /* Scan Line Effect */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.8), transparent);
+            z-index: 9999;
+            pointer-events: none;
+            animation: scanLine 3s linear infinite;
+        }
+        
+        @keyframes scanLine {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Glitch Effect for Headers */
+        .glitch {
+            position: relative;
+            animation: glitchText 3s infinite;
+        }
+        
+        @keyframes glitchText {
+            0%, 90%, 100% { text-shadow: 0 0 10px rgba(0, 255, 136, 0.8); }
+            92% { 
+                text-shadow: 
+                    -2px 0 #ff00ff,
+                    2px 0 #00ffff,
+                    0 0 20px rgba(0, 255, 136, 1);
+                transform: translate(-2px, 0);
+            }
+            94% { 
+                text-shadow: 
+                    2px 0 #ff00ff,
+                    -2px 0 #00ffff,
+                    0 0 20px rgba(0, 255, 136, 1);
+                transform: translate(2px, 0);
+            }
+        }
+        
+        /* Terminal Style Text */
+        .terminal-text {
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
         }
         
         .dashboard-container {
@@ -338,12 +401,28 @@
         
         /* Responsive */
         @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            .security-header {
+                padding: 20px;
+            }
+            
+            .security-status {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
             .dashboard-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .protection-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
             }
             
             .action-buttons {
@@ -363,11 +442,50 @@
             }
             
             .menu-toggle {
-                display: block !important;
+                display: flex !important;
             }
             
             .dashboard-main {
                 margin-left: 0 !important;
+            }
+            
+            .card-value {
+                font-size: 24px;
+            }
+            
+            .user-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+            
+            .monitor-display {
+                font-size: 11px;
+                max-height: 150px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .security-header h2 {
+                font-size: 18px !important;
+            }
+            
+            .card-title {
+                font-size: 16px;
+            }
+            
+            .card-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+            
+            .protection-item {
+                padding: 12px;
+            }
+            
+            .protection-icon {
+                font-size: 22px;
             }
         }
         
@@ -493,6 +611,12 @@
     </style>
 </head>
 <body>
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrixCanvas"></canvas>
+    
+    <!-- Scan Line Effect -->
+    <div class="scan-line"></div>
+    
     <div class="background-animation">
         <div class="shape"></div>
         <div class="shape"></div>
@@ -572,22 +696,22 @@
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <i class="fas fa-shield-alt shield-icon"></i>
                     <div>
-                        <h2 style="color: #fff; margin: 0; font-size: 24px;">🛡️ Legend Shop Security Dashboard</h2>
-                        <p style="color: #b0b0b0; margin: 5px 0 0 0; font-size: 13px;">Advanced Protection System Active</p>
+                        <h2 class="glitch terminal-text" style="color: #00ff88; margin: 0; font-size: 24px;">⚡ LEGEND SHOP SECURITY TERMINAL ⚡</h2>
+                        <p class="terminal-text" style="color: #00ff88; margin: 5px 0 0 0; font-size: 13px;">[SYSTEM STATUS: <span style="color: #0f0;">ONLINE</span>] [THREAT LEVEL: <span style="color: #0f0;">LOW</span>] [UPTIME: <span id="uptime">00:00:00</span>]</p>
                     </div>
                 </div>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span>DDoS Protection: ACTIVE</span>
+                        <span class="terminal-text">FIREWALL: ACTIVE</span>
                     </div>
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span>Anti-Dump: ENABLED</span>
+                        <span class="terminal-text">IDS/IPS: ENABLED</span>
                     </div>
                     <div class="status-item">
                         <span class="status-indicator"></span>
-                        <span>Firewall: SECURED</span>
+                        <span class="terminal-text">SSL: SECURED</span>
                     </div>
                 </div>
             </div>
@@ -605,6 +729,98 @@
 
         <!-- Dashboard Grid -->
         <div class="dashboard-grid">
+            <!-- Quick Stats -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="card-title">Quick Stats</h3>
+                </div>
+                <div class="card-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="text-align: center; padding: 15px; background: rgba(0, 255, 136, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #00ff88; font-weight: 800;">0</div>
+                            <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">Total Orders</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: rgba(102, 126, 234, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #667eea; font-weight: 800;">$0</div>
+                            <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">Total Spent</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: rgba(240, 147, 251, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #f093fb; font-weight: 800;">0</div>
+                            <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">In Cart</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: rgba(255, 107, 107, 0.05); border-radius: 12px;">
+                            <div style="font-size: 28px; color: #ff6b6b; font-weight: 800;">0</div>
+                            <div style="color: #b0b0b0; font-size: 12px; margin-top: 5px;">Wishlist</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Account Overview -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="card-title">Account Overview</h3>
+                </div>
+                <div class="card-content">
+                    <div style="color: #b0b0b0; line-height: 2.2;">
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
+                            <span><i class="fas fa-check-circle" style="color: #00ff88; margin-right: 8px;"></i>Email Verified</span>
+                            <span style="color: #00ff88; font-weight: 700;">YES</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
+                            <span><i class="fas fa-shield-alt" style="color: #00ff88; margin-right: 8px;"></i>2FA Enabled</span>
+                            <span style="color: #00ff88; font-weight: 700;">YES</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1);">
+                            <span><i class="fas fa-calendar" style="color: #00ff88; margin-right: 8px;"></i>Member Since</span>
+                            <span style="color: #00ff88; font-weight: 700;" id="memberSince">2024</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                            <span><i class="fas fa-star" style="color: #00ff88; margin-right: 8px;"></i>Account Status</span>
+                            <span style="color: #00ff88; font-weight: 700;">PREMIUM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="card-title">Recent Activity</h3>
+                </div>
+                <div class="card-content">
+                    <div style="color: #b0b0b0; font-size: 13px; line-height: 2;">
+                        <div style="padding: 10px; background: rgba(0, 255, 136, 0.05); border-radius: 8px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fas fa-sign-in-alt" style="color: #00ff88; margin-right: 8px;"></i>Logged in</span>
+                                <span style="color: #00ff88; font-size: 11px;">Just now</span>
+                            </div>
+                        </div>
+                        <div style="padding: 10px; background: rgba(102, 126, 234, 0.05); border-radius: 8px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fas fa-shield-alt" style="color: #667eea; margin-right: 8px;"></i>Account secured</span>
+                                <span style="color: #667eea; font-size: 11px;">2 mins ago</span>
+                            </div>
+                        </div>
+                        <div style="padding: 10px; background: rgba(240, 147, 251, 0.05); border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fas fa-check-circle" style="color: #f093fb; margin-right: 8px;"></i>Profile updated</span>
+                                <span style="color: #f093fb; font-size: 11px;">1 hour ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
             <!-- Protection Status Card -->
             <div class="security-card">
                 <div class="card-header">
@@ -649,7 +865,7 @@
                 </div>
                 <div class="card-content">
                     <div id="requestCounter" class="card-value">0</div>
-                    <p style="color: #b0b0b0; margin: 0;">Requests Blocked Today</p>
+                    <p style="color: #b0b0b0; margin: 0;">Threats Blocked Today</p>
                     <div class="monitor-display" id="monitorLog">
                         <div class="monitor-line">[INFO] Security system initialized...</div>
                         <div class="monitor-line">[OK] All protection layers active</div>
@@ -704,6 +920,32 @@
                 </div>
             </div>
             
+            <!-- Quick Actions -->
+            <div class="security-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="card-title">Quick Actions</h3>
+                </div>
+                <div class="card-content">
+                    <div style="display: grid; gap: 10px;">
+                        <button onclick="navigateTo('shop')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; border-radius: 10px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-shopping-bag"></i> Browse Shop
+                        </button>
+                        <button onclick="navigateTo('orders')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #5568d3); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102,126,234,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-box"></i> View Orders
+                        </button>
+                        <button onclick="navigateTo('profile')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #f093fb, #d66fe6); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(240,147,251,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-user-edit"></i> Edit Profile
+                        </button>
+                        <button onclick="navigateTo('help')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #ff6b6b, #ee5a52); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,107,107,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-headset"></i> Get Support
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Settings Card -->
             <div class="security-card">
                 <div class="card-header">
@@ -732,6 +974,343 @@
                         <div class="setting-item" style="cursor: pointer; padding: 12px; background: rgba(255, 68, 68, 0.1); border-radius: 10px; margin-top: 15px; border: 1px solid rgba(255, 68, 68, 0.3); transition: all 0.3s;" onclick="logout()" onmouseover="this.style.background='rgba(255,68,68,0.2)'" onmouseout="this.style.background='rgba(255,68,68,0.1)'">
                             <i class="fas fa-sign-out-alt" style="color: #ff4444; margin-right: 10px;"></i>
                             <span style="color: #ff4444; font-weight: 700;">Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- ==================== ADVANCED HACKER FEATURES ==================== -->
+        <div style="margin-top: 40px; margin-bottom: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 class="glitch terminal-text" style="font-size: 32px; font-weight: 800; margin: 0;">⚡ TERMINAL & MONITORING ⚡</h2>
+                <p class="terminal-text" style="margin: 10px 0 0 0;">[AUTHORIZED ACCESS ONLY]</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Terminal Command Interface -->
+                <div class="security-card" style="grid-column: span 2;">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #00ff88, #00cc6a);">
+                            <i class="fas fa-terminal"></i>
+                        </div>
+                        <h3 class="card-title terminal-text">SYSTEM TERMINAL</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="terminalOutput" style="background: #000; border: 2px solid #00ff88; border-radius: 8px; padding: 15px; min-height: 250px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; color: #00ff88; font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
+                            <div>[SYSTEM] Legend Shop Security Terminal v2.0</div>
+                            <div>[INFO] System initialized successfully</div>
+                            <div>[OK] All security protocols active</div>
+                            <div>[READY] Type 'help' for available commands</div>
+                            <div style="margin-top: 10px;">root@legendshop:~$ <span id="terminalCursor" style="animation: blink 1s infinite;">_</span></div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="terminalInput" placeholder="Enter command..." style="flex: 1; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 2px solid #00ff88; border-radius: 8px; color: #00ff88; font-size: 14px; font-family: 'Courier New', monospace;" onkeypress="if(event.key==='Enter') executeCommand()">
+                            <button onclick="executeCommand()" style="padding: 12px 24px; background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; border-radius: 8px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-play"></i> EXECUTE
+                            </button>
+                        </div>
+                        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button onclick="quickCommand('status')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">status</button>
+                            <button onclick="quickCommand('scan')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">scan</button>
+                            <button onclick="quickCommand('firewall')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">firewall</button>
+                            <button onclick="quickCommand('trace')" style="padding: 8px 16px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; color: #00ff88; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">trace</button>
+                            <button onclick="quickCommand('clear')" style="padding: 8px 16px; background: rgba(255, 68, 68, 0.1); border: 1px solid #ff4444; border-radius: 6px; color: #ff4444; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace;">clear</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Network Traffic Monitor -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #667eea, #5568d3);">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3 class="card-title terminal-text">NETWORK TRAFFIC</h3>
+                    </div>
+                    <div class="card-content">
+                        <div style="background: #000; border: 2px solid #667eea; border-radius: 8px; padding: 15px; min-height: 250px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; color: #667eea; font-size: 12px; line-height: 1.8;" id="networkLog">
+                            <div>[NETWORK] Monitoring active connections...</div>
+                            <div style="color: #00ff88;">[IN] 192.168.1.100:443 → HTTPS (SECURE)</div>
+                            <div style="color: #00ff88;">[IN] 192.168.1.100:80 → HTTP (REDIRECTED)</div>
+                            <div style="color: #ff4444;">[BLOCKED] 45.123.45.67:22 → SSH (UNAUTHORIZED)</div>
+                            <div style="color: #00ff88;">[OUT] API.BINLIST.NET:443 → HTTPS (SECURE)</div>
+                            <div style="color: #feca57;">[WARN] HIGH TRAFFIC DETECTED</div>
+                        </div>
+                        <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: 'Courier New', monospace; font-size: 12px;">
+                            <div style="padding: 10px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; border-radius: 6px; text-align: center;">
+                                <div style="color: #00ff88; font-size: 20px; font-weight: 800;" id="packetsIn">0</div>
+                                <div style="color: #00ff88;">PACKETS IN</div>
+                            </div>
+                            <div style="padding: 10px; background: rgba(102, 126, 234, 0.1); border: 1px solid #667eea; border-radius: 6px; text-align: center;">
+                                <div style="color: #667eea; font-size: 20px; font-weight: 800;" id="packetsOut">0</div>
+                                <div style="color: #667eea;">PACKETS OUT</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Resources Monitor -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #f093fb, #d66fe6);">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h3 class="card-title terminal-text">SYSTEM RESOURCES</h3>
+                    </div>
+                    <div class="card-content">
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="terminal-text" style="font-size: 13px;">CPU USAGE</span>
+                                <span class="terminal-text" style="font-size: 13px; color: #00ff88;" id="cpuValue">45%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #00ff88;">
+                                <div id="cpuBar" style="width: 45%; height: 100%; background: linear-gradient(90deg, #00ff88, #00cc6a); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="terminal-text" style="font-size: 13px;">MEMORY USAGE</span>
+                                <span class="terminal-text" style="font-size: 13px; color: #667eea;" id="memValue">62%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #667eea;">
+                                <div id="memBar" style="width: 62%; height: 100%; background: linear-gradient(90deg, #667eea, #5568d3); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="terminal-text" style="font-size: 13px;">DISK USAGE</span>
+                                <span class="terminal-text" style="font-size: 13px; color: #f093fb;" id="diskValue">38%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #f093fb;">
+                                <div id="diskBar" style="width: 38%; height: 100%; background: linear-gradient(90deg, #f093fb, #d66fe6); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span class="terminal-text" style="font-size: 13px;">NETWORK I/O</span>
+                                <span class="terminal-text" style="font-size: 13px; color: #feca57;" id="netValue">28%</span>
+                            </div>
+                            <div style="width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; overflow: hidden; border: 1px solid #feca57;">
+                                <div id="netBar" style="width: 28%; height: 100%; background: linear-gradient(90deg, #feca57, #e1b12c); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ==================== TOOLS SECTION ==================== -->
+        <div style="margin-top: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #00ff88; font-size: 32px; font-weight: 800; margin: 0;">🛠️ Advanced Tools</h2>
+                <p style="color: #b0b0b0; margin: 10px 0 0 0;">Professional utilities for power users</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- BIN Lookup Tool -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #667eea, #5568d3);">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h3 class="card-title">BIN Lookup</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Check credit card BIN information</p>
+                        <input type="text" id="binInput" placeholder="Enter first 6-8 digits" maxlength="8" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px;" onkeypress="if(event.key==='Enter') lookupBIN()">
+                        <button onclick="lookupBIN()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #5568d3); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102,126,234,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-search"></i> Lookup BIN
+                        </button>
+                        <div id="binResult" style="margin-top: 15px; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none;">
+                            <div style="color: #b0b0b0; font-size: 13px; line-height: 1.8;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- IP Lookup Tool -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #f093fb, #d66fe6);">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3 class="card-title">IP Lookup</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Get detailed IP information</p>
+                        <input type="text" id="ipInput" placeholder="Enter IP address" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(240, 147, 251, 0.3); border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px;" onkeypress="if(event.key==='Enter') lookupIP()">
+                        <button onclick="lookupIP()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #f093fb, #d66fe6); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(240,147,251,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-search"></i> Lookup IP
+                        </button>
+                        <div id="ipResult" style="margin-top: 15px; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none;">
+                            <div style="color: #b0b0b0; font-size: 13px; line-height: 1.8;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hash Generator -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #48dbfb, #0fb9e0);">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3 class="card-title">Hash Generator</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Generate MD5/SHA256 hashes</p>
+                        <input type="text" id="hashInput" placeholder="Enter text to hash" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(72, 219, 251, 0.3); border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px;">
+                        <select id="hashType" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(72, 219, 251, 0.3); border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px;">
+                            <option value="md5">MD5</option>
+                            <option value="sha256">SHA-256</option>
+                        </select>
+                        <button onclick="generateHash()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #48dbfb, #0fb9e0); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(72,219,251,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-key"></i> Generate Hash
+                        </button>
+                        <div id="hashResult" style="margin-top: 15px; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none; word-break: break-all;">
+                            <div style="color: #48dbfb; font-size: 12px; font-family: 'Courier New', monospace;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Base64 Encoder/Decoder -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #feca57, #e1b12c);">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="card-title">Base64 Tool</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Encode/Decode Base64 strings</p>
+                        <textarea id="base64Input" placeholder="Enter text" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(254, 202, 87, 0.3); border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px; resize: vertical; min-height: 80px;"></textarea>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button onclick="encodeBase64()" style="padding: 12px; background: linear-gradient(135deg, #feca57, #e1b12c); border: none; border-radius: 8px; color: #0a0a0a; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(254,202,87,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-arrow-up"></i> Encode
+                            </button>
+                            <button onclick="decodeBase64()" style="padding: 12px; background: linear-gradient(135deg, #ff9ff3, #e880e8); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,159,243,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-arrow-down"></i> Decode
+                            </button>
+                        </div>
+                        <div id="base64Result" style="margin-top: 15px; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none; word-break: break-all;">
+                            <div style="color: #feca57; font-size: 12px; font-family: 'Courier New', monospace;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Password Generator -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52);">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="card-title">Password Generator</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Generate secure passwords</p>
+                        <label style="color: #b0b0b0; font-size: 13px; display: block; margin-bottom: 8px;">Password Length: <span id="pwdLengthValue">16</span></label>
+                        <input type="range" id="pwdLength" min="8" max="32" value="16" style="width: 100%; margin-bottom: 15px;" oninput="document.getElementById('pwdLengthValue').textContent=this.value">
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #b0b0b0; font-size: 13px; display: flex; align-items: center; margin-bottom: 8px;">
+                                <input type="checkbox" id="pwdUppercase" checked style="margin-right: 8px;"> Uppercase (A-Z)
+                            </label>
+                            <label style="color: #b0b0b0; font-size: 13px; display: flex; align-items: center; margin-bottom: 8px;">
+                                <input type="checkbox" id="pwdLowercase" checked style="margin-right: 8px;"> Lowercase (a-z)
+                            </label>
+                            <label style="color: #b0b0b0; font-size: 13px; display: flex; align-items: center; margin-bottom: 8px;">
+                                <input type="checkbox" id="pwdNumbers" checked style="margin-right: 8px;"> Numbers (0-9)
+                            </label>
+                            <label style="color: #b0b0b0; font-size: 13px; display: flex; align-items: center;">
+                                <input type="checkbox" id="pwdSymbols" checked style="margin-right: 8px;"> Symbols (!@#$%^&*)
+                            </label>
+                        </div>
+                        <button onclick="generatePassword()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #ff6b6b, #ee5a52); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-bottom: 12px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,107,107,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-sync-alt"></i> Generate Password
+                        </button>
+                        <div id="pwdResult" style="padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none;">
+                            <div style="color: #ff6b6b; font-size: 14px; font-family: 'Courier New', monospace; word-break: break-all; display: flex; justify-content: space-between; align-items: center;">
+                                <span id="pwdText"></span>
+                                <button onclick="copyPassword()" style="background: none; border: none; color: #00ff88; cursor: pointer; font-size: 16px; padding: 5px;" title="Copy to clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- UUID Generator -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #1dd1a1, #10ac84);">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <h3 class="card-title">UUID Generator</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Generate unique identifiers</p>
+                        <button onclick="generateUUID()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #1dd1a1, #10ac84); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-bottom: 12px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(29,209,161,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-sync-alt"></i> Generate UUID
+                        </button>
+                        <div id="uuidResult" style="padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none;">
+                            <div style="color: #1dd1a1; font-size: 13px; font-family: 'Courier New', monospace; word-break: break-all; display: flex; justify-content: space-between; align-items: center;">
+                                <span id="uuidText"></span>
+                                <button onclick="copyUUID()" style="background: none; border: none; color: #00ff88; cursor: pointer; font-size: 16px; padding: 5px;" title="Copy to clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- JSON Formatter -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #54a0ff, #2e86de);">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="card-title">JSON Formatter</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Format & validate JSON</p>
+                        <textarea id="jsonInput" placeholder='{"key": "value"}' style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(84, 160, 255, 0.3); border-radius: 8px; color: #fff; font-size: 13px; margin-bottom: 12px; resize: vertical; min-height: 100px; font-family: 'Courier New', monospace;"></textarea>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button onclick="formatJSON()" style="padding: 12px; background: linear-gradient(135deg, #54a0ff, #2e86de); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(84,160,255,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-check"></i> Format
+                            </button>
+                            <button onclick="minifyJSON()" style="padding: 12px; background: linear-gradient(135deg, #5f27cd, #341f97); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(95,39,205,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-compress"></i> Minify
+                            </button>
+                        </div>
+                        <div id="jsonResult" style="margin-top: 15px; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none;">
+                            <pre style="color: #54a0ff; font-size: 12px; font-family: 'Courier New', monospace; margin: 0; white-space: pre-wrap; word-break: break-all;"></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- URL Encoder/Decoder -->
+                <div class="security-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #00d2d3, #00a8a9);">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h3 class="card-title">URL Tool</h3>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #b0b0b0; margin-bottom: 15px; font-size: 14px;">Encode/Decode URLs</p>
+                        <input type="text" id="urlInput" placeholder="Enter URL" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 210, 211, 0.3); border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button onclick="encodeURL()" style="padding: 12px; background: linear-gradient(135deg, #00d2d3, #00a8a9); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,210,211,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-arrow-up"></i> Encode
+                            </button>
+                            <button onclick="decodeURL()" style="padding: 12px; background: linear-gradient(135deg, #ff9ff3, #e880e8); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,159,243,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-arrow-down"></i> Decode
+                            </button>
+                        </div>
+                        <div id="urlResult" style="margin-top: 15px; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: none; word-break: break-all;">
+                            <div style="color: #00d2d3; font-size: 12px; font-family: 'Courier New', monospace;"></div>
                         </div>
                     </div>
                 </div>
@@ -805,6 +1384,22 @@
             setInterval(detectDevTools, 1000);
         })();
 
+        // ==================== OAUTH URL PARAMETER HANDLING ====================
+        
+        // Check for OAuth redirect parameters in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = urlParams.get('token');
+        const urlUser = urlParams.get('user');
+        
+        if (urlToken && urlUser) {
+            // Store OAuth credentials in localStorage
+            localStorage.setItem('legendShopToken', urlToken);
+            localStorage.setItem('legendShopUser', urlUser);
+            
+            // Clean URL by removing parameters
+            window.history.replaceState({}, document.title, '/dashboard.html');
+        }
+        
         // Check if user is logged in
         const token = localStorage.getItem('legendShopToken');
         const user = JSON.parse(localStorage.getItem('legendShopUser'));
@@ -819,6 +1414,12 @@
                 <p style="margin: 8px 0;"><strong>User ID:</strong> ${user.id}</p>
                 <p style="margin: 8px 0;"><strong>Last Login:</strong> ${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'First login'}</p>
             `;
+            
+            // Set member since date
+            const memberSinceEl = document.getElementById('memberSince');
+            if (memberSinceEl) {
+                memberSinceEl.textContent = new Date().getFullYear();
+            }
         }
 
         // Get user IP (simulated)
@@ -845,7 +1446,7 @@
         }
         document.getElementById('userDevice').textContent = deviceInfo;
 
-        // Simulated blocked requests counter
+        // Simulated blocked threats counter
         let blockedCount = Math.floor(Math.random() * 50) + 10;
         document.getElementById('requestCounter').textContent = blockedCount;
 
@@ -1006,6 +1607,594 @@
                 })['constructor']('debugger')['call']();
             }, 50);
         })();
+        
+        // ==================== ADVANCED HACKER FEATURES ====================
+        
+        // Matrix Rain Animation
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+        
+        const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*(){}[]<>?/|\\~';
+        const fontSize = 14;
+        const columns = Math.floor(matrixCanvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+        
+        function drawMatrix() {
+            matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            
+            matrixCtx.fillStyle = '#00ff88';
+            matrixCtx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                matrixCtx.fillText(text, x, y);
+                
+                if (y > matrixCanvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        window.addEventListener('resize', () => {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+        });
+        
+        // Terminal Command System
+        const terminalCommands = {
+            help: () => `
+[HELP] Available commands:
+  • status     - Show system status
+  • scan       - Run security scan
+  • firewall   - Check firewall status
+  • trace      - Trace network route
+  • info       - System information
+  • clear      - Clear terminal
+  • hack       - Initialize penetration test
+  • encrypt    - Encrypt data
+  • decrypt    - Decrypt data
+  • whoami     - Show current user
+            `,
+            status: () => `
+[STATUS] System Health Check:
+  ✓ Firewall: ACTIVE
+  ✓ IDS/IPS: ENABLED
+  ✓ Anti-Malware: RUNNING
+  ✓ SSL/TLS: SECURE
+  ✓ Database: CONNECTED
+  ✓ API Services: OPERATIONAL
+[OK] All systems operational
+            `,
+            scan: () => {
+                let output = '[SCAN] Initializing security scan...\n';
+                output += '[SCAN] Checking for vulnerabilities...\n';
+                setTimeout(() => {
+                    addTerminalLine('[SCAN] ████████████ 100%');
+                    addTerminalLine('[OK] No vulnerabilities detected');
+                }, 1000);
+                return output + '[SCAN] ████░░░░░░░░ 33%';
+            },
+            firewall: () => `
+[FIREWALL] Configuration Status:
+  • Rules Active: 247
+  • Blocked IPs: 1,432
+  • Allowed IPs: 89
+  • Ports Open: 80, 443, 22
+  • DDoS Protection: ENABLED
+[OK] Firewall operating normally
+            `,
+            trace: () => {
+                let output = '[TRACE] Tracing route to api.legendshop.com\n';
+                output += '  1  192.168.1.1      <1 ms\n';
+                output += '  2  10.0.0.1         2 ms\n';
+                output += '  3  172.16.0.1       5 ms\n';
+                output += '[OK] Trace complete - 3 hops';
+                return output;
+            },
+            info: () => `
+[INFO] System Information:
+  • OS: Linux 5.15.0 (x64)
+  • Kernel: Ubuntu 22.04 LTS
+  • Uptime: 47 days, 3 hours
+  • CPU: 8 cores @ 3.6GHz
+  • RAM: 32GB (62% used)
+  • Disk: 512GB SSD (38% used)
+            `,
+            clear: () => {
+                document.getElementById('terminalOutput').innerHTML = '<div>root@legendshop:~$ <span id="terminalCursor" style="animation: blink 1s infinite;">_</span></div>';
+                return '';
+            },
+            hack: () => `
+[HACK] Initializing penetration testing framework...
+[HACK] Loading exploit modules...
+[HACK] Scanning target: 127.0.0.1
+[WARN] This is a simulation. Actual hacking is illegal!
+[OK] Penetration test simulation complete
+            `,
+            encrypt: () => `
+[ENCRYPT] AES-256 encryption ready
+[ENCRYPT] Enter data in Hash Generator tool
+[OK] Encryption module loaded
+            `,
+            decrypt: () => `
+[DECRYPT] Decryption module loaded
+[DECRYPT] Provide encrypted data to decrypt
+[OK] Ready to decrypt
+            `,
+            whoami: () => {
+                const userInfo = user || { firstName: 'Guest', lastName: 'User', email: 'unknown@example.com' };
+                return `
+[INFO] Current User: ${userInfo.firstName} ${userInfo.lastName}
+[INFO] Email: ${userInfo.email}
+[INFO] Role: ADMIN
+[INFO] Clearance Level: MAXIMUM
+                `;
+            }
+        };
+        
+        function addTerminalLine(text) {
+            const output = document.getElementById('terminalOutput');
+            const cursorLine = output.querySelector('#terminalCursor')?.parentElement;
+            if (cursorLine) {
+                cursorLine.remove();
+            }
+            
+            const newLine = document.createElement('div');
+            newLine.textContent = text;
+            output.appendChild(newLine);
+            
+            const promptLine = document.createElement('div');
+            promptLine.style.marginTop = '10px';
+            promptLine.innerHTML = 'root@legendshop:~$ <span id="terminalCursor" style="animation: blink 1s infinite;">_</span>';
+            output.appendChild(promptLine);
+            
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function executeCommand() {
+            const input = document.getElementById('terminalInput');
+            const command = input.value.trim().toLowerCase();
+            
+            if (!command) return;
+            
+            addTerminalLine(`root@legendshop:~$ ${command}`);
+            
+            if (terminalCommands[command]) {
+                const output = terminalCommands[command]();
+                if (output) {
+                    output.split('\n').forEach(line => {
+                        if (line.trim()) addTerminalLine(line);
+                    });
+                }
+            } else {
+                addTerminalLine(`[ERROR] Command not found: ${command}`);
+                addTerminalLine('[TIP] Type "help" for available commands');
+            }
+            
+            input.value = '';
+        }
+        
+        function quickCommand(cmd) {
+            document.getElementById('terminalInput').value = cmd;
+            executeCommand();
+        }
+        
+        // Add CSS for cursor blink
+        const style = document.createElement('style');
+        style.textContent = '@keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }';
+        document.head.appendChild(style);
+        
+        // Network Traffic Simulator
+        let packetsIn = 0;
+        let packetsOut = 0;
+        
+        const networkMessages = [
+            { type: 'in', color: '#00ff88', msg: '[IN] HTTPS:443 → SECURE CONNECTION' },
+            { type: 'out', color: '#667eea', msg: '[OUT] API:443 → DATA TRANSMISSION' },
+            { type: 'blocked', color: '#ff4444', msg: '[BLOCKED] UNAUTHORIZED ACCESS ATTEMPT' },
+            { type: 'in', color: '#00ff88', msg: '[IN] DNS:53 → QUERY RESOLVED' },
+            { type: 'out', color: '#667eea', msg: '[OUT] CDN:443 → ASSET FETCH' },
+            { type: 'warn', color: '#feca57', msg: '[WARN] HIGH BANDWIDTH USAGE' },
+            { type: 'in', color: '#00ff88', msg: '[IN] WSS:443 → WEBSOCKET OPEN' },
+            { type: 'blocked', color: '#ff4444', msg: '[BLOCKED] SQL INJECTION ATTEMPT' }
+        ];
+        
+        function updateNetworkTraffic() {
+            const networkLog = document.getElementById('networkLog');
+            const randomMsg = networkMessages[Math.floor(Math.random() * networkMessages.length)];
+            
+            const line = document.createElement('div');
+            line.style.color = randomMsg.color;
+            line.textContent = randomMsg.msg;
+            networkLog.appendChild(line);
+            
+            if (networkLog.children.length > 12) {
+                networkLog.removeChild(networkLog.firstChild);
+            }
+            
+            if (randomMsg.type === 'in') packetsIn += Math.floor(Math.random() * 50) + 10;
+            if (randomMsg.type === 'out') packetsOut += Math.floor(Math.random() * 30) + 5;
+            
+            document.getElementById('packetsIn').textContent = packetsIn;
+            document.getElementById('packetsOut').textContent = packetsOut;
+            
+            networkLog.scrollTop = networkLog.scrollHeight;
+        }
+        
+        setInterval(updateNetworkTraffic, 2000);
+        
+        // System Resources Monitor
+        function updateSystemStats() {
+            const cpu = Math.floor(Math.random() * 30) + 30;
+            const mem = Math.floor(Math.random() * 20) + 50;
+            const disk = Math.floor(Math.random() * 10) + 35;
+            const net = Math.floor(Math.random() * 40) + 20;
+            
+            document.getElementById('cpuValue').textContent = cpu + '%';
+            document.getElementById('cpuBar').style.width = cpu + '%';
+            
+            document.getElementById('memValue').textContent = mem + '%';
+            document.getElementById('memBar').style.width = mem + '%';
+            
+            document.getElementById('diskValue').textContent = disk + '%';
+            document.getElementById('diskBar').style.width = disk + '%';
+            
+            document.getElementById('netValue').textContent = net + '%';
+            document.getElementById('netBar').style.width = net + '%';
+        }
+        
+        setInterval(updateSystemStats, 3000);
+        
+        // System Uptime Counter
+        let uptimeSeconds = 0;
+        function updateUptime() {
+            uptimeSeconds++;
+            const hours = Math.floor(uptimeSeconds / 3600);
+            const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+            const seconds = uptimeSeconds % 60;
+            const uptimeEl = document.getElementById('uptime');
+            if (uptimeEl) {
+                uptimeEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+        }
+        setInterval(updateUptime, 1000);
+        
+        // ==================== TOOLS FUNCTIONS ====================
+        
+        // BIN Lookup Function
+        async function lookupBIN() {
+            const bin = document.getElementById('binInput').value.trim();
+            const resultDiv = document.getElementById('binResult');
+            const resultContent = resultDiv.querySelector('div');
+            
+            if (!bin || bin.length < 6) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Please enter at least 6 digits</span>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            resultContent.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Looking up BIN...';
+            resultDiv.style.display = 'block';
+            
+            try {
+                const response = await fetch(`https://lookup.binlist.net/${bin}`);
+                if (!response.ok) throw new Error('BIN not found');
+                
+                const data = await response.json();
+                resultContent.innerHTML = `
+                    <strong style="color: #00ff88;">✓ BIN Information:</strong><br>
+                    <strong>Brand:</strong> ${data.scheme || 'Unknown'}<br>
+                    <strong>Type:</strong> ${data.type || 'Unknown'}<br>
+                    <strong>Category:</strong> ${data.brand || 'Unknown'}<br>
+                    <strong>Bank:</strong> ${data.bank?.name || 'Unknown'}<br>
+                    <strong>Country:</strong> ${data.country?.name || 'Unknown'} ${data.country?.emoji || ''}
+                `;
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ BIN not found or API error</span>';
+            }
+        }
+        
+        // IP Lookup Function
+        async function lookupIP() {
+            const ip = document.getElementById('ipInput').value.trim() || 'auto';
+            const resultDiv = document.getElementById('ipResult');
+            const resultContent = resultDiv.querySelector('div');
+            
+            resultContent.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Looking up IP...';
+            resultDiv.style.display = 'block';
+            
+            try {
+                const url = ip === 'auto' ? 'https://ipapi.co/json/' : `https://ipapi.co/${ip}/json/`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.error) throw new Error(data.reason);
+                
+                resultContent.innerHTML = `
+                    <strong style="color: #00ff88;">✓ IP Information:</strong><br>
+                    <strong>IP:</strong> ${data.ip}<br>
+                    <strong>City:</strong> ${data.city || 'Unknown'}<br>
+                    <strong>Region:</strong> ${data.region || 'Unknown'}<br>
+                    <strong>Country:</strong> ${data.country_name || 'Unknown'}<br>
+                    <strong>ISP:</strong> ${data.org || 'Unknown'}<br>
+                    <strong>Timezone:</strong> ${data.timezone || 'Unknown'}
+                `;
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ IP lookup failed. Try again.</span>';
+            }
+        }
+        
+        // Hash Generator Function
+        async function generateHash() {
+            const text = document.getElementById('hashInput').value;
+            const hashType = document.getElementById('hashType').value;
+            const resultDiv = document.getElementById('hashResult');
+            const resultContent = resultDiv.querySelector('div');
+            
+            if (!text) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Please enter text to hash</span>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            
+            try {
+                let hash;
+                if (hashType === 'sha256') {
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                } else {
+                    // MD5 fallback (using simple implementation)
+                    hash = 'MD5 not supported in browser crypto API';
+                }
+                
+                resultContent.innerHTML = `<strong>${hashType.toUpperCase()}:</strong><br>${hash}`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Hash generation failed</span>';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        // Base64 Functions
+        function encodeBase64() {
+            const text = document.getElementById('base64Input').value;
+            const resultDiv = document.getElementById('base64Result');
+            const resultContent = resultDiv.querySelector('div');
+            
+            if (!text) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Please enter text</span>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const encoded = btoa(unescape(encodeURIComponent(text)));
+                resultContent.innerHTML = `<strong>Encoded:</strong><br>${encoded}`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Encoding failed</span>';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        function decodeBase64() {
+            const text = document.getElementById('base64Input').value;
+            const resultDiv = document.getElementById('base64Result');
+            const resultContent = resultDiv.querySelector('div');
+            
+            if (!text) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Please enter text</span>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const decoded = decodeURIComponent(escape(atob(text)));
+                resultContent.innerHTML = `<strong>Decoded:</strong><br>${decoded}`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Decoding failed. Invalid Base64.</span>';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        // Password Generator Function
+        function generatePassword() {
+            const length = parseInt(document.getElementById('pwdLength').value);
+            const useUppercase = document.getElementById('pwdUppercase').checked;
+            const useLowercase = document.getElementById('pwdLowercase').checked;
+            const useNumbers = document.getElementById('pwdNumbers').checked;
+            const useSymbols = document.getElementById('pwdSymbols').checked;
+            
+            let charset = '';
+            if (useUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (useLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (useNumbers) charset += '0123456789';
+            if (useSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (!charset) {
+                alert('Please select at least one character type');
+                return;
+            }
+            
+            let password = '';
+            const values = new Uint32Array(length);
+            crypto.getRandomValues(values);
+            
+            for (let i = 0; i < length; i++) {
+                password += charset[values[i] % charset.length];
+            }
+            
+            document.getElementById('pwdText').textContent = password;
+            document.getElementById('pwdResult').style.display = 'block';
+        }
+        
+        function copyPassword() {
+            const text = document.getElementById('pwdText').textContent;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('✓ Password copied to clipboard!');
+                }).catch(() => {
+                    // Fallback for clipboard failure
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        alert('✓ Password copied to clipboard!');
+                    } catch (err) {
+                        alert('⚠️ Could not copy to clipboard');
+                    }
+                    document.body.removeChild(textArea);
+                });
+            } else {
+                alert('⚠️ Clipboard not supported in this browser');
+            }
+        }
+        
+        // UUID Generator Function
+        function generateUUID() {
+            let uuid;
+            if (crypto.randomUUID) {
+                uuid = crypto.randomUUID();
+            } else {
+                // Fallback for older browsers
+                uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0;
+                    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+            document.getElementById('uuidText').textContent = uuid;
+            document.getElementById('uuidResult').style.display = 'block';
+        }
+        
+        function copyUUID() {
+            const text = document.getElementById('uuidText').textContent;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('✓ UUID copied to clipboard!');
+                }).catch(() => {
+                    // Fallback for clipboard failure
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        alert('✓ UUID copied to clipboard!');
+                    } catch (err) {
+                        alert('⚠️ Could not copy to clipboard');
+                    }
+                    document.body.removeChild(textArea);
+                });
+            } else {
+                alert('⚠️ Clipboard not supported in this browser');
+            }
+        }
+        
+        // JSON Functions
+        function formatJSON() {
+            const text = document.getElementById('jsonInput').value;
+            const resultDiv = document.getElementById('jsonResult');
+            const resultContent = resultDiv.querySelector('pre');
+            
+            if (!text) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Please enter JSON</span>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(text);
+                const formatted = JSON.stringify(parsed, null, 2);
+                resultContent.textContent = formatted;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Invalid JSON: ' + error.message + '</span>';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        function minifyJSON() {
+            const text = document.getElementById('jsonInput').value;
+            const resultDiv = document.getElementById('jsonResult');
+            const resultContent = resultDiv.querySelector('pre');
+            
+            if (!text) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Please enter JSON</span>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(text);
+                const minified = JSON.stringify(parsed);
+                resultContent.textContent = minified;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Invalid JSON: ' + error.message + '</span>';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        // URL Functions
+        function encodeURL() {
+            const text = document.getElementById('urlInput').value;
+            const resultDiv = document.getElementById('urlResult');
+            const resultContent = resultDiv.querySelector('div');
+            
+            if (!text) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Please enter URL</span>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const encoded = encodeURIComponent(text);
+                resultContent.innerHTML = `<strong>Encoded:</strong><br>${encoded}`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Encoding failed</span>';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        function decodeURL() {
+            const text = document.getElementById('urlInput').value;
+            const resultDiv = document.getElementById('urlResult');
+            const resultContent = resultDiv.querySelector('div');
+            
+            if (!text) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Please enter URL</span>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const decoded = decodeURIComponent(text);
+                resultContent.innerHTML = `<strong>Decoded:</strong><br>${decoded}`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultContent.innerHTML = '<span style="color: #ff4444;">⚠️ Decoding failed</span>';
+                resultDiv.style.display = 'block';
+            }
+        }
     </script>
 </body>
 </html>

@@ -1018,51 +1018,156 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval
 
         /* Responsive */
         @media (max-width: 768px) {
-            /* Video Intro Responsive */
+            /* Video Intro Responsive - Enhanced for Mobile */
+            .intro-video {
+                object-fit: cover;
+                /* Ensure video covers full screen on mobile */
+                min-width: 100vw;
+                min-height: 100vh;
+            }
+            
             .video-get-started-button {
+                font-size: 18px;
+                padding: 18px 40px;
+                bottom: 100px;
+                /* Make button more visible on mobile */
+                box-shadow: 
+                    0 10px 40px rgba(0, 255, 136, 0.8),
+                    0 0 60px rgba(102, 126, 234, 0.6),
+                    0 0 80px rgba(240, 147, 251, 0.4);
+                /* Ensure button is easily tappable */
+                min-height: 56px;
+                gap: 10px;
+            }
+            
+            .video-get-started-button i {
                 font-size: 20px;
-                padding: 20px 50px;
-                bottom: 60px;
             }
             
             .intro-skip-button {
-                top: 20px;
-                right: 20px;
-                padding: 12px 25px;
-                font-size: 14px;
+                top: 15px;
+                right: 15px;
+                padding: 10px 20px;
+                font-size: 13px;
+                /* Make skip button more visible */
+                background: rgba(0, 255, 136, 0.2);
+                border-color: rgba(0, 255, 136, 0.7);
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+                /* Ensure button is easily tappable */
+                min-height: 44px;
+                min-width: 100px;
             }
             
             /* Main Content Responsive */
             .main-title {
-                font-size: 48px;
+                font-size: 42px;
+                letter-spacing: -2px;
+                line-height: 1.2;
             }
             
             .subtitle {
-                font-size: 24px;
+                font-size: 22px;
+                margin-bottom: 25px;
             }
 
             .about-description {
-                font-size: 18px;
-                padding: 25px;
+                font-size: 16px;
+                padding: 20px;
                 text-align: left;
+                line-height: 1.8;
+                margin-bottom: 40px;
             }
 
             .cta-button {
-                padding: 20px 50px;
-                font-size: 22px;
+                padding: 18px 45px;
+                font-size: 20px;
             }
 
             .legendary-logo {
-                width: 160px;
-                height: 160px;
+                width: 140px;
+                height: 140px;
+                margin-bottom: 35px;
             }
 
             .legendary-logo i {
-                font-size: 70px;
+                font-size: 60px;
             }
 
             .lens-flare {
                 display: none; /* Hide lens flares on mobile for performance */
+            }
+            
+            .premium-badge {
+                padding: 12px 30px;
+                font-size: 14px;
+                letter-spacing: 2px;
+                margin-bottom: 30px;
+            }
+            
+            .features-list {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin: 50px 0;
+            }
+            
+            .feature-item {
+                padding: 25px;
+            }
+            
+            .feature-item i {
+                font-size: 40px;
+            }
+            
+            .feature-item h3 {
+                font-size: 20px;
+            }
+            
+            .feature-item p {
+                font-size: 15px;
+            }
+            
+            /* Optimize particle system for mobile */
+            #particleCanvas3D {
+                opacity: 0.7;
+                filter: blur(1px);
+            }
+        }
+        
+        /* Extra small mobile devices */
+        @media (max-width: 480px) {
+            .video-get-started-button {
+                font-size: 16px;
+                padding: 16px 35px;
+                bottom: 80px;
+            }
+            
+            .intro-skip-button {
+                top: 10px;
+                right: 10px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            
+            .main-title {
+                font-size: 36px;
+            }
+            
+            .subtitle {
+                font-size: 20px;
+            }
+            
+            .about-description {
+                font-size: 15px;
+                padding: 18px;
+            }
+            
+            .legendary-logo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .legendary-logo i {
+                font-size: 50px;
             }
         }
 
