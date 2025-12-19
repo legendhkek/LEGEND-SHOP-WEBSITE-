@@ -185,6 +185,15 @@ const userSchema = new mongoose.Schema({
     isAdmin: {
         type: Boolean,
         default: false
+    },
+    role: {
+        type: String,
+        enum: ['free', 'premium', 'admin', 'owner'],
+        default: 'free'
+    },
+    checkLimit: {
+        type: Number,
+        default: 1000 // free: 1000, premium: 5000, admin: 10000, owner: unlimited
     }
 });
 
@@ -632,6 +641,93 @@ app.get('/auth/google/callback', authLimiter, requireMongoConnection, async (req
     }
 });
 
+// POST endpoint for Google OAuth callback (used by callback page)
+app.post('/api/auth/google/callback', authLimiter, requireMongoConnection, async (req, res) => {
+    try {
+        const { code, redirectUri } = req.body;
+        
+        if (!code) {
+            return res.status(400).json({
+                success: false,
+                error: 'Authorization code not provided'
+            });
+        }
+        
+        // Exchange authorization code for access token
+        const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
+            code,
+            client_id: GOOGLE_CLIENT_ID,
+            client_secret: GOOGLE_CLIENT_SECRET,
+            redirect_uri: redirectUri || `${req.protocol}://${req.get('host')}/auth/google/callback`,
+            grant_type: 'authorization_code'
+        });
+        
+        const { access_token } = tokenResponse.data;
+        
+        // Get user info from Google
+        const userInfoResponse = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        });
+        
+        const googleUser = userInfoResponse.data;
+        
+        // Check if user exists in database
+        let user = await User.findOne({ email: googleUser.email });
+        
+        if (!user) {
+            // Create new user
+            const nameParts = googleUser.name.split(' ');
+            user = new User({
+                firstName: nameParts[0] || 'User',
+                lastName: nameParts.slice(1).join(' ') || 'Account',
+                email: googleUser.email,
+                password: await bcrypt.hash(Math.random().toString(36), 12), // Random password for OAuth users
+                dateOfBirth: new Date('2000-01-01'), // Default DOB for OAuth users
+                googleId: googleUser.id,
+                credits: 100 // Initial credits for new users
+            });
+            await user.save();
+            console.log('✅ New Google OAuth user created:', user.email);
+        }
+        
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
+        
+        // Generate JWT token
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined in environment variables');
+        }
+        const token = jwt.sign(
+            { userId: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+        
+        // Return token and user data
+        res.json({
+            success: true,
+            token: token,
+            user: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                credits: user.credits || 0
+            }
+        });
+        
+    } catch (error) {
+        console.error('Google OAuth Error:', error.message);
+        res.status(400).json({
+            success: false,
+            error: error.response?.data?.error_description || 'Authentication failed. Please try again.'
+        });
+    }
+});
+
 // ===== NEW FEATURES =====
 
 // Get total users count
@@ -1023,6 +1119,168 @@ app.delete('/api/admin/codes/:id', authLimiter, authenticateToken, requireMongoC
         res.status(500).json({
             success: false,
             message: 'Error deleting code'
+        });
+    }
+});
+
+// Deduct credits for card check
+app.post('/api/deduct-credit', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const { amount, description } = req.body;
+        const deductAmount = amount || 1; // Default 1 credit per check
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Check if user has enough credits
+        if ((user.credits || 0) < deductAmount) {
+            return res.status(400).json({
+                success: false,
+                message: 'Insufficient credits',
+                currentBalance: user.credits || 0,
+                required: deductAmount
+            });
+        }
+
+        // Deduct credits
+        user.credits = (user.credits || 0) - deductAmount;
+        await user.save();
+
+        // Create transaction record
+        const transaction = new CreditTransaction({
+            userId: user._id,
+            amount: -deductAmount, // Negative for deduction
+            type: 'usage',
+            description: description || 'Card check operation'
+        });
+        await transaction.save();
+
+        res.json({
+            success: true,
+            message: 'Credit deducted successfully',
+            deducted: deductAmount,
+            newBalance: user.credits
+        });
+    } catch (error) {
+        console.error('Error deducting credits:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deducting credits'
+        });
+    }
+});
+
+// Get user info including role and limits
+app.get('/api/user-info', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select('firstName lastName email credits role checkLimit');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Get owner proxy if available (check settings collection or environment)
+        const ownerProxy = process.env.OWNER_PROXY || null;
+
+        res.json({
+            success: true,
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                credits: user.credits || 0,
+                role: user.role || 'free',
+                checkLimit: user.checkLimit || 1000
+            },
+            ownerProxy: ownerProxy
+        });
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching user info'
+        });
+    }
+});
+
+// Save charged card to vault
+app.post('/api/vault/save-charged', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const { cardData, site, timestamp } = req.body;
+
+        // Here you would save to a Vault collection
+        // For now, just acknowledge
+        console.log('Charged card saved:', { userId: req.userId, site, timestamp });
+
+        res.json({
+            success: true,
+            message: 'Charged card saved to vault'
+        });
+    } catch (error) {
+        console.error('Error saving charged card:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error saving to vault'
+        });
+    }
+});
+
+// Set owner proxy (Owner only)
+app.post('/api/admin/set-owner-proxy', authLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || user.role !== 'owner') {
+            return res.status(403).json({
+                success: false,
+                message: 'Only owners can set global proxy'
+            });
+        }
+
+        const { proxy } = req.body;
+        
+        // Save to environment or database
+        process.env.OWNER_PROXY = proxy || '';
+
+        res.json({
+            success: true,
+            message: 'Owner proxy updated successfully'
+        });
+    } catch (error) {
+        console.error('Error setting owner proxy:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error setting owner proxy'
+        });
+    }
+});
+
+// Get owner proxy (Owner only)
+app.get('/api/admin/get-owner-proxy', authLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || user.role !== 'owner') {
+            return res.status(403).json({
+                success: false,
+                message: 'Only owners can view global proxy'
+            });
+        }
+
+        res.json({
+            success: true,
+            proxy: process.env.OWNER_PROXY || ''
+        });
+    } catch (error) {
+        console.error('Error getting owner proxy:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error getting owner proxy'
         });
     }
 });

@@ -297,6 +297,41 @@
             </div>
         </div>
 
+        <!-- Owner Settings (Only for Owner Role) -->
+        <div class="card" id="ownerSettings" style="display: none;">
+            <div class="card-header">
+                <h2 class="card-title">🔧 Owner Settings</h2>
+                <span class="badge" style="background: #7c3aed;">OWNER ONLY</span>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-network-wired"></i> Global Proxy
+                </label>
+                <p style="font-size: 13px; color: #999; margin-bottom: 10px;">
+                    Set a global proxy that all users will use for CC checking. Leave empty to require users to provide their own proxies.
+                </p>
+                <textarea id="ownerProxyInput" class="form-input" rows="3" placeholder="http://ip:port:user:pass&#10;Or leave empty" style="font-family: 'Courier New', monospace;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" onclick="saveOwnerProxy()">
+                    <i class="fas fa-save"></i>
+                    Save Global Proxy
+                </button>
+                <button class="btn btn-secondary" onclick="testOwnerProxy()">
+                    <i class="fas fa-check-circle"></i>
+                    Test Proxy
+                </button>
+                <button class="btn" style="background: #dc2626;" onclick="clearOwnerProxy()">
+                    <i class="fas fa-trash"></i>
+                    Clear Proxy
+                </button>
+            </div>
+
+            <div id="proxyTestResult" style="margin-top: 15px; display: none; padding: 15px; border-radius: 8px;"></div>
+        </div>
+
         <!-- Generate Code Form -->
         <div class="card">
             <div class="card-header">
@@ -340,7 +375,7 @@
     </div>
 
     <script>
-        // Check if user is admin
+        // Check if user is admin and owner
         window.addEventListener('load', function() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -363,6 +398,7 @@
             .then(() => {
                 // Load codes if authenticated
                 loadCodes();
+                checkOwnerStatus();
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -546,6 +582,155 @@
                 console.error('Error:', error);
                 showError('Failed to delete code. Please try again.');
             });
+        }
+
+        // Owner proxy management functions
+        async function saveOwnerProxy() {
+            const proxy = document.getElementById('ownerProxyInput').value.trim();
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('/api/admin/set-owner-proxy', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ proxy })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Global proxy saved successfully!');
+                } else {
+                    showError(data.message || 'Failed to save proxy');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to save proxy. Please try again.');
+            }
+        }
+
+        async function testOwnerProxy() {
+            const proxy = document.getElementById('ownerProxyInput').value.trim();
+            
+            if (!proxy) {
+                showError('Please enter a proxy to test');
+                return;
+            }
+
+            const resultDiv = document.getElementById('proxyTestResult');
+            resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing proxy...';
+            resultDiv.style.display = 'block';
+            resultDiv.style.background = 'rgba(59, 130, 246, 0.1)';
+            resultDiv.style.border = '1px solid #3b82f6';
+            resultDiv.style.color = '#3b82f6';
+
+            try {
+                // Use PHP proxy for validation to avoid CORS
+                const response = await fetch('cc-checker/bulk-api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'validate_proxy',
+                        proxy: proxy,
+                        site: 'https://google.com'
+                    })
+                });
+                
+                const data = await response.json();
+                const isLive = data.success && data.is_live;
+
+                if (isLive) {
+                    resultDiv.innerHTML = '<i class="fas fa-check-circle"></i> Proxy is LIVE and working!';
+                    resultDiv.style.background = 'rgba(34, 197, 94, 0.1)';
+                    resultDiv.style.border = '1px solid #22c55e';
+                    resultDiv.style.color = '#22c55e';
+                } else {
+                    resultDiv.innerHTML = '<i class="fas fa-times-circle"></i> Proxy is DEAD or not working. Response: ' + (data.response || 'No response').substring(0, 100);
+                    resultDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+                    resultDiv.style.border = '1px solid #ef4444';
+                    resultDiv.style.color = '#ef4444';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error testing proxy: ' + error.message;
+                resultDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+                resultDiv.style.border = '1px solid #ef4444';
+                resultDiv.style.color = '#ef4444';
+            }
+        }
+
+        async function clearOwnerProxy() {
+            if (!confirm('Are you sure you want to clear the global proxy? Users will need to provide their own proxies.')) {
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('/api/admin/set-owner-proxy', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ proxy: '' })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('ownerProxyInput').value = '';
+                    showSuccess('Global proxy cleared successfully!');
+                } else {
+                    showError(data.message || 'Failed to clear proxy');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to clear proxy. Please try again.');
+            }
+        }
+
+        // Load owner proxy on page load
+        async function loadOwnerProxy() {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('/api/admin/get-owner-proxy', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success && data.proxy) {
+                    document.getElementById('ownerProxyInput').value = data.proxy;
+                }
+            } catch (error) {
+                console.error('Error loading owner proxy:', error);
+            }
+        }
+
+        // Check if user is owner and show owner settings
+        async function checkOwnerStatus() {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('/api/user-info', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success && data.user.role === 'owner') {
+                    document.getElementById('ownerSettings').style.display = 'block';
+                    await loadOwnerProxy();
+                }
+            } catch (error) {
+                console.error('Error checking owner status:', error);
+            }
         }
     </script>
 </body>

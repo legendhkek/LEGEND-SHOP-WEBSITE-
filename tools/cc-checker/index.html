@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CC Checker - LEGEND SHOP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: #1a1a1a;
+            border-right: 1px solid #2a2a2a;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .sidebar-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .nav-section {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 25px;
+            color: #999;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #252525;
+            color: #fff;
+        }
+
+        .nav-item.active {
+            border-left: 3px solid #7c3aed;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: #0a0a0a;
+            border-bottom: 1px solid #2a2a2a;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #1a1a1a;
+            padding: 8px 15px;
+            border-radius: 10px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 30px;
+        }
+
+        .content-card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .select-field {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #a855f7;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Result Display */
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid;
+            display: none;
+        }
+
+        .result-box.success {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+        }
+
+        .result-box.error {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: #dc2626;
+        }
+
+        .result-box.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+        }
+
+        .result-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .result-details {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid #7c3aed;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #a855f7;
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #2a2a2a;
+            border-top: 3px solid #7c3aed;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div class="sidebar-title">CC CHECKER</div>
+        </div>
+        
+        <div class="nav-section">
+            <a href="../index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="index.html" class="nav-item active">
+                <i class="fas fa-credit-card"></i>
+                <span>CC Checker</span>
+            </a>
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="../legend-checker.html" class="nav-item">
+                <i class="fas fa-lock"></i>
+                <span>Vault</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="page-title">CC Checker</div>
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 600; color: #fff;" id="userName">User</div>
+                    <div style="font-size: 12px; color: #999;" id="userEmail">@user</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Security Badge -->
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>Protected by Advanced PHP Security Layer</span>
+            </div>
+
+            <!-- Credit Display -->
+            <div class="security-badge" style="background: rgba(34, 197, 94, 0.1); border-color: #22c55e; color: #22c55e; margin-bottom: 20px;">
+                <i class="fas fa-coins"></i>
+                <span>Available Credits: <strong data-credit-display id="creditBalance">Loading...</strong> | Cost: 1 credit per check</span>
+            </div>
+
+            <!-- Check Card Form -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="card-title">Check Credit Card</div>
+                </div>
+                <div class="card-body">
+                    <form id="checkCardForm">
+                        <div class="input-group">
+                            <label class="input-label">Card Number</label>
+                            <input type="text" class="input-field" id="cardNumber" placeholder="4532 1234 5678 9010" maxlength="19" required>
+                        </div>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label class="input-label">Expiry Month</label>
+                                <input type="text" class="input-field" id="expiryMonth" placeholder="MM" maxlength="2" required>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Expiry Year</label>
+                                <input type="text" class="input-field" id="expiryYear" placeholder="YYYY" maxlength="4" required>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">CVV</label>
+                                <input type="text" class="input-field" id="cvv" placeholder="123" maxlength="4" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Gateway</label>
+                            <select class="select-field" id="gateway" required>
+                                <option value="stripe">Stripe</option>
+                                <option value="braintree">Braintree</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="authorize">Authorize.net</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="checkBtn">
+                            <i class="fas fa-check-circle"></i> Check Card
+                        </button>
+                    </form>
+
+                    <!-- Loading Spinner -->
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 15px; color: #999;">Checking card...</p>
+                    </div>
+
+                    <!-- Result Box -->
+                    <div class="result-box" id="resultBox">
+                        <div class="result-title" id="resultTitle"></div>
+                        <div class="result-details" id="resultDetails"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Security Utilities -->
+    <script src="security-utils.js"></script>
+    
+    <script>
+        // Configuration
+        const API_BASE = 'cc-checker/';
+        let csrfToken = null;
+        let userToken = null;
+        let rateLimiter = null;
+        let activityMonitor = null;
+        let deviceFingerprint = null;
+
+        // Initialize on page load
+        window.addEventListener('load', async function() {
+            // Initialize security features
+            rateLimiter = new ClientRateLimiter(10, 60000); // 10 requests per minute
+            activityMonitor = new ActivityMonitor();
+            
+            // Generate device fingerprint
+            deviceFingerprint = await DeviceFingerprint.generate();
+            console.log('Device fingerprint:', deviceFingerprint);
+            
+            // Run bot detection
+            const botDetector = new BotDetector();
+            const isBot = await botDetector.isBot();
+            if (isBot) {
+                const report = botDetector.getReport();
+                console.warn('Bot detected:', report);
+                showError('Automated access detected. Please verify you are human.');
+                return;
+            }
+            
+            // Check authentication
+            userToken = localStorage.getItem('token');
+            if (!userToken) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Load user info
+            loadUserInfo();
+
+            // Initialize PHP session
+            await initializeSession();
+        });
+
+        // Load user information
+        function loadUserInfo() {
+            const userDataStr = localStorage.getItem('user');
+            if (userDataStr) {
+                try {
+                    const userData = JSON.parse(userDataStr);
+                    document.getElementById('userName').textContent = `${userData.firstName} ${userData.lastName}`;
+                    document.getElementById('userEmail').textContent = `@${userData.email.split('@')[0]}`;
+                    document.getElementById('userAvatar').textContent = userData.firstName.charAt(0).toUpperCase();
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
+            }
+        }
+
+        // Initialize PHP session
+        async function initializeSession() {
+            try {
+                const response = await fetch(API_BASE + 'auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'init_session'
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    csrfToken = data.csrf_token;
+                    
+                    // Verify token with PHP backend
+                    await verifyToken();
+                }
+            } catch (error) {
+                console.error('Error initializing session:', error);
+                showError('Failed to initialize secure session');
+            }
+        }
+
+        // Verify token with PHP backend
+        async function verifyToken() {
+            try {
+                const response = await fetch(API_BASE + 'auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'verify_token',
+                        token: userToken
+                    })
+                });
+
+                const data = await response.json();
+                if (!data.success) {
+                    window.location.href = '../login.html';
+                } else {
+                    // Load credit balance after successful verification
+                    await loadCreditBalance();
+                }
+            } catch (error) {
+                console.error('Error verifying token:', error);
+            }
+        }
+
+        // Load user credit balance
+        async function loadCreditBalance() {
+            try {
+                // Get API base URL
+                const apiBaseUrl = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:3000' 
+                    : 'https://legendbl.tech';
+                
+                const response = await fetch(apiBaseUrl + '/api/user-credits', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + userToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('creditBalance').textContent = data.credits;
+                    updateCreditDisplay(data.credits);
+                } else {
+                    document.getElementById('creditBalance').textContent = 'Error';
+                }
+            } catch (error) {
+                console.error('Error loading credits:', error);
+                document.getElementById('creditBalance').textContent = 'Error';
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('checkCardForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!csrfToken) {
+                showError('Security token not initialized. Please refresh the page.');
+                return;
+            }
+            
+            // Check rate limit
+            const rateCheck = rateLimiter.canMakeRequest();
+            if (!rateCheck.allowed) {
+                showError(`Rate limit exceeded. Please wait ${rateCheck.retryAfter} seconds before trying again.`);
+                return;
+            }
+            
+            // Check for suspicious activity
+            if (activityMonitor.isSuspicious()) {
+                showError('Suspicious activity detected. Please refresh the page and try again.');
+                activityMonitor.reset();
+                return;
+            }
+
+            // Get form values
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            const expiryMonth = document.getElementById('expiryMonth').value;
+            const expiryYear = document.getElementById('expiryYear').value;
+            const cvv = document.getElementById('cvv').value;
+            const gateway = document.getElementById('gateway').value;
+
+            // Advanced validation using InputValidator
+            const cardValidation = InputValidator.validateCardNumber(cardNumber);
+            if (!cardValidation.valid) {
+                showError(cardValidation.error);
+                return;
+            }
+            
+            const expiryValidation = InputValidator.validateExpiry(expiryMonth, expiryYear);
+            if (!expiryValidation.valid) {
+                showError(expiryValidation.error);
+                return;
+            }
+            
+            const cvvValidation = InputValidator.validateCVV(cvv);
+            if (!cvvValidation.valid) {
+                showError(cvvValidation.error);
+                return;
+            }
+
+            // Show loading
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('resultBox').style.display = 'none';
+
+            try {
+                // Call PHP API
+                const response = await fetch(API_BASE + 'api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + userToken,
+                        'X-Device-Fingerprint': deviceFingerprint,
+                        'X-Client-Version': '2.0.0'
+                    },
+                    body: JSON.stringify({
+                        action: 'check_card',
+                        csrf_token: csrfToken,
+                        cardNumber: cardNumber,
+                        expiryMonth: expiryMonth,
+                        expiryYear: expiryYear,
+                        cvv: cvv,
+                        gateway: gateway
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.result) {
+                    showResult(data.result, data.creditsDeducted, data.remainingCredits);
+                    // Update credit display if present
+                    updateCreditDisplay(data.remainingCredits);
+                } else {
+                    showError(data.error || 'Card check failed');
+                }
+            } catch (error) {
+                console.error('Error checking card:', error);
+                showError('Failed to check card. Please try again.');
+            } finally {
+                document.getElementById('checkBtn').disabled = false;
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+        });
+
+        // Update credit display
+        function updateCreditDisplay(credits) {
+            // Update in security badge if exists
+            const creditElements = document.querySelectorAll('[data-credit-display]');
+            creditElements.forEach(el => {
+                el.textContent = credits;
+            });
+        }
+
+        // Validate card number (Luhn algorithm)
+        function validateCardNumber(number) {
+            if (!/^\d{13,19}$/.test(number)) {
+                return false;
+            }
+
+            let sum = 0;
+            let isEven = false;
+
+            for (let i = number.length - 1; i >= 0; i--) {
+                let digit = parseInt(number[i]);
+
+                if (isEven) {
+                    digit *= 2;
+                    if (digit > 9) {
+                        digit -= 9;
+                    }
+                }
+
+                sum += digit;
+                isEven = !isEven;
+            }
+
+            return (sum % 10) === 0;
+        }
+
+        // Show result
+        function showResult(result, creditsDeducted, remainingCredits) {
+            const resultBox = document.getElementById('resultBox');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDetails = document.getElementById('resultDetails');
+
+            resultBox.className = 'result-box';
+            
+            if (result.status === 'approved') {
+                resultBox.classList.add('success');
+                resultTitle.innerHTML = '<i class="fas fa-check-circle"></i> Card Approved';
+            } else if (result.status === 'declined') {
+                resultBox.classList.add('warning');
+                resultTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Card Declined';
+            } else {
+                resultBox.classList.add('error');
+                resultTitle.innerHTML = '<i class="fas fa-times-circle"></i> Card Invalid';
+            }
+
+            resultDetails.innerHTML = `
+                <strong>Message:</strong> ${result.message}<br>
+                <strong>Code:</strong> ${result.code}<br>
+                <strong>Brand:</strong> ${result.brand}<br>
+                <strong>BIN:</strong> ${result.bin}<br>
+                <strong>Last 4:</strong> ${result.last4}<br>
+                <strong>Gateway:</strong> ${result.gateway.toUpperCase()}<br>
+                <hr style="margin: 10px 0; border: none; border-top: 1px solid #2a2a2a;">
+                <strong style="color: #f59e0b;">Credits Used:</strong> ${creditsDeducted || 1}<br>
+                <strong style="color: #22c55e;">Remaining Credits:</strong> ${remainingCredits !== undefined ? remainingCredits : 'N/A'}
+            `;
+
+            resultBox.style.display = 'block';
+        }
+
+        // Show error
+        function showError(message) {
+            const resultBox = document.getElementById('resultBox');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDetails = document.getElementById('resultDetails');
+
+            resultBox.className = 'result-box error';
+            resultTitle.innerHTML = '<i class="fas fa-times-circle"></i> Error';
+            resultDetails.textContent = message;
+            resultBox.style.display = 'block';
+        }
+
+        // Format card number input
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Only allow numbers in numeric fields
+        ['cardNumber', 'expiryMonth', 'expiryYear', 'cvv'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', function(e) {
+                if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete') {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

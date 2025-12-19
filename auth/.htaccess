@@ -1,0 +1,8 @@
+# Google OAuth Callback Redirects
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /auth/
+    
+    # Redirect Google OAuth callback to the HTML handler
+    RewriteRule ^google/callback$ google/callback.html [L,QSA]
+</IfModule>

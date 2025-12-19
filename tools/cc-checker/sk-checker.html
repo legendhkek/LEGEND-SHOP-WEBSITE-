@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SK Key Checker - LEGEND SHOP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #3a3a3a;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .details-card {
+            background: #0f0f0f;
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-valid {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .status-invalid {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #999;
+            border-radius: 50%;
+            border-top-color: #00ff88;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .cc-check-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .result-item {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .result-approved {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+
+        .result-declined {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .result-charged {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-key"></i> SK Key Checker</h1>
+            <p>Validate Stripe Secret Keys and Check Cards</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-lock"></i>
+                Stripe Secret Key Validation
+            </div>
+
+            <div class="input-group">
+                <label>Stripe Secret Key (sk_live_* or sk_test_*)</label>
+                <input type="password" id="skKeyInput" placeholder="sk_live_xxxxxxxxxxxxxxxxxxxxx">
+            </div>
+
+            <button class="btn btn-primary" id="validateBtn" onclick="validateSK()">
+                <i class="fas fa-check-circle"></i>
+                Validate Key
+            </button>
+            <button class="btn btn-secondary" onclick="clearSK()">
+                <i class="fas fa-times"></i>
+                Clear
+            </button>
+
+            <div id="skDetails" class="hidden">
+                <div class="details-card">
+                    <h3 style="margin-bottom: 15px; color: #00ff88;">
+                        <i class="fas fa-info-circle"></i> Account Details
+                    </h3>
+                    <div id="detailsContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ccCheckSection" class="card hidden">
+            <div class="card-title">
+                <i class="fas fa-credit-card"></i>
+                Check Cards with SK Key
+            </div>
+
+            <div class="input-group">
+                <label>Credit Cards (one per line: cc|mm|yy|cvv)</label>
+                <textarea id="ccListInput" placeholder="4532********1234|12|25|123&#10;5425********8765|06|26|456"></textarea>
+            </div>
+
+            <button class="btn btn-primary" id="checkCardsBtn" onclick="checkCards()">
+                <i class="fas fa-play"></i>
+                Start Checking
+            </button>
+
+            <div id="resultsContainer" class="hidden" style="margin-top: 20px;">
+                <h3 style="margin-bottom: 15px; color: #fff;">
+                    <i class="fas fa-list"></i> Results
+                </h3>
+                <div id="resultsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let validatedSK = null;
+        let isChecking = false;
+
+        function showAlert(message, type = 'error') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    <i class="fas ${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        async function validateSK() {
+            const skKey = document.getElementById('skKeyInput').value.trim();
+            
+            if (!skKey) {
+                showAlert('Please enter a Stripe Secret Key', 'error');
+                return;
+            }
+
+            if (!skKey.startsWith('sk_live_') && !skKey.startsWith('sk_test_')) {
+                showAlert('Invalid SK key format. Must start with sk_live_ or sk_test_', 'error');
+                return;
+            }
+
+            const validateBtn = document.getElementById('validateBtn');
+            validateBtn.disabled = true;
+            validateBtn.innerHTML = '<span class="loading"></span> Validating...';
+
+            try {
+                const response = await fetch('bulk-api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'validate_sk',
+                        sk_key: skKey
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.is_valid) {
+                    validatedSK = skKey;
+                    showAlert('SK Key validated successfully!', 'success');
+                    displaySKDetails(data.details);
+                    document.getElementById('ccCheckSection').classList.remove('hidden');
+                } else {
+                    showAlert(data.error || 'Invalid SK Key', 'error');
+                    document.getElementById('skDetails').classList.add('hidden');
+                    document.getElementById('ccCheckSection').classList.add('hidden');
+                }
+            } catch (error) {
+                showAlert('Failed to validate SK key: ' + error.message, 'error');
+            } finally {
+                validateBtn.disabled = false;
+                validateBtn.innerHTML = '<i class="fas fa-check-circle"></i> Validate Key';
+            }
+        }
+
+        function displaySKDetails(details) {
+            const detailsContent = document.getElementById('detailsContent');
+            let html = '';
+
+            if (details.id) {
+                html += `<div class="detail-row">
+                    <span class="detail-label">Account ID:</span>
+                    <span class="detail-value">${details.id}</span>
+                </div>`;
+            }
+
+            if (details.business_name) {
+                html += `<div class="detail-row">
+                    <span class="detail-label">Business Name:</span>
+                    <span class="detail-value">${details.business_name}</span>
+                </div>`;
+            }
+
+            if (details.email) {
+                html += `<div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">${details.email}</span>
+                </div>`;
+            }
+
+            if (details.country) {
+                html += `<div class="detail-row">
+                    <span class="detail-label">Country:</span>
+                    <span class="detail-value">${details.country}</span>
+                </div>`;
+            }
+
+            if (details.currency) {
+                html += `<div class="detail-row">
+                    <span class="detail-label">Default Currency:</span>
+                    <span class="detail-value">${details.currency.toUpperCase()}</span>
+                </div>`;
+            }
+
+            if (details.charges_enabled !== undefined) {
+                html += `<div class="detail-row">
+                    <span class="detail-label">Charges Enabled:</span>
+                    <span class="detail-value">${details.charges_enabled ? 'Yes' : 'No'}</span>
+                </div>`;
+            }
+
+            if (details.payouts_enabled !== undefined) {
+                html += `<div class="detail-row">
+                    <span class="detail-label">Payouts Enabled:</span>
+                    <span class="detail-value">${details.payouts_enabled ? 'Yes' : 'No'}</span>
+                </div>`;
+            }
+
+            if (details.type) {
+                html += `<div class="detail-row">
+                    <span class="detail-label">Account Type:</span>
+                    <span class="detail-value">${details.type}</span>
+                </div>`;
+            }
+
+            html += `<div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="status-badge status-valid">VALID</span>
+            </div>`;
+
+            detailsContent.innerHTML = html;
+            document.getElementById('skDetails').classList.remove('hidden');
+        }
+
+        async function checkCards() {
+            if (!validatedSK) {
+                showAlert('Please validate an SK key first', 'error');
+                return;
+            }
+
+            const ccList = document.getElementById('ccListInput').value.trim();
+            if (!ccList) {
+                showAlert('Please enter credit cards to check', 'error');
+                return;
+            }
+
+            const cards = ccList.split('\n').filter(line => line.trim());
+            if (cards.length === 0) {
+                showAlert('No valid cards found', 'error');
+                return;
+            }
+
+            isChecking = true;
+            const checkCardsBtn = document.getElementById('checkCardsBtn');
+            checkCardsBtn.disabled = true;
+            checkCardsBtn.innerHTML = '<span class="loading"></span> Checking...';
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            const resultsList = document.getElementById('resultsList');
+            resultsContainer.classList.remove('hidden');
+            resultsList.innerHTML = '';
+
+            for (const card of cards) {
+                await checkSingleCard(card);
+            }
+
+            isChecking = false;
+            checkCardsBtn.disabled = false;
+            checkCardsBtn.innerHTML = '<i class="fas fa-play"></i> Start Checking';
+            showAlert(`Checked ${cards.length} card(s)`, 'success');
+        }
+
+        async function checkSingleCard(cardData) {
+            const parts = cardData.split('|');
+            if (parts.length !== 4) {
+                addResult(cardData, 'Invalid format', 'declined');
+                return;
+            }
+
+            const [cc, mes, ano, cvv] = parts.map(p => p.trim());
+
+            try {
+                const response = await fetch('bulk-api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'check_with_sk',
+                        sk_key: validatedSK,
+                        cc, mes, ano, cvv
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    addResult(cardData, data.result.message, data.result.status);
+                } else {
+                    addResult(cardData, data.error || 'Check failed', 'declined');
+                }
+            } catch (error) {
+                addResult(cardData, 'Error: ' + error.message, 'declined');
+            }
+        }
+
+        function addResult(card, message, status) {
+            const resultsList = document.getElementById('resultsList');
+            const maskedCard = maskCard(card);
+            
+            const statusClass = status === 'charged' ? 'result-charged' : 
+                              status === 'approved' ? 'result-approved' : 
+                              'result-declined';
+            
+            const icon = status === 'charged' ? '🔥' : 
+                        status === 'approved' ? '✓' : 
+                        '✗';
+
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result-item ${statusClass}`;
+            resultDiv.innerHTML = `
+                <span>${icon} ${maskedCard}</span>
+                <span>${message}</span>
+            `;
+            
+            resultsList.insertBefore(resultDiv, resultsList.firstChild);
+        }
+
+        function maskCard(cardData) {
+            const parts = cardData.split('|');
+            if (parts.length === 4) {
+                const cc = parts[0];
+                const masked = cc.substring(0, 6) + '******' + cc.substring(cc.length - 4);
+                return `${masked}|${parts[1]}|${parts[2]}|***`;
+            }
+            return cardData;
+        }
+
+        function clearSK() {
+            document.getElementById('skKeyInput').value = '';
+            document.getElementById('skDetails').classList.add('hidden');
+            document.getElementById('ccCheckSection').classList.add('hidden');
+            document.getElementById('ccListInput').value = '';
+            document.getElementById('resultsContainer').classList.add('hidden');
+            validatedSK = null;
+        }
+    </script>
+</body>
+</html>
