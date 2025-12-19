@@ -185,6 +185,15 @@ const userSchema = new mongoose.Schema({
     isAdmin: {
         type: Boolean,
         default: false
+    },
+    role: {
+        type: String,
+        enum: ['free', 'premium', 'admin', 'owner'],
+        default: 'free'
+    },
+    checkLimit: {
+        type: Number,
+        default: 1000 // free: 1000, premium: 5000, admin: 10000, owner: unlimited
     }
 });
 
@@ -1162,6 +1171,63 @@ app.post('/api/deduct-credit', apiLimiter, authenticateToken, requireMongoConnec
         res.status(500).json({
             success: false,
             message: 'Error deducting credits'
+        });
+    }
+});
+
+// Get user info including role and limits
+app.get('/api/user-info', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select('firstName lastName email credits role checkLimit');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Get owner proxy if available (check settings collection or environment)
+        const ownerProxy = process.env.OWNER_PROXY || null;
+
+        res.json({
+            success: true,
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                credits: user.credits || 0,
+                role: user.role || 'free',
+                checkLimit: user.checkLimit || 1000
+            },
+            ownerProxy: ownerProxy
+        });
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching user info'
+        });
+    }
+});
+
+// Save charged card to vault
+app.post('/api/vault/save-charged', apiLimiter, authenticateToken, requireMongoConnection, async (req, res) => {
+    try {
+        const { cardData, site, timestamp } = req.body;
+
+        // Here you would save to a Vault collection
+        // For now, just acknowledge
+        console.log('Charged card saved:', { userId: req.userId, site, timestamp });
+
+        res.json({
+            success: true,
+            message: 'Charged card saved to vault'
+        });
+    } catch (error) {
+        console.error('Error saving charged card:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error saving to vault'
         });
     }
 });
