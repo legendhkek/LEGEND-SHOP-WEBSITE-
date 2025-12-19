@@ -421,7 +421,9 @@ app.post('/api/signup', authLimiter, requireMongoConnection, [
                 id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                email: user.email
+                email: user.email,
+                isAdmin: user.isAdmin || false,
+                credits: user.credits || 100
             }
         });
 
@@ -501,7 +503,9 @@ app.post('/api/login', authLimiter, requireMongoConnection, [
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                lastLogin: user.lastLogin
+                lastLogin: user.lastLogin,
+                isAdmin: user.isAdmin || false,
+                credits: user.credits || 100
             }
         });
 
