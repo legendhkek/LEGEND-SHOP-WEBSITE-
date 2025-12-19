@@ -570,18 +570,21 @@ app.get('/auth/google/callback', authLimiter, requireMongoConnection, async (req
         const { code } = req.query;
         
         if (!code) {
-            return res.status(400).json({
-                success: false,
-                message: 'Authorization code not provided'
-            });
+            return res.redirect('/login.html?error=no_code');
         }
+        
+        // Determine the correct redirect URI based on environment
+        const redirectUri = process.env.GOOGLE_REDIRECT_URI || 
+                          (process.env.PRODUCTION_URL ? 
+                          `${process.env.PRODUCTION_URL}/auth/google/callback` :
+                          `${req.protocol}://${req.get('host')}/auth/google/callback`);
         
         // Exchange authorization code for access token
         const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
             code,
             client_id: GOOGLE_CLIENT_ID,
             client_secret: GOOGLE_CLIENT_SECRET,
-            redirect_uri: `${req.protocol}://${req.get('host')}/auth/google/callback`,
+            redirect_uri: redirectUri,
             grant_type: 'authorization_code'
         });
         
@@ -653,12 +656,19 @@ app.post('/api/auth/google/callback', authLimiter, requireMongoConnection, async
             });
         }
         
+        // Determine the correct redirect URI based on environment
+        const finalRedirectUri = redirectUri || 
+                               process.env.GOOGLE_REDIRECT_URI || 
+                               (process.env.PRODUCTION_URL ? 
+                               `${process.env.PRODUCTION_URL}/auth/google/callback` :
+                               `${req.protocol}://${req.get('host')}/auth/google/callback`);
+        
         // Exchange authorization code for access token
         const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
             code,
             client_id: GOOGLE_CLIENT_ID,
             client_secret: GOOGLE_CLIENT_SECRET,
-            redirect_uri: redirectUri || `${req.protocol}://${req.get('host')}/auth/google/callback`,
+            redirect_uri: finalRedirectUri,
             grant_type: 'authorization_code'
         });
         
