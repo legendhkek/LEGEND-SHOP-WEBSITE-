@@ -333,7 +333,7 @@ app.get('/api/users', apiLimiter, async (req, res) => {
 });
 
 // Google OAuth Callback Route
-app.get('/auth/google/callback', requireMongoConnection, async (req, res) => {
+app.get('/auth/google/callback', authLimiter, requireMongoConnection, async (req, res) => {
     try {
         const { code } = req.query;
         
