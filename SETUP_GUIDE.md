@@ -30,13 +30,13 @@ You have two options:
 2. Create a free account
 3. Create a new cluster (select M0 FREE tier)
 4. Click "Connect" → "Connect your application"
-5. Copy the connection string (it looks like: `mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/`)
+5. Copy the connection string (it looks like: `mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/`)
 6. Open `.env` file in the project root
 7. Replace the `MONGODB_URI` value with your connection string:
    ```
-   MONGODB_URI=mongodb+srv://yourusername:yourpassword@cluster0.xxxxx.mongodb.net/legendshop
+   MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/legendshop
    ```
-8. Make sure to replace `<password>` with your actual password
+8. Make sure to replace `<username>`, `<password>`, and `<cluster-name>` with your actual values
 
 #### Option B: Local MongoDB
 

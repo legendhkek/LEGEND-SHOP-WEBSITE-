@@ -111,6 +111,23 @@ userSchema.pre('save', async function(next) {
 
 const User = mongoose.model('User', userSchema);
 
+// ===== MIDDLEWARE =====
+
+// MongoDB connection check middleware
+const requireMongoConnection = (req, res, next) => {
+    if (mongoose.connection.readyState !== 1) {
+        // For OAuth callbacks, redirect instead of JSON response
+        if (req.path.includes('/auth/google/callback')) {
+            return res.redirect('/login.html?error=database_unavailable');
+        }
+        return res.status(503).json({
+            success: false,
+            message: 'Database is not connected. Please ensure MongoDB is running and properly configured in .env file.'
+        });
+    }
+    next();
+};
+
 // ===== API ROUTES =====
 
 // Health check
@@ -123,7 +140,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Sign Up Route
-app.post('/api/signup', authLimiter, [
+app.post('/api/signup', authLimiter, requireMongoConnection, [
     body('firstName').trim().isLength({ min: 2 }).withMessage('First name must be at least 2 characters'),
     body('lastName').trim().isLength({ min: 2 }).withMessage('Last name must be at least 2 characters'),
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
@@ -131,14 +148,6 @@ app.post('/api/signup', authLimiter, [
     body('dateOfBirth').isISO8601().withMessage('Invalid date of birth')
 ], async (req, res) => {
     try {
-        // Check MongoDB connection
-        if (mongoose.connection.readyState !== 1) {
-            return res.status(503).json({
-                success: false,
-                message: 'Database is not connected. Please ensure MongoDB is running and properly configured in .env file.'
-            });
-        }
-
         // Validate request
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -217,20 +226,12 @@ app.post('/api/signup', authLimiter, [
 });
 
 // Login Route
-app.post('/api/login', authLimiter, [
+app.post('/api/login', authLimiter, requireMongoConnection, [
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
     body('password').notEmpty().withMessage('Password is required'),
     body('humanVerified').optional().isBoolean().withMessage('Invalid human verification flag')
 ], async (req, res) => {
     try {
-        // Check MongoDB connection
-        if (mongoose.connection.readyState !== 1) {
-            return res.status(503).json({
-                success: false,
-                message: 'Database is not connected. Please ensure MongoDB is running and properly configured in .env file.'
-            });
-        }
-
         // Validate request
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -332,13 +333,8 @@ app.get('/api/users', apiLimiter, async (req, res) => {
 });
 
 // Google OAuth Callback Route
-app.get('/auth/google/callback', async (req, res) => {
+app.get('/auth/google/callback', requireMongoConnection, async (req, res) => {
     try {
-        // Check MongoDB connection
-        if (mongoose.connection.readyState !== 1) {
-            return res.redirect('/login.html?error=database_unavailable');
-        }
-
         const { code } = req.query;
         
         if (!code) {
