@@ -221,9 +221,9 @@
                 const data = await response.json();
 
                 if (data.success && data.token && data.user) {
-                    // Store authentication data
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    // Store authentication data with correct keys for dashboard
+                    localStorage.setItem('legendShopToken', data.token);
+                    localStorage.setItem('legendShopUser', JSON.stringify(data.user));
                     
                     // Update UI
                     document.getElementById('title').textContent = 'Authentication Successful!';
@@ -260,8 +260,8 @@
 
         // Check if user is already authenticated
         function checkExistingAuth() {
-            const token = localStorage.getItem('token');
-            const user = localStorage.getItem('user');
+            const token = localStorage.getItem('legendShopToken');
+            const user = localStorage.getItem('legendShopUser');
             
             if (token && user) {
                 // User already authenticated, redirect immediately
